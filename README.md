@@ -1,6 +1,9 @@
 # Talia
 Talia discord bot main repository
 
+Join the discord
+[![Discord Link](https://raw.githubusercontent.com/Talia-Team/Talia/main/assets/discord%20link.png)](https://discord.gg/7FqgBCVfvY)
+
 ## Setup
 1. Install all dependencies with `python3 -m pip install -r requirements.txt`
 2. Run `python3 Talia.py`, this will create a file in the same directory called "config.json"
