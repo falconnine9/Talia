@@ -1,7 +1,6 @@
 # Talia
-Talia discord bot main repository
-
 Join the discord
+
 [![Discord Link](https://raw.githubusercontent.com/Talia-Team/Talia/main/assets/discord%20link.png)](https://discord.gg/7FqgBCVfvY)
 
 ## Setup
