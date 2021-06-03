@@ -1,0 +1,91 @@
+import discord
+import sqlite3
+import traceback
+
+from Routine import init, handle, loop, post_checks
+from Utils import guild, user, message, abc, other
+
+other.log("Starting")
+
+init.config()
+init.db()
+
+bot = discord.Client(intents=discord.Intents.all())
+conn = sqlite3.connect(other.load_config().db_path)
+
+
+@bot.event
+async def on_ready():
+    other.log("Ready", "success")
+
+    bot.loop.create_task(loop.main_timer(bot, conn))
+    bot.loop.create_task(loop.edu_timer(bot, conn))
+    bot.loop.create_task(loop.invest_timer(bot, conn))
+
+
+@bot.event
+async def on_guild_join(new_guild):
+    other.log(f"Added to guild {new_guild.name} ({new_guild.id})")
+    new_guild = abc.Guild(new_guild.id)
+    guild.write_guild(new_guild, conn)
+
+
+@bot.event
+async def on_guild_remove(remove_guild):
+    other.log(f"Removed from guild {remove_guild.name} ({remove_guild.id})")
+    cur = conn.cursor()
+    cur.execute("DELETE FROM guilds WHERE id = ?", (remove_guild.id,))
+    conn.commit()
+
+
+@bot.event
+async def on_message(msg):
+    if msg.guild is None:
+        return
+
+    if msg.author.bot:
+        return
+
+    if not msg.content.startswith(guild.load_guild_prefix(msg.guild.id, conn)):
+        return
+
+    guildinfo = guild.load_guild(msg.guild.id, conn)
+    if guildinfo is None:
+        guildinfo = abc.Guild(msg.guild.id)
+        guild.write_guild(guildinfo, conn, False)
+
+    if msg.channel.id in guildinfo.disabled_channels:
+        return
+
+    guild_member = msg.guild.get_member(bot.user.id)
+    if guild_member is not None:
+        if not msg.channel.permissions_for(guild_member).send_messages:
+            return
+
+    userinfo = user.load_user(msg.author.id, conn)
+    if userinfo is None:
+        userinfo = abc.User(msg.author.id)
+        user.write_user(userinfo, conn, False)
+
+    msg.content = msg.content.strip()[len(guildinfo.prefix):]
+
+    await handle.mentioned_users(bot, msg, conn)
+    conn.commit()
+
+    try:
+        await handle.command(bot, msg, conn)
+    except Exception as errmsg:
+        excinfo = traceback.format_exc()
+        await message.send_error(msg, f"""An unexpected error occurred
+Error type: {type(errmsg).__name__}""")
+        other.log(f"Error occurred, traceback below\n{excinfo}", "critical")
+
+    await post_checks.level(bot, msg, conn)
+    await post_checks.achievements(bot, msg, conn)
+
+
+if __name__ == "__main__":
+    try:
+        bot.run(other.load_config().token)
+    except discord.LoginFailure:
+        other.log("Invalid token passed", "critical")
