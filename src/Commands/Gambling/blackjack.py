@@ -60,7 +60,8 @@ async def run(bot, msg, conn):
     while True:
         random_card = random.choice(deck)
         if _card_amount(dealer_cards) + random_card.real_value > 21:
-            break
+            if not (random_card.value == "A" and random_card.real_value + 1 > 21):
+                break
         dealer_cards.append(random_card)
         deck.remove(random_card)
 
@@ -70,13 +71,22 @@ async def run(bot, msg, conn):
         deck.remove(random_card)
 
     if _card_amount(user_cards) == 21:
-        await message.send_message(msg, f"""Blackjack cost: -{bet} {emojis.coin}
+        if _card_amount(user_cards) == _card_amount(dealer_cards):
+            await message.send_message(msg, f"""Blackjack cost: -{bet} {emojis.coin}
 
-Dealer: {_show_all_cards(dealer_cards)}
-You: {_show_all_cards(user_cards)}
+Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
+You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
+
+**Tie** +{bet} {emojis.coin}""", title="Tie")
+            user.set_user_attr(msg.author.id, "coins", userinfo.coins + bet, conn)
+        else:
+            await message.send_message(msg, f"""Blackjack cost: -{bet} {emojis.coin}
+
+Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
+You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
 
 **Blackjack, you win!** +{bet * 2} {emojis.coin}""", title="You win")
-        user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)
+            user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)
         return
 
     sent_msg = await message.send_message(msg, f"""Blackjack cost: -{bet} {emojis.coin}
@@ -124,7 +134,16 @@ You: {_show_all_cards(user_cards)} ({card_amount})
                 return
 
             elif card_amount == 21:
-                await message.edit_message(sent_msg, f"""Blackjack cost: -{bet} {emojis.coin}
+                if _card_amount(dealer_cards) == 21:
+                    await message.edit_message(sent_msg, f"""Blackjack cost: -{bet} {emojis.coin}
+
+Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
+You: {_show_all_cards(user_cards)} ({card_amount})
+
+**Tie** +{bet} {emojis.coin}""", title="Tie")
+                    user.set_user_attr(msg.author.id, "coins", userinfo.coins + bet, conn)
+                else:
+                    await message.edit_message(sent_msg, f"""Blackjack cost: -{bet} {emojis.coin}
 
 Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({card_amount})
@@ -153,14 +172,23 @@ You: {_show_all_cards(user_cards)} ({user_card_amount})
 
 **You lose**""", title="You lose")
 
+            elif dealer_card_amount < user_card_amount:
+                await message.edit_message(sent_msg, f"""Blackjack cost: -{bet} {emojis.coin}
+
+Dealer: {_show_all_cards(dealer_cards)} ({dealer_card_amount})
+You: {_show_all_cards(user_cards)} ({user_card_amount})
+
+**You win!** +{bet * 2} {emojis.coin}""", title="You win")
+                user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)
+
             else:
                 await message.edit_message(sent_msg, f"""Blackjack cost: -{bet} {emojis.coin}
 
 Dealer: {_show_all_cards(dealer_cards)} ({dealer_card_amount})
 You: {_show_all_cards(user_cards)} ({user_card_amount})
 
-**You win!**""", title="You win")
-                user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)
+**Tie** +{bet} {emojis.coin}""", title="Tie")
+                user.set_user_attr(msg.author.id, "coins", userinfo.coins + bet, conn)
             return
 
 
