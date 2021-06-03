@@ -11,25 +11,10 @@ def load_timer(name, conn):
     if timerinfo is None:
         return None
 
-    if timerinfo[3] == "null":
-        if timerinfo[2] == 0:
-            return abc.Timer(name, timerinfo[1], None, None)
-        else:
-            return abc.Timer(name, timerinfo[1], timerinfo[2], None)
-    else:
-        if timerinfo[2] == 0:
-            return abc.Timer(name, timerinfo[1], None, timerinfo[3])
-        else:
-            return abc.Timer(name, timerinfo[1], timerinfo[2], timerinfo[3])
+    return abc.Timer(timerinfo[0], timerinfo[1], timerinfo[2], timerinfo[3])
 
 
 def new_timer(timer, conn, write=True):
-    if timer.user is None:
-        timer.user = 0
-
-    if timer.meta is None:
-        timer.meta = "null"
-
     cur = conn.cursor()
     cur.execute("INSERT INTO timers VALUES (?, ?, ?, ?)", (
         timer.name, timer.time, timer.user, timer.meta

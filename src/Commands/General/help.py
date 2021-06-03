@@ -20,7 +20,9 @@ help_info = {
         "heist": help_list.heist,
         "invest": help_list.invest,
         "pickaxe": help_list.pickaxe,
-        "mine": help_list.mine
+        "mine": help_list.mine,
+        "hourly": help_list.hourly,
+        "daily": help_list.daily
     },
     "gambling": {
         "coinflip": help_list.coinflip,

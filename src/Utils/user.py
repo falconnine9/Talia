@@ -61,6 +61,9 @@ def load_user(user_id, conn):
             tmp_showcase["type"],
             tmp_showcase["stats"]
         )
+
+    new_user.hourly = userinfo[13]
+    new_user.daily = userinfo[14]
     
     return new_user
 
@@ -82,7 +85,7 @@ def write_user(obj, conn, write=True):
         tmp_showcase = obj.showcase.cvt_dict()
 
     cur = conn.cursor()
-    cur.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+    cur.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
         obj.id,
         obj.coins,
         obj.xp,
@@ -95,7 +98,9 @@ def write_user(obj, conn, write=True):
         obj.fusion_level,
         obj.multiplier,
         obj.company,
-        json.dumps(tmp_showcase)
+        json.dumps(tmp_showcase),
+        obj.hourly,
+        obj.daily
     ))
     
     if write:

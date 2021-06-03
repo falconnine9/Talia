@@ -126,6 +126,18 @@ mine = {
     "args": {}
 }
 
+hourly = {
+    "desc": "Collect your hourly",
+    "usage": "hourly",
+    "args": {}
+}
+
+daily = {
+    "desc": "Collect your daily",
+    "usage": "daily",
+    "args": {}
+}
+
 
 # <--- Gambling ---> #
 

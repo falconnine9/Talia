@@ -46,6 +46,8 @@ class User:
         self.multiplier = 1.0
         self.company = None
         self.showcase = None
+        self.hourly = 0
+        self.daily = 0
 
     def cvt_dict(self):
         return {
@@ -61,7 +63,9 @@ class User:
             "fusion_level": self.fusion_level,
             "multiplier_boost": self.multiplier,
             "company": self.company,
-            "showcase": self.showcase
+            "showcase": self.showcase,
+            "hourly": self.hourly,
+            "daily": self.daily
         }
 
 

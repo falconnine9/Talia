@@ -4,5 +4,7 @@ from Commands.Earning import (
     heist,
     invest,
     pickaxe,
-    mine
+    mine,
+    hourly,
+    daily
 )

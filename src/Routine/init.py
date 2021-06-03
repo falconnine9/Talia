@@ -35,7 +35,9 @@ tables = {
         "fusion_level": "INTEGER",
         "multiplier": "REAL",
         "company": "TEXT",
-        "showcase": "TEXT"
+        "showcase": "TEXT",
+        "hourly": "INTEGER",
+        "daily": "INTEGER"
     },
     "timers": {
         "name": "TEXT NOT NULL PRIMARY KEY",
