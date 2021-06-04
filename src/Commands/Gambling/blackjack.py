@@ -57,18 +57,29 @@ async def run(bot, msg, conn):
     dealer_cards = []
     user_cards = []
 
-    while True:
+    for i in range(2):
         random_card = random.choice(deck)
-        if _card_amount(dealer_cards) + random_card.real_value > 21:
-            if not (random_card.value == "A" and random_card.real_value + 1 > 21):
-                break
         dealer_cards.append(random_card)
         deck.remove(random_card)
 
-    for i in range(2):
+        random_card2 = random.choice(deck)
+        user_cards.append(random_card2)
+        deck.remove(random_card2)
+
+    if _card_amount(dealer_cards) < 16:
         random_card = random.choice(deck)
-        user_cards.append(random_card)
+        dealer_cards.append(random_card)
         deck.remove(random_card)
+
+        if _card_amount(dealer_cards) > 21:
+            await message.send_message(msg, f"""Blackjack cost: -{bet} {emojis.coin}
+
+Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
+You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
+
+**Dealer busted, you win!** +{bet * 2} {emojis.coin}""", title="You win")
+            user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)
+            return
 
     if _card_amount(user_cards) == 21:
         if _card_amount(user_cards) == _card_amount(dealer_cards):

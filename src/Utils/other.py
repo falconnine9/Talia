@@ -49,10 +49,10 @@ def load_config():
         if config_location == len(sys.argv) - 1:
             raise IndexError("No path given after -config argument")
         
-        if not os.path.exists(f"{sys.argv[config_location]}/config.json"):
+        if not os.path.exists(f"{sys.argv[config_location + 1]}/config.json"):
             raise FileNotFoundError("No configuration file found in location given")
         
-        with open(f"{sys.argv[config_location]}/config.json") as cfg:
+        with open(f"{sys.argv[config_location + 1]}/config.json") as cfg:
             return abc.Config(json.load(cfg))
     
     else:
