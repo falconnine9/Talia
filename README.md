@@ -1,7 +1,7 @@
 # Talia
 Join the discord
 
-[![Discord Link](https://raw.githubusercontent.com/Talia-Team/Talia/main/assets/discord%20link.png)](https://discord.gg/7FqgBCVfvY)
+[![Discord Link](https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/icons/discord%20link.png)](https://discord.gg/7FqgBCVfvY)
 
 ## Setup
 1. Install all dependencies with `python3 -m pip install -r requirements.txt`
