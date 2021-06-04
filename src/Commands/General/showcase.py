@@ -39,8 +39,8 @@ async def run(bot, msg, conn):
     if userinfo.showcase is not None:
         userinfo.inventory.append(userinfo.showcase)
 
+    await message.send_message(msg, f"You put a {userinfo.inventory[item].name} in your showcase", title="Added")
+
     user.set_user_attr(msg.author.id, "showcase", userinfo.inventory[item].cvt_dict(), conn, False)
     userinfo.inventory.pop(item)
     user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
-
-    await message.send_message(msg, f"You put a {userinfo.inventory[item].name} in your showcase", title="Added")
