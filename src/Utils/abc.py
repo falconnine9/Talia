@@ -3,8 +3,7 @@ class Config:
         self.token = value_dict["token"]
         self.owners = value_dict["owners"]
         self.db_path = value_dict["db_path"]
-        self.backups = value_dict["backups"],
-        self.log_channel = value_dict["log_channel"]
+        self.backups = value_dict["backups"]
         self.links = value_dict["links"]
 
     def cvt_dict(self):
@@ -13,7 +12,6 @@ class Config:
             "owners": self.owners,
             "db_path": self.db_path,
             "backups": self.backups,
-            "log_channel": self.log_channel,
             "links": self.links
         }
 
