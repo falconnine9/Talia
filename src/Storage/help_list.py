@@ -36,6 +36,12 @@ inventory = {
     }
 }
 
+fuse = {
+    "desc": "Upgrade your fusion level",
+    "usage": "fuse",
+    "args": {}
+}
+
 school = {
     "desc": "Get a higher education level",
     "usage": "school",
@@ -63,8 +69,8 @@ company = {
     "desc": "Manage the company you're in",
     "usage": "company <operation> [company name/user]",
     "args": {
-        "operation": "create/leave/invite/kick/disband",
-        "company/user": "The company name if creating, or the user if inviting/kicking"
+        "operation": "create/leave/invite/kick/disband/info",
+        "company/user": "The company name if creating/getting info, or the user if inviting/kicking"
     }
 }
 

@@ -10,6 +10,7 @@ commands = {
     "info": Commands.General.info,
     "stats": Commands.General.stats,
     "inventory": Commands.General.inventory,
+    "fuse": Commands.General.fuse,
     "school": Commands.General.school,
     "box": Commands.General.box,
     "leaderboard": Commands.General.leaderboard,

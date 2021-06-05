@@ -8,6 +8,7 @@ help_info = {
         "info": help_list.info,
         "stats": help_list.stats,
         "inventory": help_list.inventory,
+        "fuse": help_list.fuse,
         "school": help_list.school,
         "box": help_list.box,
         "leaderboard": help_list.leaderboard,

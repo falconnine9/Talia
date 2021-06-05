@@ -46,6 +46,15 @@ async def on_message(msg):
     if msg.author.bot:
         return
 
+    if bot.user in msg.mentions:
+        guildinfo = guild.load_guild(msg.guild.id, conn)
+
+        if guildinfo is not None and msg.channel.id not in guildinfo.disabled_channels:
+            await message.send_message(msg, f"""I see that you pinged me
+
+My prefix is **{guildinfo.prefix}**
+You can use `{guildinfo.prefix}help` for some help""", title="Hello!")
+
     if not msg.content.startswith(guild.load_guild_prefix(msg.guild.id, conn)):
         return
 

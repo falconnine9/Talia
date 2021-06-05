@@ -2,7 +2,7 @@ import asyncio
 import datetime
 import discord
 
-from Utils import user, company, message, abc
+from Utils import user, company, message, abc, other
 from Storage import help_list
 
 
@@ -29,6 +29,9 @@ async def run(bot, msg, conn):
 
     elif split_data[1] == "disband":
         await _company_disband(bot, msg, conn)
+
+    elif split_data[1] == "info":
+        await _company_info(bot, msg, conn, split_data)
 
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
@@ -106,6 +109,10 @@ async def _company_invite(bot, msg, conn, split_data):
 
     if companyinfo.ceo != msg.author.id:
         await message.send_error(msg, "You aren't the CEO of the company")
+        return
+
+    if len(companyinfo.members) >= 50:
+        await message.send_error(msg, "You've reached the limit of 50 company members")
         return
 
     split_data[2] = split_data[2].replace("<@", "").replace("!", "").replace(">", "")
@@ -200,6 +207,9 @@ async def _company_invite(bot, msg, conn, split_data):
 
     userinfo = user.load_user(msg.author.id, conn)
 
+    companyinfo.invites.remove(str(person.id))
+    company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
+
     if userinfo.company is None:
         try:
             await message.send_error(None, "There was a problem with joining the company", channel=person)
@@ -229,12 +239,16 @@ async def _company_invite(bot, msg, conn, split_data):
             pass
         return
 
-    companyinfo.members[str(person.id)] = datetime.datetime.now().strftime("%Y/%m/%d")
-    companyinfo.invites.remove(str(person.id))
+    if len(companyinfo.members) >= 50:
+        try:
+            await message.send_error(None, "The company no longer has enough space for you", channel=person)
+        except discord.Forbidden:
+            pass
+        return
 
+    companyinfo.members[str(person.id)] = datetime.datetime.now().strftime("%Y/%m/%d")
     user.set_user_attr(person.id, "company", companyinfo.discrim, conn, False)
-    company.set_company_attr(companyinfo.discrim, "members", companyinfo.members, conn, False)
-    company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
+    company.set_company_attr(companyinfo.discrim, "members", companyinfo.members, conn)
 
     await message.edit_message(sent_msg, "You joined the company", title="Joined")
 
@@ -349,3 +363,38 @@ async def _company_disband(bot, msg, conn):
     conn.commit()
 
     await message.edit_message(sent_msg, "Company disbanded", title="Disbanded")
+
+
+async def _company_info(bot, msg, conn, split_data):
+    if len(split_data) < 3:
+        userinfo = user.load_user(msg.author.id, conn)
+
+        if userinfo.company is None:
+            await message.send_error(msg, "You're not in a company")
+            return
+
+        split_data.append(userinfo.company)
+
+    companyinfo = company.load_company(split_data[2].lower(), conn)
+
+    if companyinfo is None:
+        await message.send_error(msg, "I can't find that company")
+        return
+
+    total_coins = 0
+    for member in companyinfo.members.keys():
+        memberinfo = user.load_user(int(member), conn)
+        if memberinfo is not None:
+            total_coins += memberinfo.coins
+
+    try:
+        ceo = await bot.fetch_user(companyinfo.ceo)
+    except discord.NotFound:
+        ceo = companyinfo.ceo
+
+    emojis = other.load_emojis(bot)
+
+    await message.send_message(msg, f"""CEO: {str(ceo)}
+Total Coins: {total_coins} {emojis.coin}
+Members: {len(companyinfo.members)}/50
+Company Multiplier: x{companyinfo.multiplier_boost}""", title=companyinfo.name)
