@@ -36,6 +36,12 @@ inventory = {
     }
 }
 
+fuse = {
+    "desc": "Upgrade your fusion level",
+    "usage": "fuse",
+    "args": {}
+}
+
 school = {
     "desc": "Get a higher education level",
     "usage": "school",

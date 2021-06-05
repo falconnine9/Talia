@@ -4,6 +4,7 @@ from Commands.General import (
     info,
     stats,
     inventory,
+    fuse,
     school,
     box,
     leaderboard,
