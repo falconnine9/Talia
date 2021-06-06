@@ -132,6 +132,12 @@ mine = {
     "args": {}
 }
 
+sidejob = {
+    "desc": "Do some work at a random side job",
+    "usage": "sidejob",
+    "args": {}
+}
+
 hourly = {
     "desc": "Collect your hourly",
     "usage": "hourly",

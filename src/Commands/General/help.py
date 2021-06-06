@@ -22,6 +22,7 @@ help_info = {
         "invest": help_list.invest,
         "pickaxe": help_list.pickaxe,
         "mine": help_list.mine,
+        "sidejob": help_list.sidejob,
         "hourly": help_list.hourly,
         "daily": help_list.daily
     },

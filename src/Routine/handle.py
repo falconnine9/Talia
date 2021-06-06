@@ -24,6 +24,7 @@ commands = {
     "heist": Commands.Earning.heist,
     "pickaxe": Commands.Earning.pickaxe,
     "mine": Commands.Earning.mine,
+    "sidejob": Commands.Earning.sidejob,
     "hourly": Commands.Earning.hourly,
     "daily": Commands.Earning.daily,
 

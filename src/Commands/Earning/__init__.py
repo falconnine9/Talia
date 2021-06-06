@@ -5,6 +5,7 @@ from Commands.Earning import (
     invest,
     pickaxe,
     mine,
+    sidejob,
     hourly,
     daily
 )
