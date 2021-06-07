@@ -61,7 +61,7 @@ async def run(bot, msg, conn):
         return
 
     sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
-You will earn {amount * multipliers[split_data[2]]} {emojis.coin} and won't be able to invest anything else while you're waiting""", title="Investing..")
+You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""", title="Investing..")
 
     await sent_msg.add_reaction("\u2705")
     await sent_msg.add_reaction("\u274c")
