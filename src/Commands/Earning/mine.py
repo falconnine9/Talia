@@ -18,14 +18,11 @@ async def run(bot, msg, conn):
 
     earned_coins = round(random.randint(1, 450) * (other.load_multi(userinfo, conn) * userinfo.pickaxe.multiplier))
     earned_xp = round(random.randint(1, 20) * (other.load_multi(userinfo, conn) * userinfo.pickaxe.multiplier))
-    emojis = other.load_emojis(bot)
-
-    await message.send_message(msg, f"""You did some mining in the caves
-+{earned_coins} {emojis.coin}
-+{earned_xp} XP""", title="Mined")
+    userinfo.pickaxe.xp += random.randint(1, 25)
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins + earned_coins, conn, False)
-    user.set_user_attr(msg.author.id, "xp", userinfo.xp + earned_xp, conn)
+    user.set_user_attr(msg.author.id, "xp", userinfo.xp + earned_xp, conn, False)
+    user.set_user_attr(msg.author.id, "pickaxe", userinfo.pickaxe.cvt_dict(), conn)
 
     cooldown_time = random.randint(80, 120) * 60
     cooldown_time -= cooldown_time * ((userinfo.pickaxe.speed / 10) - 0.1)
@@ -33,3 +30,15 @@ async def run(bot, msg, conn):
     if cooldown_time > 0:
         new_timer = abc.Timer(f"mine.{msg.author.id}", cooldown_time, msg.author.id, None)
         timer.new_timer(new_timer, conn)
+
+    emojis = other.load_emojis(bot)
+    await message.send_message(msg, f"You did some mining in the caves\n+{earned_coins} {emojis.coin}\n+{earned_xp} XP", title="Mined")
+    await _pickaxe_xp_check(msg, conn, userinfo, emojis)
+
+
+async def _pickaxe_xp_check(msg, conn, userinfo, emojis):
+    if userinfo.pickaxe.xp >= userinfo.pickaxe.level * 25:
+        userinfo.pickaxe.level += 1
+        userinfo.pickaxe.xp = 0
+        user.set_user_attr(msg.author.id, "pickaxe", userinfo.pickaxe.cvt_dict(), conn)
+        await message.send_message(msg,f"{emojis.confetti} {str(msg.author)} reached pickaxe level {userinfo.pickaxe.level} {emojis.confetti}", title="Pickaxe level up")

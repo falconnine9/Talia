@@ -40,4 +40,4 @@ async def _job_xp_check(msg, conn, userinfo, emojis):
         userinfo.job.level += 1
         userinfo.job.xp = 0
         user.set_user_attr(msg.author.id, "job", userinfo.job.cvt_dict(), conn)
-        await message.send_message(msg, f"{emojis.confetti} You reached job level {userinfo.job.level} {emojis.confetti}", title="Job level up")
+        await message.send_message(msg, f"{emojis.confetti} {str(msg.author)} reached job level {userinfo.job.level} {emojis.confetti}", title="Job level up")

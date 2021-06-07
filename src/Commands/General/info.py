@@ -83,15 +83,16 @@ def _load_job_info(job):
     else:
         return f"""Job: {job.name}
 Level: {job.level}
-XP: {job.xp}"""
+XP: {job.xp}/{job.level * 25} ({round(job.xp / (job.level * 25) * 100)}%)
+Job Multiplier: x{1 + (job.level / 10) - 0.1}"""
 
 
-def _load_pickaxe_info(pickaxeinfo):
-    if pickaxeinfo is None:
+def _load_pickaxe_info(pickaxe):
+    if pickaxe is None:
         return "No Pickaxe"
     else:
-        return f"""Pickaxe: {pickaxeinfo.name}
-Mining Speed: {pickaxeinfo.speed}
-Mining Multiplier: x{pickaxeinfo.multiplier}
-Level: {pickaxeinfo.level}
-XP: {pickaxeinfo.xp}"""
+        return f"""Pickaxe: {pickaxe.name}
+Level: {pickaxe.level}
+XP: {pickaxe.xp}/{pickaxe.level * 25} ({round(pickaxe.xp / (pickaxe.level * 25) * 100)}%)
+Mining Speed: {pickaxe.speed}
+Mining Multiplier: x{pickaxe.multiplier}"""
