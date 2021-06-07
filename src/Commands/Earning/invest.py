@@ -4,17 +4,15 @@ from Utils import user, timer, message, abc, other
 from Storage import help_list
 
 times = {
-    "hour": 3600,
     "8hour": 28800,
     "day": 86400,
     "week": 604800
 }
 
 multipliers = {
-    "hour": 1.2,
-    "8hour": 2,
-    "day": 4,
-    "week": 8
+    "8hour": 1.2,
+    "day": 2.5,
+    "week": 6
 }
 
 
@@ -57,14 +55,13 @@ async def run(bot, msg, conn):
 
     if split_data[2] not in times:
         await message.send_error(msg, f"""Unknown amount of time
-`hour` - Multiply the amount by 1.2x after 1 hour
-`8hour` - Multiply the amount by 2x after 8 hours
-`day` - Multiply the amount by 4x after 1 day
-`week` - Multiply the amount by 8x after 1 week""")
+`8hour` - Multiply the amount by 1.2x after 8 hours
+`day` - Multiply the amount by 2.5x after 1 day
+`week` - Multiply the amount by 6x after 1 week""")
         return
 
     sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
-You won't be able to invest anything else while you're waiting""", title="Investing..")
+You will earn {amount * multipliers[split_data[2]]} {emojis.coin} and won't be able to invest anything else while you're waiting""", title="Investing..")
 
     await sent_msg.add_reaction("\u2705")
     await sent_msg.add_reaction("\u274c")
