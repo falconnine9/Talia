@@ -95,7 +95,7 @@ async def run(bot, msg, conn):
         return
 
     userinfo = user.load_user(msg.author.id, conn)
-    personinfo = user.load_user(msg.author.id, conn)
+    personinfo = user.load_user(person.id, conn)
 
     if userinfo.partner is not None:
         await message.send_error(msg, f"{str(msg.author)} is already married")
@@ -116,11 +116,11 @@ async def run(bot, msg, conn):
     new_children = []
 
     for child in userinfo.children:
-        user.set_user_attr(msg.author.id, "parents", [msg.author.id, person.id], conn, False)
+        user.set_user_attr(child, "parents", [msg.author.id, person.id], conn, False)
         new_children.append(child)
 
     for child in personinfo.children:
-        user.set_user_attr(msg.author.id, "parents", [person.id, msg.author.id], conn, False)
+        user.set_user_attr(child, "parents", [person.id, msg.author.id], conn, False)
         new_children.append(child)
 
     user.set_user_attr(msg.author.id, "partner", person.id, conn, False)
