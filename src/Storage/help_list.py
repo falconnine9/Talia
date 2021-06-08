@@ -151,6 +151,45 @@ daily = {
 }
 
 
+# <--- Family ---> #
+
+marry = {
+    "desc": "Marry someone",
+    "usage": "marry <user>",
+    "args": {
+        "user": "The person that you want to marry"
+    }
+}
+
+divorce = {
+    "desc": "Divorce your partner",
+    "usage": "divorce",
+    "args": {}
+}
+
+adopt = {
+    "desc": "Adopt someone",
+    "usage": "adopt <user>",
+    "args": {
+        "user": "The person that you want to adopt"
+    }
+}
+
+disown = {
+    "desc": "Get rid of one of your children",
+    "usage": "disown <user>",
+    "args": {
+        "user": "The person (has to be your child) that you want to disown"
+    }
+}
+
+runaway = {
+    "desc": "Run away from your parents",
+    "usage": "runaway",
+    "args": {}
+}
+
+
 # <--- Gambling ---> #
 
 coinflip = {

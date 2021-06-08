@@ -47,6 +47,7 @@ async def run(bot, msg, conn):
 
     personinfo = user.load_user(person.id, conn)
 
+    partner, parents, children = await _load_family_info(bot, personinfo)
     jobinfo = _load_job_info(personinfo.job)
     pickaxeinfo = _load_pickaxe_info(personinfo.pickaxe)
 
@@ -69,12 +70,44 @@ Multiplier: x{other.load_multi(personinfo, conn)}
 Education Level: {edu_levels[personinfo.edu_level]}
 Company: {company_name}
 
+**--Family--**
+Partner: {partner}
+Parents: {parents}
+Children: {children}
+
 **--Job--**
 {jobinfo}
 
 **--Pickaxe--**
 {pickaxeinfo}"""
     await message.send_message(msg, send_str, title=str(person), thumbnail=person.avatar_url)
+
+
+async def _load_family_info(bot, personinfo):
+    if personinfo.partner is None:
+        partner = None
+    else:
+        partner = await bot.fetch_user(personinfo.partner)
+
+    if len(personinfo.parents) == 0:
+        parents = None
+    else:
+        all_parents = []
+        for parent in personinfo.parents:
+            parent_user = await bot.fetch_user(parent)
+            all_parents.append(str(parent_user))
+        parents = ", ".join(all_parents)
+
+    if len(personinfo.children) == 0:
+        children = None
+    else:
+        all_children = []
+        for child in personinfo.children:
+            child_user = await bot.fetch_user(child)
+            all_children.append(str(child_user))
+        children = ", ".join(all_children)
+
+    return partner, parents, children
 
 
 def _load_job_info(job):

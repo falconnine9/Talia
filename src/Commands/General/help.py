@@ -26,6 +26,13 @@ help_info = {
         "hourly": help_list.hourly,
         "daily": help_list.daily
     },
+    "family": {
+        "marry": help_list.marry,
+        "divorce": help_list.divorce,
+        "adopt": help_list.adopt,
+        "disown": help_list.disown,
+        "runaway": help_list.runaway
+    },
     "gambling": {
         "coinflip": help_list.coinflip,
         "dice": help_list.dice,

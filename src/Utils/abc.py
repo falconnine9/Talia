@@ -48,6 +48,9 @@ class User:
         self.showcase = None
         self.hourly = 0
         self.daily = 0
+        self.partner = None
+        self.parents = []
+        self.children = []
 
     def cvt_dict(self):
         return {
@@ -65,7 +68,10 @@ class User:
             "company": self.company,
             "showcase": self.showcase,
             "hourly": self.hourly,
-            "daily": self.daily
+            "daily": self.daily,
+            "partner": self.partner,
+            "parents": self.parents,
+            "children": self.children
         }
 
 
