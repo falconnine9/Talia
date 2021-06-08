@@ -38,7 +38,10 @@ tables = {
         "company": "TEXT",
         "showcase": "TEXT",
         "hourly": "INTEGER",
-        "daily": "INTEGER"
+        "daily": "INTEGER",
+        "partner": "INTEGER",
+        "parents": "TEXT",
+        "children": "TEXT"
     },
     "timers": {
         "name": "TEXT NOT NULL PRIMARY KEY",

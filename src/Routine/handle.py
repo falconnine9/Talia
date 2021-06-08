@@ -29,6 +29,13 @@ commands = {
     "hourly": Commands.Earning.hourly,
     "daily": Commands.Earning.daily,
 
+    # Family
+    "marry": Commands.Family.marry,
+    "divorce": Commands.Family.divorce,
+    "adopt": Commands.Family.adopt,
+    "disown": Commands.Family.disown,
+    "runaway": Commands.Family.runaway,
+
     # Gambling
     "coinflip": Commands.Gambling.coinflip,
     "dice": Commands.Gambling.dice,
