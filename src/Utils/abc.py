@@ -5,6 +5,7 @@ class Config:
         self.db_path = value_dict["db_path"]
         self.backups = value_dict["backups"]
         self.links = value_dict["links"]
+        self.full_logging = value_dict["full_logging"]
 
     def cvt_dict(self):
         return {
@@ -12,7 +13,8 @@ class Config:
             "owners": self.owners,
             "db_path": self.db_path,
             "backups": self.backups,
-            "links": self.links
+            "links": self.links,
+            "full_logging": self.full_logging
         }
 
 

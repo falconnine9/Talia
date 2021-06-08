@@ -13,7 +13,8 @@ config_file = {
         "interval": 0,
         "path": None
     },
-    "links": {}
+    "links": {},
+    "full_logging": False
 }
 
 tables = {
@@ -64,6 +65,13 @@ tables = {
         "invites": "TEXT",
         "date_created": "TEXT",
         "multiplier": "REAL"
+    },
+    "log": {
+        "id": "INTEGER NOT NULL PRIMARY KEY",
+        "command": "TEXT",
+        "user": "INTEGER",
+        "guild": "INTEGER",
+        "date": "TEXT"
     }
 }
 

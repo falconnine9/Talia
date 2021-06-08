@@ -1,7 +1,8 @@
+import datetime
 import discord
 
 import Commands
-from Utils import user, abc
+from Utils import user, abc, other
 
 commands = {
     # General
@@ -51,6 +52,21 @@ async def command(bot, msg, conn):
         return
 
     await commands[split_data[0].lower()].run(bot, msg, conn)
+
+    if other.load_config().full_logging:
+        cur = conn.cursor()
+        cur.execute("SELECT MAX(id) FROM log")
+        max_id = cur.fetchone()
+
+        if max_id[0] is None:
+            max_id = (0,)
+
+        cur.execute("INSERT INTO log VALUES (?, ?, ?, ?, ?)", (
+            max_id[0] + 1, msg.content.split(" ")[0],
+            msg.author.id, msg.guild.id,
+            datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+        ))
+        conn.commit()
 
 
 async def mentioned_users(bot, msg, conn):

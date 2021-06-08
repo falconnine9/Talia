@@ -88,6 +88,7 @@ You can use `{guildinfo.prefix}help` for some help""", title="Hello!")
         await message.send_error(msg, f"""An unexpected error occurred
 Error type: {type(errmsg).__name__}""")
         other.log(f"Error occurred, traceback below\n{excinfo}", "critical")
+        return
 
     await post_checks.level(bot, msg, conn)
     await post_checks.achievements(bot, msg, conn)
