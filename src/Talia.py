@@ -96,7 +96,8 @@ async def on_message(msg):
         guildinfo = guild.load_guild(msg.guild.id, conn)
 
         if guildinfo is not None and msg.channel.id not in guildinfo.disabled_channels:
-            await message.send_message(msg, f"""I see that you pinged me
+            emojis = other.load_emojis(bot)
+            await message.send_message(msg, f"""I see that you pinged me {emojis.ping}
 
 My prefix is **{guildinfo.prefix}**
 You can use `{guildinfo.prefix}help` for some help""", title="Hello!")

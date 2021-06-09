@@ -94,6 +94,7 @@ def load_emojis(bot):
 
     new_emojis.coin = bot.get_emoji(840419193143689236)
     new_emojis.confetti = bot.get_emoji(840419520468221972)
+    new_emojis.ping = bot.get_emoji(852309653063729202)
 
     return new_emojis
 

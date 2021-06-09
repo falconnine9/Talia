@@ -172,6 +172,7 @@ class Emojis:
     def __init__(self):
         self.coin = None
         self.confetti = None
+        self.ping = None
 
 
 class Job:
