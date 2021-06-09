@@ -83,7 +83,7 @@ class Company:
         self.members = {}
         self.invites = []
         self.date_created = ""
-        self.multiplier_boost = 0.0
+        self.multiplier_boost = 1.0
 
     def cvt_dict(self):
         return {

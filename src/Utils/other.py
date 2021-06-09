@@ -73,6 +73,6 @@ def load_multi(userinfo, conn):
     if userinfo.company is not None:
         company_boost = company.load_company(userinfo.company, conn).multiplier_boost
     else:
-        company_boost = 0.0
+        company_boost = 1.0
 
-    return userinfo.multiplier + company_boost
+    return userinfo.multiplier * company_boost

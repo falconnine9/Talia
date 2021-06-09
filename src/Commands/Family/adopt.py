@@ -61,7 +61,7 @@ async def run(bot, msg, conn):
         await message.send_error(msg, f"{str(person)} is already your child")
         return
 
-    personinfo = user.load_user(msg.author.id, conn)
+    personinfo = user.load_user(person.id, conn)
 
     if len(personinfo.parents) != 0:
         await message.send_error(msg, f"{str(person)} already has parents")
@@ -95,7 +95,7 @@ async def run(bot, msg, conn):
         return
 
     userinfo = user.load_user(msg.author.id, conn)
-    personinfo = user.load_user(msg.author.id, conn)
+    personinfo = user.load_user(person.id, conn)
 
     if len(userinfo.children) >= 10:
         await message.send_error(msg, f"{str(msg.author)} already has the maximum of 10 children")
