@@ -1,7 +1,14 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+loop.py (Routine)
+
+Infinite loops that will run the entire time that the
+ program is running
+"""
 import asyncio
 import discord
 import time
-
 from Utils import user, message, other
 
 

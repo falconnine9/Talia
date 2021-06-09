@@ -1,5 +1,11 @@
-import asyncio
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+invest.py (Commands/Earning)
 
+invest command
+"""
+import asyncio
 from Utils import user, timer, message, abc, other
 from Storage import help_list
 

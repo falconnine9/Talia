@@ -1,6 +1,12 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+blackjack.py (Commands/Gambling)
+
+blackjack command
+"""
 import asyncio
 import random
-
 from Utils import user, message, abc, other
 from Storage import help_list
 

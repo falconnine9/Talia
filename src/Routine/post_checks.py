@@ -1,5 +1,11 @@
-import discord
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+post_checks.py (Routine)
 
+Checks that will occur after every command is run
+"""
+import discord
 from Utils import user, message, other
 
 money_achievements = {

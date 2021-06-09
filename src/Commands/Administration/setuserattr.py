@@ -1,5 +1,11 @@
-import discord
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+setuserattr.py (Commands/Administration)
 
+setuserattr command
+"""
+import discord
 from Utils import user, message, other
 
 

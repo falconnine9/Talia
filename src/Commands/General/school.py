@@ -1,5 +1,11 @@
-import asyncio
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+school.py (Commands/General)
 
+school command
+"""
+import asyncio
 from Utils import user, timer, message, abc, other
 
 edu_levels = {

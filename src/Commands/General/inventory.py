@@ -1,5 +1,11 @@
-import discord
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+inventory.py (Commands/General)
 
+inventory command
+"""
+import discord
 from Utils import user, message
 
 

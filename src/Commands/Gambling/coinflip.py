@@ -1,6 +1,12 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+coinflip.py (Commands/Gambling)
+
+coinflip command
+"""
 import asyncio
 import random
-
 from Utils import user, message, other
 from Storage import help_list
 

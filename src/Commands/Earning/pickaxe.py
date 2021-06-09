@@ -1,3 +1,10 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+pickaxe.py (Commands/Earning)
+
+pickaxe command
+"""
 import asyncio
 from Utils import user, message, abc, other
 from Storage import help_list

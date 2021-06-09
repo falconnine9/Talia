@@ -1,5 +1,11 @@
-import discord
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+disown.py (Commands/Family)
 
+disown command
+"""
+import discord
 from Utils import user, message
 from Storage import help_list
 

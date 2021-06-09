@@ -1,8 +1,14 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+init.py (Routine)
+
+Initializing for the program
+"""
 import json
 import os
 import sqlite3
 import sys
-
 from Utils import other
 
 config_file = {
@@ -80,6 +86,16 @@ tables = {
 
 
 def config():
+    """
+    Initializes the configuration file
+
+    1. Makes sure that if no config file exists,
+     then it creates one
+    2. If an external config file is given, it
+     checks and make sure it exists
+    3. Makes sure all the required attributes
+     are in the config file
+    """
     if "-config" not in sys.argv:
         if not os.path.exists("config.json"):
             with open("config.json", "w") as cfg:
@@ -102,6 +118,14 @@ def config():
 
 
 def db():
+    """
+    Initializes the database
+
+    1. Creates a temporary connection to the database
+    2. Makes sure each table required exists, and
+     if it doesn't it will create it
+    3. Commits to the database and closes the connection
+    """
     conn = sqlite3.connect(other.load_config().db_path)
     cur = conn.cursor()
 
@@ -110,3 +134,4 @@ def db():
         cur.execute(f"CREATE TABLE IF NOT EXISTS {table} ({values})")
 
     conn.commit()
+    conn.close()

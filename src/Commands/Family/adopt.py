@@ -1,7 +1,13 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+adopt.py (Commands/Family)
+
+adopt command
+"""
 import asyncio
 import discord
 import random
-
 from Utils import user,message, other
 from Storage import help_list
 

@@ -1,3 +1,10 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+help_list.py (Storage)
+
+A list of help information for each command
+"""
 # <--- General ---> #
 
 help_ = {

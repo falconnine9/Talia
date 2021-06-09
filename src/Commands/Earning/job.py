@@ -1,5 +1,11 @@
-import asyncio
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+job.py (Commands/Earning)
 
+job command
+"""
+import asyncio
 from Utils import user, message, abc, other
 from Storage import help_list
 

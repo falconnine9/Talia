@@ -1,3 +1,10 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+showcase.py (Commands/General)
+
+showcase command
+"""
 from Utils import user, message, abc
 from Storage import help_list
 

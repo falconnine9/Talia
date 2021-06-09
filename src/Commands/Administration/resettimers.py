@@ -1,5 +1,11 @@
-import discord
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+resettimers.py (Commands/Administration)
 
+resettimers command
+"""
+import discord
 from Utils import message, other
 
 

@@ -1,5 +1,11 @@
-import discord
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+info.py (Commands/General)
 
+info command
+"""
+import discord
 from Utils import user, company, message, other
 
 edu_levels = {

@@ -1,3 +1,18 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+Talia.py
+
+Main file for the discord bot
+
+On startup
+1. Initializes the config file and database
+2. Creates a discord client object with full intents
+3. Created a connection to the sqlite database. This connection
+ will be used throughout the code
+4. Attempts to begin the async event loop with the provided
+ token. If the token is invalid it will exit
+"""
 import discord
 import sqlite3
 import traceback
@@ -16,6 +31,14 @@ conn = sqlite3.connect(other.load_config().db_path)
 
 @bot.event
 async def on_ready():
+    """
+    Async event that is called when the program has connected
+     to discord and all data has processed
+
+    1. A success log will be made
+    2. The main timer, edu timer and invest timer will be
+     added to the main event loop
+    """
     other.log("Ready", "success")
 
     bot.loop.create_task(loop.main_timer(bot, conn))
@@ -25,6 +48,13 @@ async def on_ready():
 
 @bot.event
 async def on_guild_join(new_guild):
+    """
+    Async event that is called when the client has been
+     added to a new server
+
+    1. An info log will be made
+    2. The new guild will be written to the database
+    """
     other.log(f"Added to guild {new_guild.name} ({new_guild.id})")
     new_guild = abc.Guild(new_guild.id)
     guild.write_guild(new_guild, conn)
@@ -32,6 +62,13 @@ async def on_guild_join(new_guild):
 
 @bot.event
 async def on_guild_remove(remove_guild):
+    """
+    Async event that is called when the client has been
+     removed from a server
+
+    1. An info log will be made
+    2. The guild will be deleted from the database
+    """
     other.log(f"Removed from guild {remove_guild.name} ({remove_guild.id})")
     cur = conn.cursor()
     cur.execute("DELETE FROM guilds WHERE id = ?", (remove_guild.id,))
@@ -40,6 +77,15 @@ async def on_guild_remove(remove_guild):
 
 @bot.event
 async def on_message(msg):
+    """
+    Async event that is called when a message has been
+     received
+
+    1. Verification that the message can be processed
+    2. Check to see if it starts with the guild prefix
+    3. Handle some database stuff
+    4. Send the message to the command handler
+    """
     if msg.guild is None:
         return
 

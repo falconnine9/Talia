@@ -1,3 +1,10 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+other.py (Utils)
+
+Random utilities
+"""
 import datetime
 import json
 import os
@@ -13,6 +20,14 @@ from Utils import company, abc
 
 
 def log(info, level="info"):
+    """
+    Logs an event to the console and log.txt file
+
+    1. Creates the default prefix/color
+    2. Checks t see if the logging level is different
+    3. Prints the timestamp, prefix and info the the console
+    4. Writes the timestamp, prefix and info to the log.txt file
+    """
     prefix = "[  INFO  ]"
     color = ""
 
@@ -43,6 +58,13 @@ def log(info, level="info"):
 
 
 def load_config():
+    """
+    Loads information from the configuration file
+
+    1. Checks to see if a different path for config was given
+    2. Reads the information out of the file
+    3. Returns a new config object with the information
+    """
     if "-config" in sys.argv:
         config_location = sys.argv.index("-config")
         
@@ -61,6 +83,13 @@ def load_config():
 
 
 def load_emojis(bot):
+    """
+    Loads some emojis from discord
+
+    1. Creates a new emojis object
+    2. Sets each emoji
+    3. Returns the emoji object
+    """
     new_emojis = abc.Emojis()
 
     new_emojis.coin = bot.get_emoji(840419193143689236)
@@ -70,6 +99,12 @@ def load_emojis(bot):
 
 
 def load_multi(userinfo, conn):
+    """
+    Loads the overall multiplier of a user
+
+    1. Adds the company boost
+    2. Returns the user multiplier multiplied by the company multiplier
+    """
     if userinfo.company is not None:
         company_boost = company.load_company(userinfo.company, conn).multiplier_boost
     else:

@@ -1,9 +1,22 @@
-import json
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+company.py (Utils)
 
+Utilities for the management of companies within the database
+"""
+import json
 from Utils import abc
 
 
 def load_company(discrim, conn):
+    """
+    Loads a company from the database
+
+    1. Looks for the company with a certain discriminator
+    2. Takes the returned list and assigns each value to it's
+     spot in a company object
+    """
     cur = conn.cursor()
     cur.execute("SELECT * FROM companies WHERE discrim = ?", (discrim,))
     companyinfo = cur.fetchone()
@@ -23,6 +36,12 @@ def load_company(discrim, conn):
 
 
 def write_company(obj, conn, write=True):
+    """
+    Creates a new company entry in the database
+
+    1. Creates a new cursor and inserts the company into the database
+    2. Commits if the write parameter is true
+    """
     cur = conn.cursor()
     cur.execute("INSERT INTO companies VALUES (?, ?, ?, ?, ?, ?, ?)", (
         obj.discrim,
@@ -39,6 +58,14 @@ def write_company(obj, conn, write=True):
 
 
 def set_company_attr(discrim, attr, val, conn, write=True):
+    """
+    Sets a certain attribute of a company in the database
+
+    1. Checks for the value type and converts it to a value
+     that sqlite can understand
+    2. Creates a new cursor and sets the value
+    3. Commits if the write parameter is true
+    """
     if type(val) == bool:
         val = str(val)
     elif type(val) == list or type(val) == dict:

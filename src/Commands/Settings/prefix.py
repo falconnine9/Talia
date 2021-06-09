@@ -1,3 +1,10 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+prefix.py (Commands/Settings)
+
+prefix command
+"""
 from Utils import guild, message, other
 from Storage import help_list
 

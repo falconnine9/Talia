@@ -1,9 +1,23 @@
-import json
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+user.py (Utils)
 
+Utilities for the management of users within the database
+"""
+import json
 from Utils import abc
 
 
 def load_user(user_id, conn):
+    """
+    Loads a user from the database
+
+    1. Looks for the user with a certain ID (Based off of discord ID)
+    2. Takes the returned list and assigns each value to it's spot in a user object
+    3. Attributes stored in a class use the json library for serialization
+     and get stored in a dictionary until converted
+    """
     cur = conn.cursor()
     cur.execute(f"SELECT * FROM users WHERE id = ?", (user_id,))
     userinfo = cur.fetchone()
@@ -72,6 +86,14 @@ def load_user(user_id, conn):
 
 
 def write_user(obj, conn, write=True):
+    """
+    Creates a new user entry in the database
+
+    1. Converts all the attributes that should be stored in serialized
+     strings to a dictionary instead of a class
+    2. Creates a new cursor and inserts the user into the database
+    3. Commits if the write parameter is true
+    """
     if obj.job is None:
         tmp_job = {"name": None, "xp": 0, "level": 1, "salary": [], "cooldown": []}
     else:
@@ -114,6 +136,14 @@ def write_user(obj, conn, write=True):
 
 
 def set_user_attr(user_id, attr, val, conn, write=True):
+    """
+    Sets a certain attribute of a user in the database
+
+    1. Checks for the value type and converts it to a value
+     that sqlite can understand
+    2. Creates a new cursor and sets the value
+    3. Commits if the write parameter is true
+    """
     if attr == "inventory":
         val = json.dumps([item.cvt_dict() for item in val])
     else:

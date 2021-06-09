@@ -1,7 +1,13 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+company.py (Commands/General)
+
+company command
+"""
 import asyncio
 import datetime
 import discord
-
 from Utils import user, company, message, abc, other
 from Storage import help_list
 

@@ -1,3 +1,12 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+abc.py (Utils)
+
+Abstract Base Classes
+"""
+
+
 class Config:
     def __init__(self, value_dict):
         self.token = value_dict["token"]

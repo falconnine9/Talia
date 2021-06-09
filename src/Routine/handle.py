@@ -1,6 +1,12 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+handle.py (Routine)
+
+Handles events (Such as commands sent)
+"""
 import datetime
 import discord
-
 import Commands
 from Utils import user, abc, other
 
@@ -53,6 +59,16 @@ commands = {
 
 
 async def command(bot, msg, conn):
+    """
+    Ran by the main Talia.py file when a command
+     is given
+
+    1. It will split the message by spaces and checks
+     if the first argument is a command
+    2. It runs the command
+    3. If full logging is enabled, it will log the
+     command that was run
+    """
     split_data = msg.content.split(" ")
 
     if split_data[0].lower() not in commands:
@@ -77,6 +93,15 @@ async def command(bot, msg, conn):
 
 
 async def mentioned_users(bot, msg, conn):
+    """
+    Adds all mentioned users in a message to the
+     database
+
+    1. Splits the message into arguments by spaces
+    2. Checks each argument for a non-mention
+     user ID
+    3. Checks all the mentions of users
+    """
     split_data = msg.content.split(" ")
 
     for arg in split_data:

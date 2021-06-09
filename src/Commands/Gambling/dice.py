@@ -1,6 +1,12 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+dice.py (Commands/Gambling)
+
+dice command
+"""
 import asyncio
 import random
-
 from Utils import user, message, other
 from Storage import help_list
 

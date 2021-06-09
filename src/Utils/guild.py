@@ -1,9 +1,23 @@
-import json
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+guild.py (Utils)
 
+Utilities for the management of guilds within the database
+"""
+import json
 from Utils import abc
 
 
 def load_guild(guild_id, conn):
+    """
+    Loads a guild from the database
+
+    1. Looks for the guild with a certain ID (Based off of discord ID)
+    2. Takes the returned list and assigns each value to it's spot in a guild object
+    3. Attributes stored in a class use the json library for serialization
+     and get stored in a dictionary until converted
+    """
     cur = conn.cursor()
     cur.execute(f"SELECT * FROM guilds WHERE id = ?", (guild_id,))
     guildinfo = cur.fetchone()
@@ -19,6 +33,12 @@ def load_guild(guild_id, conn):
 
 
 def write_guild(obj, conn, write=True):
+    """
+    Creates a new guild entry in the database
+
+    1. Creates a new cursor and inserts the guild into the database
+    2. Commits if the write parameter is true
+    """
     cur = conn.cursor()
     cur.execute("INSERT INTO guilds VALUES (?, ?, ?)", (
         obj.id,
@@ -31,6 +51,14 @@ def write_guild(obj, conn, write=True):
 
 
 def set_guild_attr(guild_id, attr, val, conn, write=True):
+    """
+    Sets a certain attribute of a guild in the database
+
+    1. Checks for the value type and converts it to a value
+     that sqlite can understand
+    2. Creates a new cursor and sets the value
+    3. Commits if the write parameter is true
+    """
     if type(val) == bool:
         val = str(val)
     elif type(val) == list or type(val) == dict:
@@ -44,6 +72,12 @@ def set_guild_attr(guild_id, attr, val, conn, write=True):
 
 
 def load_guild_prefix(guild_id, conn):
+    """
+    Quickly loads a guild's command prefix
+
+    1. Creates a new cursor and grabs the prefix
+    2. Returns just the prefix
+    """
     cur = conn.cursor()
     cur.execute("SELECT prefix FROM guilds WHERE id = ?", (guild_id,))
     guild_prefix = cur.fetchone()

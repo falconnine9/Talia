@@ -1,5 +1,11 @@
-import random
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+mine.py (Commands/Earning)
 
+mine command
+"""
+import random
 from Utils import user, timer, message, abc, other
 
 

@@ -1,5 +1,11 @@
-import asyncio
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+fuse.py (Commands/General)
 
+fuse command
+"""
+import asyncio
 from Utils import user, message
 
 fusion_levels = {

@@ -1,6 +1,12 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+divorce.py (Commands/Family)
+
+divorce command
+"""
 import discord
 import random
-
 from Utils import user, message
 
 

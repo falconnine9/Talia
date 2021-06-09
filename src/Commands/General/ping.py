@@ -1,3 +1,10 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+ping.py (Commands/General)
+
+ping command
+"""
 from Utils import message
 
 

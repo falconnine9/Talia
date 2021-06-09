@@ -1,5 +1,11 @@
-import discord
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+leaderboard.py (Commands/General)
 
+leaderboard command
+"""
+import discord
 from Utils import message, other
 from Storage import help_list
 

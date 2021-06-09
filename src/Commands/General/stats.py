@@ -1,3 +1,10 @@
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+stats.py (Commands/General)
+
+stats command
+"""
 from Utils import message, other
 from Storage import meta
 

@@ -1,5 +1,11 @@
-import discord
+"""
+Talia Discord Bot
+GNU General Public License v3.0
+runaway.py (Commands/Family)
 
+runaway command
+"""
+import discord
 from Utils import user, message
 
 
