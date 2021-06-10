@@ -37,7 +37,7 @@ async def level(bot, msg, conn):
     if userinfo.xp >= userinfo.level * (userinfo.fusion_level * 25):
         user.set_user_attr(msg.author.id, "level", userinfo.level + 1, conn, False)
         user.set_user_attr(msg.author.id, "xp", 0, conn, False)
-        user.set_user_attr(msg.author.id, "multiplier", round(1 + (userinfo.fusion_level * ((userinfo.level + 1) / 10)), 1), conn)
+        user.set_user_attr(msg.author.id, "multiplier", 1 + (userinfo.fusion_level * ((userinfo.level + 1) / 10)), conn)
 
         emojis = other.load_emojis(bot)
         await message.send_message(msg, f"{emojis.confetti} {str(msg.author)} reached level {userinfo.level + 1} {emojis.confetti}", title="Level up")
