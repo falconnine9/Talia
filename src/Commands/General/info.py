@@ -52,7 +52,6 @@ async def run(bot, msg, conn):
         return
 
     sent_msg = await message.send_message(msg, "Gathering information...")
-
     personinfo = user.load_user(person.id, conn)
 
     partner, parents, children = await _load_family_info(bot, personinfo)

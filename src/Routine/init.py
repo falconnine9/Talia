@@ -27,7 +27,9 @@ tables = {
     "guilds": {
         "id": "INTEGER NOT NULL PRIMARY KEY",
         "prefix": "TEXT",
-        "disabled_channels": "TEXT"
+        "disabled_channels": "TEXT",
+        "aliases": "TEXT",
+        "shop": "TEXT"
     },
     "users": {
         "id": "INTEGER NOT NULL PRIMARY KEY",

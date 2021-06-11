@@ -8,7 +8,7 @@ Handles events (Such as commands sent)
 import datetime
 import discord
 import Commands
-from Utils import user, abc, other
+from Utils import guild, user, abc, other
 
 commands = {
     # General
@@ -24,6 +24,7 @@ commands = {
     "company": Commands.General.company,
     "showcase": Commands.General.showcase,
     "bal": Commands.General.bal,
+    "timers": Commands.General.timers,
 
     # Earning
     "job": Commands.Earning.job,
@@ -51,6 +52,8 @@ commands = {
     # Settings
     "prefix": Commands.Settings.prefix,
     "channels": Commands.Settings.channels,
+    "alias": Commands.Settings.alias,
+    "shopitem": Commands.Settings.shopitem,
 
     # Administration
     "resetinfo": Commands.Administration.resetinfo,
@@ -71,11 +74,18 @@ async def command(bot, msg, conn):
      command that was run
     """
     split_data = msg.content.split(" ")
+    split_data[0] = split_data[0].lower()
 
-    if split_data[0].lower() not in commands:
-        return
+    if split_data[0] in commands:
+        command_ = split_data[0]
+    else:
+        guildinfo = guild.load_guild(msg.guild.id, conn)
+        if split_data[0] in guildinfo.aliases.keys():
+            command_ = guildinfo.aliases[split_data[0]]
+        else:
+            return
 
-    await commands[split_data[0].lower()].run(bot, msg, conn)
+    await commands[command_].run(bot, msg, conn)
 
     if other.load_config().full_logging:
         cur = conn.cursor()
@@ -86,7 +96,7 @@ async def command(bot, msg, conn):
             max_id = (0,)
 
         cur.execute("INSERT INTO log VALUES (?, ?, ?, ?, ?)", (
-            max_id[0] + 1, msg.content.split(" ")[0],
+            max_id[0] + 1, command_,
             msg.author.id, msg.guild.id,
             datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
         ))

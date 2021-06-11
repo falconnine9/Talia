@@ -7,5 +7,7 @@ Initialization file for the Settings command category
 """
 from Commands.Settings import (
     prefix,
-    channels
+    channels,
+    alias,
+    shopitem
 )

@@ -132,7 +132,7 @@ You can use `{guildinfo.prefix}help` for some help""", title="Hello!")
         await handle.command(bot, msg, conn)
     except Exception as errmsg:
         excinfo = traceback.format_exc()
-        await message.send_error(msg, f"""An unexpected error occurred
+        await message.send_error(msg, f"""\u26a0 An unexpected error occurred \u26a0
 Error type: {type(errmsg).__name__}""")
         other.log(f"Error occurred, traceback below\n{excinfo}", "critical")
         return

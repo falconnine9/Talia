@@ -95,6 +95,14 @@ bal = {
     "args": {}
 }
 
+timers = {
+    "desc": "Get a list of timers and cooldowns of someone",
+    "usage": "timers [user]",
+    "args": {
+        "user": "The user you want to get the timers of (Can be empty to get your own)"
+    }
+}
+
 
 # <--- Earning ---> #
 
@@ -248,5 +256,22 @@ channels = {
     "args": {
         "operation": "enable/disable",
         "channel": "The channel to enable or disable"
+    }
+}
+
+alias = {
+    "desc": "Create or remove a command alias",
+    "usage": "alias <operation> [alias] [command]",
+    "args": {
+        "operation": "create/remove/clear/list"
+    }
+}
+
+shopitem = {
+    "desc": "Create or remove an item in the server shop",
+    "usage": "items <operation> <name>",
+    "args": {
+        "operation": "create/remove/clear",
+        "name": "The item name (Can include spaces)"
     }
 }

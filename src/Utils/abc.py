@@ -32,11 +32,16 @@ class Guild:
         self.id = guild_id
         self.prefix = "t!"
         self.disabled_channels = []
+        self.aliases = {}
+        self.shop = {}
 
     def cvt_dict(self):
         return {
             "id": self.id,
-            "prefix": self.prefix
+            "prefix": self.prefix,
+            "disabled_channels": self.disabled_channels,
+            "aliases": self.aliases,
+            "shop": self.shop
         }
 
 

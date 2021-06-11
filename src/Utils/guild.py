@@ -28,6 +28,8 @@ def load_guild(guild_id, conn):
     new_guild = abc.Guild(guildinfo[0])
     new_guild.prefix = guildinfo[1]
     new_guild.disabled_channels = json.loads(guildinfo[2])
+    new_guild.aliases = json.loads(guildinfo[3])
+    new_guild.shop = json.loads(guildinfo[4])
     
     return new_guild
 
@@ -40,10 +42,12 @@ def write_guild(obj, conn, write=True):
     2. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute("INSERT INTO guilds VALUES (?, ?, ?)", (
+    cur.execute("INSERT INTO guilds VALUES (?, ?, ?, ?, ?)", (
         obj.id,
         obj.prefix,
-        json.dumps(obj.disabled_channels)
+        json.dumps(obj.disabled_channels),
+        json.dumps(obj.aliases),
+        json.dumps(obj.shop)
     ))
     
     if write:

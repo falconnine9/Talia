@@ -22,6 +22,7 @@ help_info = {
         "company": help_list.company,
         "showcase": help_list.showcase,
         "bal": help_list.bal,
+        "timers": help_list.timers
     },
     "earning": {
         "job": help_list.job,
@@ -48,7 +49,9 @@ help_info = {
     },
     "settings": {
         "prefix": help_list.prefix,
-        "channels": help_list.channels
+        "channels": help_list.channels,
+        "alias": help_list.alias,
+        "shopitem": help_list.shopitem
     }
 }
 

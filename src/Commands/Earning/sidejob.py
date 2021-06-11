@@ -16,7 +16,9 @@ job_messages = [
     "You coach the high school football team",
     "You make some music with bottles",
     "You teach night school",
-    "You join a delivery service for the day"
+    "You join a delivery service for the day",
+    "You help quality assurance test a new game",
+    "You draw some interesting art for a commission"
 ]
 
 
@@ -29,8 +31,8 @@ async def run(bot, msg, conn):
 
     userinfo = user.load_user(msg.author.id, conn)
 
-    earned_coins = round(random.randint(1, 600) * other.load_multi(userinfo, conn))
-    earned_xp = round(random.randint(1, 30) * other.load_multi(userinfo, conn))
+    earned_coins = round(random.randint(1, 300) * other.load_multi(userinfo, conn))
+    earned_xp = round(random.randint(1, 20) * other.load_multi(userinfo, conn))
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins + earned_coins, conn, False)
     user.set_user_attr(msg.author.id, "xp", userinfo.xp + earned_xp, conn, False)

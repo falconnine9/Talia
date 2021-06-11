@@ -135,6 +135,7 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         await message.send_error(msg, "You no longer have enough coins")
         return
 
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins - pickaxes[pickaxe_id]["cost"], conn, False)
     user.set_user_attr(msg.author.id, "pickaxe", abc.Pickaxe(
         pickaxes[pickaxe_id]["name"],
         pickaxes[pickaxe_id]["cost"],
@@ -142,6 +143,7 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         pickaxes[pickaxe_id]["speed"],
         pickaxes[pickaxe_id]["multiplier"]
     ).cvt_dict(), conn)
+
     await message.edit_message(sent_msg, f"You bought a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Bought")
 
 
