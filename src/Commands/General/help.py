@@ -20,7 +20,8 @@ help_info = {
         "box": help_list.box,
         "leaderboard": help_list.leaderboard,
         "company": help_list.company,
-        "showcase": help_list.showcase
+        "showcase": help_list.showcase,
+        "bal": help_list.bal,
     },
     "earning": {
         "job": help_list.job,

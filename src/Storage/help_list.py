@@ -89,6 +89,12 @@ showcase = {
     }
 }
 
+bal = {
+    "desc": "Get just the your balance of coins",
+    "usage": "bal",
+    "args": {}
+}
+
 
 # <--- Earning ---> #
 

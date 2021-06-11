@@ -16,5 +16,6 @@ from Commands.General import (
     box,
     leaderboard,
     company,
-    showcase
+    showcase,
+    bal
 )

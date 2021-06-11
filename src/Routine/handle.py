@@ -23,6 +23,7 @@ commands = {
     "leaderboard": Commands.General.leaderboard,
     "company": Commands.General.company,
     "showcase": Commands.General.showcase,
+    "bal": Commands.General.bal,
 
     # Earning
     "job": Commands.Earning.job,

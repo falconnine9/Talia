@@ -51,6 +51,8 @@ async def run(bot, msg, conn):
         await message.send_error(msg, "I can't get the information of a bot")
         return
 
+    sent_msg = await message.send_message(msg, "Gathering information...")
+
     personinfo = user.load_user(person.id, conn)
 
     partner, parents, children = await _load_family_info(bot, personinfo)
@@ -86,7 +88,7 @@ Children: {children}
 
 **--Pickaxe--**
 {pickaxeinfo}"""
-    await message.send_message(msg, send_str, title=str(person), thumbnail=person.avatar_url)
+    await message.edit_message(sent_msg, send_str, title=str(person), thumbnail=person.avatar_url)
 
 
 async def _load_family_info(bot, personinfo):
