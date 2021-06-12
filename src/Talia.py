@@ -105,6 +105,9 @@ You can use `{guildinfo.prefix}help` for some help""", title="Hello!")
     if not msg.content.startswith(guild.load_guild_prefix(msg.guild.id, conn)):
         return
 
+    if not msg.channel.permissions_for(msg.guild.me).send_messages:
+        return
+
     guildinfo = guild.load_guild(msg.guild.id, conn)
     if guildinfo is None:
         guildinfo = abc.Guild(msg.guild.id)
@@ -112,11 +115,6 @@ You can use `{guildinfo.prefix}help` for some help""", title="Hello!")
 
     if msg.channel.id in guildinfo.disabled_channels:
         return
-
-    guild_member = msg.guild.get_member(bot.user.id)
-    if guild_member is not None:
-        if not msg.channel.permissions_for(guild_member).send_messages:
-            return
 
     userinfo = user.load_user(msg.author.id, conn)
     if userinfo is None:

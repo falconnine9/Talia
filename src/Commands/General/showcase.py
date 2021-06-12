@@ -30,6 +30,7 @@ async def run(bot, msg, conn):
         ).cvt_dict(), conn)
 
         await message.send_message(msg, "You removed the item from your showcase", title="Removed")
+        return
 
     try:
         item = int(split_data[1]) - 1

@@ -43,6 +43,15 @@ inventory = {
     }
 }
 
+shop = {
+    "desc": "Buy an item or get a list of server shop items",
+    "usage": "shop <operation> [item]",
+    "args": {
+        "operation": "buy/list",
+        "item": "The item ID you want to buy (Only needed if buying)"
+    }
+}
+
 fuse = {
     "desc": "Upgrade your fusion level",
     "usage": "fuse",
@@ -100,6 +109,15 @@ timers = {
     "usage": "timers [user]",
     "args": {
         "user": "The user you want to get the timers of (Can be empty to get your own)"
+    }
+}
+
+pay = {
+    "desc": "Pay an amount of coins to someone",
+    "usage": "pay <user> <amount>",
+    "args": {
+        "user": "The person you want to pay",
+        "amount": "The amount you want to pay"
     }
 }
 
@@ -269,9 +287,9 @@ alias = {
 
 shopitem = {
     "desc": "Create or remove an item in the server shop",
-    "usage": "items <operation> <name>",
+    "usage": "shopitem <operation> <name/id>",
     "args": {
-        "operation": "create/remove/clear",
-        "name": "The item name (Can include spaces)"
+        "operation": "create/remove",
+        "name": "The item name (If creating) or item ID if removing"
     }
 }

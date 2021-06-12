@@ -17,8 +17,8 @@ times = {
 
 multipliers = {
     "8hour": 1.2,
-    "day": 2.5,
-    "week": 6
+    "day": 1.7,
+    "week": 11
 }
 
 

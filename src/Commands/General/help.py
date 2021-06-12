@@ -15,6 +15,7 @@ help_info = {
         "info": help_list.info,
         "stats": help_list.stats,
         "inventory": help_list.inventory,
+        "shop": help_list.shop,
         "fuse": help_list.fuse,
         "school": help_list.school,
         "box": help_list.box,
@@ -22,7 +23,8 @@ help_info = {
         "company": help_list.company,
         "showcase": help_list.showcase,
         "bal": help_list.bal,
-        "timers": help_list.timers
+        "timers": help_list.timers,
+        "pay": help_list.pay,
     },
     "earning": {
         "job": help_list.job,

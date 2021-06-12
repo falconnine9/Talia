@@ -11,6 +11,7 @@ from Commands.General import (
     info,
     stats,
     inventory,
+    shop,
     fuse,
     school,
     box,
@@ -18,5 +19,6 @@ from Commands.General import (
     company,
     showcase,
     bal,
-    timers
+    timers,
+    pay
 )

@@ -33,7 +33,7 @@ class Guild:
         self.prefix = "t!"
         self.disabled_channels = []
         self.aliases = {}
-        self.shop = {}
+        self.shop = []
 
     def cvt_dict(self):
         return {

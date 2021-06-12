@@ -134,6 +134,8 @@ def db():
     for table in tables:
         values = ",".join([f"{value} {tables[table][value]}" for value in tables[table]])
         cur.execute(f"CREATE TABLE IF NOT EXISTS {table} ({values})")
+    conn.commit()
 
+    cur.execute("UPDATE companies SET invites = ?", (json.dumps([]),))
     conn.commit()
     conn.close()

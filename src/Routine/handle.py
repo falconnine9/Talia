@@ -17,6 +17,7 @@ commands = {
     "info": Commands.General.info,
     "stats": Commands.General.stats,
     "inventory": Commands.General.inventory,
+    "shop": Commands.General.shop,
     "fuse": Commands.General.fuse,
     "school": Commands.General.school,
     "box": Commands.General.box,
@@ -25,6 +26,7 @@ commands = {
     "showcase": Commands.General.showcase,
     "bal": Commands.General.bal,
     "timers": Commands.General.timers,
+    "pay": Commands.General.pay,
 
     # Earning
     "job": Commands.Earning.job,
