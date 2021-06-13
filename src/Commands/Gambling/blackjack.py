@@ -84,7 +84,7 @@ Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
 
 **Dealer busted, you win!** +{bet * 2} {emojis.coin}""", title="You win")
-            user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)
+            user.set_user_attr(msg.author.id, "coins", userinfo.coins + bet, conn)
             return
 
     if _card_amount(user_cards) == 21:
@@ -103,7 +103,7 @@ Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
 
 **Blackjack, you win!** +{bet * 2} {emojis.coin}""", title="You win")
-            user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)
+            user.set_user_attr(msg.author.id, "coins", userinfo.coins + bet, conn)
         return
 
     sent_msg = await message.send_message(msg, f"""Blackjack cost: -{bet} {emojis.coin}

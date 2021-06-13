@@ -77,7 +77,7 @@ leaderboard = {
     "desc": "See the leaderboard of a certain subject",
     "usage": "leaderboard <lb>",
     "args": {
-        "lb": "The leaderboard that you want to see"
+        "lb": "The leaderboard that you want to see (coins, level, multiplier)"
     }
 }
 
@@ -152,7 +152,7 @@ invest = {
     "usage": "invest <amount> <time>",
     "args": {
         "amount": "The amount you want to invest",
-        "time": "The time you want to invest for (hour, 8hour, day, week)"
+        "time": "The time you want to invest for (8hour, day, 3day, week)"
     }
 }
 

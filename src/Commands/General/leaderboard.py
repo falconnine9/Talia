@@ -29,7 +29,7 @@ async def run(bot, msg, conn):
         await lb_multiplier(bot, msg, conn)
 
     else:
-        await message.send_error(msg, f"Unknown leaderboard\n`coins`, `level`, `fusion`, `multiplier`")
+        await message.send_error(msg, f"Unknown leaderboard\n`coins`, `level`, `multiplier`")
 
 
 async def lb_coins(bot, msg, conn):

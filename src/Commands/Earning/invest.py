@@ -12,12 +12,14 @@ from Storage import help_list
 times = {
     "8hour": 28800,
     "day": 86400,
+    "3day": 259200,
     "week": 604800
 }
 
 multipliers = {
     "8hour": 1.2,
     "day": 1.7,
+    "3day": 5,
     "week": 11
 }
 
@@ -61,9 +63,10 @@ async def run(bot, msg, conn):
 
     if split_data[2] not in times:
         await message.send_error(msg, f"""Unknown amount of time
-`8hour` - Multiply the amount by 1.2x after 8 hours
-`day` - Multiply the amount by 2.5x after 1 day
-`week` - Multiply the amount by 6x after 1 week""")
+`8hour` - Multiply the amount by x1.2 after 8 hours
+`day` - Multiply the amount by x1.7 after 1 day
+`3day` - Multiply the amount by x5 after 3 days
+`week` - Multiply the amount by x11 after 1 week""")
         return
 
     sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
