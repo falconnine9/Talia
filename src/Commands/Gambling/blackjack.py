@@ -54,7 +54,7 @@ async def run(bot, msg, conn):
         return
 
     userinfo.coins -= bet
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins - bet, conn)
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins, conn)
 
     deck = []
     for suit in suits:

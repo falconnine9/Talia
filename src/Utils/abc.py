@@ -208,11 +208,9 @@ class Job:
 
 
 class Pickaxe:
-    def __init__(self, name, worth, xp, level, speed, multiplier):
+    def __init__(self, name, worth, speed, multiplier):
         self.name = name
         self.worth = worth
-        self.xp = xp
-        self.level = level
         self.speed = speed
         self.multiplier = multiplier
 
@@ -220,8 +218,6 @@ class Pickaxe:
         return {
             "name": self.name,
             "worth": self.worth,
-            "xp": self.xp,
-            "level": self.level,
             "speed": self.speed,
             "multiplier": self.multiplier
         }

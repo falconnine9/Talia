@@ -105,7 +105,7 @@ def write_user(obj, conn, write=True):
         tmp_job = obj.job.cvt_dict()
 
     if obj.pickaxe is None:
-        tmp_pickaxe = {"name": None, "worth": 0, "xp": 0, "level": 1, "speed": 1, "multiplier": 1.0}
+        tmp_pickaxe = {"name": None, "worth": 0, "speed": 1, "multiplier": 1.0}
     else:
         tmp_pickaxe = obj.pickaxe.cvt_dict()
 

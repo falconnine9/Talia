@@ -132,7 +132,5 @@ def _load_pickaxe_info(pickaxe):
         return "No Pickaxe"
     else:
         return f"""Pickaxe: {pickaxe.name}
-Level: {pickaxe.level}
-XP: {pickaxe.xp}/{pickaxe.level * 25} ({round(pickaxe.xp / (pickaxe.level * 25) * 100)}%)
 Mining Speed: {pickaxe.speed}
 Mining Multiplier: x{pickaxe.multiplier}"""
