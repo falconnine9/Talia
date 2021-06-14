@@ -65,6 +65,7 @@ class User:
         self.partner = None
         self.parents = []
         self.children = []
+        self.settings = Settings(True)
 
     def cvt_dict(self):
         return {
@@ -85,7 +86,8 @@ class User:
             "daily": self.daily,
             "partner": self.partner,
             "parents": self.parents,
-            "children": self.children
+            "children": self.children,
+            "settings": self.settings
         }
 
 
@@ -179,6 +181,13 @@ class Emojis:
         self.confetti = None
         self.ping = None
 
+    def cvt_dict(self):
+        return {
+            "coin": self.coin,
+            "confetti": self.confetti,
+            "ping": self.ping
+        }
+
 
 class Job:
     def __init__(self, name, xp, level, salary, cooldown):
@@ -218,8 +227,25 @@ class Pickaxe:
         }
 
 
+class Settings:
+    def __init__(self, notifs):
+        self.notifs = notifs
+
+    def cvt_dict(self):
+        return {
+            "notifs": self.notifs
+        }
+
+
 class BJCard:
     def __init__(self, value, suit, real_value):
         self.value = value
         self.suit = suit
         self.real_value = real_value
+
+    def cvt_dict(self):
+        return {
+            "value": self.value,
+            "suit": self.suit,
+            "real_value": self.real_value
+        }

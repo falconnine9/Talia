@@ -293,3 +293,11 @@ shopitem = {
         "name": "The item name (If creating) or item ID if removing"
     }
 }
+
+notifs = {
+    "desc": "Turn on or off DM notifications",
+    "usage": "notifs <valie>",
+    "args": {
+        "value": "on/off"
+    }
+}

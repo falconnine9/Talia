@@ -53,7 +53,8 @@ help_info = {
         "prefix": help_list.prefix,
         "channels": help_list.channels,
         "alias": help_list.alias,
-        "shopitem": help_list.shopitem
+        "shopitem": help_list.shopitem,
+        "notifs": help_list.notifs
     }
 }
 

@@ -81,6 +81,11 @@ def load_user(user_id, conn):
     new_user.partner = userinfo[15]
     new_user.parents = json.loads(userinfo[16])
     new_user.children = json.loads(userinfo[17])
+
+    tmp_settings = json.loads(userinfo[18])
+    new_user.settings = abc.Settings(
+        tmp_settings["notifs"]
+    )
     
     return new_user
 
@@ -110,7 +115,7 @@ def write_user(obj, conn, write=True):
         tmp_showcase = obj.showcase.cvt_dict()
 
     cur = conn.cursor()
-    cur.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+    cur.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
         obj.id,
         obj.coins,
         obj.xp,
@@ -128,7 +133,8 @@ def write_user(obj, conn, write=True):
         obj.daily,
         obj.partner,
         json.dumps(obj.parents),
-        json.dumps(obj.children)
+        json.dumps(obj.children),
+        json.dumps(obj.settings.cvt_dict())
     ))
     
     if write:

@@ -49,7 +49,8 @@ tables = {
         "daily": "INTEGER",
         "partner": "INTEGER",
         "parents": "TEXT",
-        "children": "TEXT"
+        "children": "TEXT",
+        "settings": "TEXT"
     },
     "timers": {
         "name": "TEXT NOT NULL PRIMARY KEY",

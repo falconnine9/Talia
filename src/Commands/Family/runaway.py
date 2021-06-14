@@ -26,7 +26,9 @@ async def run(bot, msg, conn):
 
     for parent in userinfo.parents:
         parent_user = await bot.fetch_user(parent)
-        try:
-            await message.send_message(None, f"{str(msg.author)} ran away from you", title="Ran away", channel=parent_user)
-        except discord.Forbidden:
-            pass
+        parentinfo = user.load_user(parent_user.id, conn)
+        if parentinfo.settings.notifs:
+            try:
+                await message.send_message(None, f"{str(msg.author)} ran away from you", title="Ran away", channel=parent_user)
+            except discord.Forbidden:
+                pass

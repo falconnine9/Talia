@@ -187,10 +187,11 @@ async def _company_invite(bot, msg, conn, split_data):
                 companyinfo.invites.remove(str(person.id))
                 company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
-                try:
-                    await message.send_message(msg, f"{str(person)} didn't respond to the invite", channel=msg.author)
-                except discord.Forbidden:
-                    pass
+                if userinfo.settings.notifs:
+                    try:
+                        await message.send_message(None, f"{str(person)} didn't respond to the invite", channel=msg.author)
+                    except discord.Forbidden:
+                        pass
 
         await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
         return
@@ -205,10 +206,11 @@ async def _company_invite(bot, msg, conn, split_data):
                 companyinfo.invites.remove(str(msg.author.id))
                 company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
-                try:
-                    await message.send_message(msg, f"{str(person)} declined the invite", channel=msg.author)
-                except discord.Forbidden:
-                    pass
+                if userinfo.settings.notifs:
+                    try:
+                        await message.send_message(None, f"{str(person)} declined the invite", channel=msg.author)
+                    except discord.Forbidden:
+                        pass
 
         await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined")
         return
@@ -228,10 +230,11 @@ async def _company_invite(bot, msg, conn, split_data):
     personinfo = user.load_user(person.id, conn)
 
     if personinfo.company is not None:
-        try:
-            await message.send_error(msg, f"{str(person)} joined another company", channel=msg.author)
-        except discord.Forbidden:
-            pass
+        if userinfo.settings.notifs:
+            try:
+                await message.send_error(None, f"{str(person)} joined another company", channel=msg.author)
+            except discord.Forbidden:
+                pass
         try:
             await message.send_error(None, "You're already in a company", channel=person)
         except discord.Forbidden:
@@ -260,10 +263,11 @@ async def _company_invite(bot, msg, conn, split_data):
 
     await message.edit_message(sent_msg, "You joined the company", title="Joined")
 
-    try:
-        await message.send_message(msg, f"{str(person)} joined the company", channel=msg.author)
-    except discord.Forbidden:
-        pass
+    if userinfo.settings.notifs:
+        try:
+            await message.send_message(None, f"{str(person)} joined the company", channel=msg.author)
+        except discord.Forbidden:
+            pass
 
 
 async def _company_kick(bot, msg, conn, split_data):
@@ -307,16 +311,19 @@ async def _company_kick(bot, msg, conn, split_data):
         await message.send_error(msg, f"{str(person)} isn't in the company")
         return
 
+    personinfo = user.load_user(person.id, conn)
+
     del companyinfo.members[str(person.id)]
     company.set_company_attr(companyinfo.discrim, "members", companyinfo.members, conn, False)
     user.set_user_attr(person.id, "company", None, conn)
 
     await message.send_message(msg, f"{str(person)} has been kicked from the company")
 
-    try:
-        await message.send_message(None, f"You've been kicked from {companyinfo.name}", channel=person)
-    except discord.Forbidden:
-        pass
+    if personinfo.settings.notifs:
+        try:
+            await message.send_message(None, f"You've been kicked from {companyinfo.name}", channel=person)
+        except discord.Forbidden:
+            pass
 
 
 async def _company_disband(bot, msg, conn):

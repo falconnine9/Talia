@@ -56,6 +56,7 @@ commands = {
     "channels": Commands.Settings.channels,
     "alias": Commands.Settings.alias,
     "shopitem": Commands.Settings.shopitem,
+    "notifs": Commands.Settings.notifs,
 
     # Administration
     "resetinfo": Commands.Administration.resetinfo,

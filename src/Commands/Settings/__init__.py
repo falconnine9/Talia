@@ -9,5 +9,6 @@ from Commands.Settings import (
     prefix,
     channels,
     alias,
-    shopitem
+    shopitem,
+    notifs
 )

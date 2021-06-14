@@ -75,7 +75,8 @@ async def run(bot, msg, conn):
 
     await message.send_message(msg, f"You paid {str(person)} {amount} {emojis.coin}", title="Paid")
 
-    try:
-        await message.send_message(None, f"{str(msg.author)} paid you {amount} {emojis.coin}", channel=person)
-    except discord.Forbidden:
-        pass
+    if personinfo.settings.notifs:
+        try:
+            await message.send_message(None, f"{str(msg.author)} paid you {amount} {emojis.coin}", channel=person)
+        except discord.Forbidden:
+            pass
