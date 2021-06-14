@@ -53,6 +53,7 @@ async def run(bot, msg, conn):
         await message.send_error(msg, f"You don't have enough coins to bet {bet} {emojis.coin}")
         return
 
+    userinfo.coins -= bet
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - bet, conn)
 
     deck = []
@@ -83,8 +84,8 @@ async def run(bot, msg, conn):
 Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
 
-**Dealer busted, you win!** +{bet * 2} {emojis.coin}""", title="You win")
-            user.set_user_attr(msg.author.id, "coins", userinfo.coins + bet, conn)
+**Dealer busted, you win!** +{round(bet * 1.5)} {emojis.coin}""", title="You win")
+            user.set_user_attr(msg.author.id, "coins", userinfo.coins + round(bet * 1.5), conn)
             return
 
     if _card_amount(user_cards) == 21:
@@ -102,8 +103,8 @@ You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
 Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
 
-**Blackjack, you win!** +{bet * 2} {emojis.coin}""", title="You win")
-            user.set_user_attr(msg.author.id, "coins", userinfo.coins + bet, conn)
+**Blackjack, you win!** +{round(bet * 1.5)} {emojis.coin}""", title="You win")
+            user.set_user_attr(msg.author.id, "coins", userinfo.coins + round(bet * 1.5), conn)
         return
 
     sent_msg = await message.send_message(msg, f"""Blackjack cost: -{bet} {emojis.coin}
@@ -217,6 +218,7 @@ def _card_amount(cards):
         for card in cards:
             if card.value == "A":
                 total -= 10
+                break
     return total
 
 
