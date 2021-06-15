@@ -12,6 +12,7 @@ On startup
 3. Initializes the database and makes a new bot object
 4. Starts the async event loop
 """
+import asyncio
 import discord
 import mysql.connector
 import sshtunnel
@@ -53,6 +54,8 @@ else:
 init.db(conn)
 bot = discord.Client(intents=discord.Intents.all())
 
+guild_prefixes = {}
+
 
 @bot.event
 async def on_ready():
@@ -66,6 +69,14 @@ async def on_ready():
     """
     other.log("Ready", "success")
 
+    cur = conn.cursor()
+    cur.execute("SELECT id, prefix FROM guilds")
+    all_prefixes = cur.fetchall()
+
+    for prefix in all_prefixes:
+        guild_prefixes[prefix[0]] = prefix[1]
+
+    bot.loop.create_task(_prefix_loading_loop())
     bot.loop.create_task(loop.main_timer(bot, conn))
     bot.loop.create_task(loop.edu_timer(bot, conn))
     bot.loop.create_task(loop.invest_timer(bot, conn))
@@ -111,10 +122,10 @@ async def on_message(msg):
     3. Handle some database stuff
     4. Send the message to the command handler
     """
-    if msg.guild is None:
+    if msg.author.bot:
         return
 
-    if msg.author.bot:
+    if msg.guild is None:
         return
 
     if bot.user in msg.mentions:
@@ -124,11 +135,16 @@ async def on_message(msg):
             emojis = other.load_emojis(bot)
             await message.send_message(msg, f"""I see that you pinged me {emojis.ping}
 
-My prefix is **{guildinfo.prefix}**
-You can use `{guildinfo.prefix}help` for some help""", title="Hello!")
+My prefix is **{guild_prefixes[msg.guild.id]}**
+You can use `{guild_prefixes[msg.guild.id]}help` for some help""", title="Hello!")
 
-    if not msg.content.startswith(guild.load_guild_prefix(msg.guild.id, conn)):
-        return
+    try:
+        if not msg.content.startswith(guild_prefixes[msg.guild.id]):
+            return
+    except KeyError:
+        guild_prefixes[msg.guild.id] = "t!"
+        if not msg.content.startswith(guild_prefixes[msg.guild.id]):
+            return
 
     if not msg.channel.permissions_for(msg.guild.me).send_messages:
         return
@@ -146,7 +162,7 @@ You can use `{guildinfo.prefix}help` for some help""", title="Hello!")
         userinfo = abc.User(msg.author.id)
         user.write_user(userinfo, conn, False)
 
-    msg.content = msg.content.strip()[len(guildinfo.prefix):]
+    msg.content = msg.content.strip()[len(guild_prefixes[msg.guild.id]):]
 
     await handle.mentioned_users(bot, msg, conn)
     conn.commit()
@@ -162,6 +178,18 @@ Error type: {type(errmsg).__name__}""")
 
     await post_checks.level(bot, msg, conn)
     await post_checks.achievements(bot, msg, conn)
+
+
+async def _prefix_loading_loop():
+    cur = conn.cursor()
+    while True:
+        await asyncio.sleep(600)
+
+        cur.execute("SELECT id, prefix FROM guilds")
+        all_prefixes = cur.fetchall()
+
+        for prefix in all_prefixes:
+            guild_prefixes[prefix[0]] = prefix[1]
 
 
 if __name__ == "__main__":

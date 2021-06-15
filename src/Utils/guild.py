@@ -73,20 +73,3 @@ def set_guild_attr(guild_id, attr, val, conn, write=True):
     
     if write:
         conn.commit()
-
-
-def load_guild_prefix(guild_id, conn):
-    """
-    Quickly loads a guild's command prefix
-
-    1. Creates a new cursor and grabs the prefix
-    2. Returns just the prefix
-    """
-    cur = conn.cursor()
-    cur.execute("SELECT prefix FROM guilds WHERE id = %s", (guild_id,))
-    guild_prefix = cur.fetchone()
-
-    if guild_prefix is None:
-        return "t!"
-
-    return guild_prefix[0]
