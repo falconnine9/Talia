@@ -19,7 +19,7 @@ def load_user(user_id, conn):
      and get stored in a dictionary until converted
     """
     cur = conn.cursor()
-    cur.execute(f"SELECT * FROM users WHERE id = ?", (user_id,))
+    cur.execute(f"SELECT * FROM users WHERE id = %s", (user_id,))
     userinfo = cur.fetchone()
     
     if userinfo is None:
@@ -115,7 +115,7 @@ def write_user(obj, conn, write=True):
         tmp_showcase = obj.showcase.cvt_dict()
 
     cur = conn.cursor()
-    cur.execute("INSERT INTO users VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", (
+    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
         obj.id,
         obj.coins,
         obj.xp,
@@ -159,7 +159,7 @@ def set_user_attr(user_id, attr, val, conn, write=True):
             val = json.dumps(val)
     
     cur = conn.cursor()
-    cur.execute(f"UPDATE users SET {attr} = ? WHERE id = ?", (val, user_id))
+    cur.execute(f"UPDATE users SET {attr} = %s WHERE id = %s", (val, user_id))
     
     if write:
         conn.commit()

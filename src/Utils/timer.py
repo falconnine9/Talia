@@ -17,7 +17,7 @@ def load_timer(name, conn):
     2. Returns a new timer object from the information it got
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM timers WHERE name = ?", (name,))
+    cur.execute("SELECT * FROM timers WHERE name = %s", (name,))
     timerinfo = cur.fetchone()
 
     if timerinfo is None:
@@ -35,7 +35,7 @@ def new_timer(timer, conn, write=True):
     2. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute("INSERT INTO timers VALUES (?, ?, ?, ?)", (
+    cur.execute("INSERT INTO timers VALUES (%s, %s, %s, %s)", (
         timer.name, timer.time, timer.user, timer.meta
     ))
 
@@ -51,7 +51,7 @@ def load_edu_timer(user_id, conn):
     2. Returns a new edu timer object from the information it got
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM edu_timers WHERE id = ?", (user_id,))
+    cur.execute("SELECT * FROM edu_timers WHERE id = %s", (user_id,))
     timerinfo = cur.fetchone()
 
     if timerinfo is None:
@@ -69,7 +69,7 @@ def new_edu_timer(timer, conn, write=True):
     2. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute("INSERT INTO edu_timers VALUES (?, ?, ?)", (
+    cur.execute("INSERT INTO edu_timers VALUES (%s, %s, %s)", (
         timer.id, timer.time, timer.level
     ))
 
@@ -85,7 +85,7 @@ def load_invest_timer(user_id, conn):
     2. Returns a new invest timer object from the information it got
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM invest_timers WHERE id = ?", (user_id,))
+    cur.execute("SELECT * FROM invest_timers WHERE id = %s", (user_id,))
     timerinfo = cur.fetchone()
 
     if timerinfo is None:
@@ -103,7 +103,7 @@ def new_invest_timer(timer, conn, write=True):
     2. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute("INSERT INTO invest_timers VALUES (?, ?, ?, ?)", (
+    cur.execute("INSERT INTO invest_timers VALUES (%s, %s, %s, %s)", (
         timer.id, timer.time, timer.coins, timer.multiplier
     ))
 

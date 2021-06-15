@@ -7,14 +7,20 @@ Initializing for the program
 """
 import json
 import os
-import sqlite3
 import sys
 from Utils import other
 
 config_file = {
     "token": None,
     "owners": [],
-    "db_path": None,
+    "db": {
+        "host": None,
+        "user": None,
+        "password": None,
+        "database": None,
+        "ssh_username": None,
+        "ssh_password": None
+    },
     "backups": {
         "interval": 0,
         "path": None
@@ -25,65 +31,72 @@ config_file = {
 
 tables = {
     "guilds": {
-        "id": "INTEGER NOT NULL PRIMARY KEY",
-        "prefix": "TEXT",
-        "disabled_channels": "TEXT",
-        "aliases": "TEXT",
-        "shop": "TEXT"
+        "id": "BIGINT UNSIGNED NOT NULL",
+        "prefix": "MEDIUMTEXT",
+        "disabled_channels": "MEDIUMTEXT",
+        "aliases": "MEDIUMTEXT",
+        "shop": "MEDIUMTEXT",
+        "CONSTRAINT guilds_pk": "PRIMARY KEY (id)"
     },
     "users": {
-        "id": "INTEGER NOT NULL PRIMARY KEY",
-        "coins": "INTEGER",
+        "id": "BIGINT UNSIGNED NOT NULL",
+        "coins": "BIGINT UNSIGNED",
         "xp": "INTEGER",
         "level": "INTEGER",
         "edu_level": "INTEGER",
-        "job": "TEXT",
-        "pickaxe": "TEXT",
-        "achievements": "TEXT",
-        "inventory": "TEXT",
+        "job": "MEDIUMTEXT",
+        "pickaxe": "MEDIUMTEXT",
+        "achievements": "MEDIUMTEXT",
+        "inventory": "MEDIUMTEXT",
         "fusion_level": "INTEGER",
         "multiplier": "REAL",
-        "company": "TEXT",
-        "showcase": "TEXT",
+        "company": "MEDIUMTEXT",
+        "showcase": "MEDIUMTEXT",
         "hourly": "INTEGER",
         "daily": "INTEGER",
-        "partner": "INTEGER",
-        "parents": "TEXT",
-        "children": "TEXT",
-        "settings": "TEXT"
+        "partner": "BIGINT UNSIGNED",
+        "parents": "MEDIUMTEXT",
+        "children": "MEDIUMTEXT",
+        "settings": "MEDIUMTEXT",
+        "CONSTRAINT users_pk": "PRIMARY KEY (id)"
     },
     "timers": {
-        "name": "TEXT NOT NULL PRIMARY KEY",
+        "name": "VARCHAR(64) NOT NULL",
         "time": "INTEGER",
-        "user": "INTEGER",
-        "meta": "TEXT"
+        "user": "BIGINT UNSIGNED",
+        "meta": "MEDIUMTEXT",
+        "CONSTRAINT timers_pk": "PRIMARY KEY (name)"
     },
     "edu_timers": {
-        "id": "INTEGER NOT NULL PRIMARY KEY",
+        "id": "BIGINT UNSIGNED NOT NULL",
         "time": "INTEGER",
-        "edu_level": "INTEGER"
+        "edu_level": "INTEGER",
+        "CONSTRAINT edu_timers_pk": "PRIMARY KEY (id)"
     },
     "invest_timers": {
-        "id": "INTEGER NOT NULL PRIMARY KEY",
+        "id": "BIGINT UNSIGNED NOT NULL",
         "time": "INTEGER",
-        "coins": "INTEGER",
-        "multiplier": "REAL"
+        "coins": "INTEGER UNSIGNED",
+        "multiplier": "REAL",
+        "CONSTRAINT invest_timers_pk": "PRIMARY KEY (id)"
     },
     "companies": {
-        "discrim": "TEXT NOT NULL PRIMARY KEY",
-        "name": "TEXT",
-        "ceo": "INTEGER",
-        "members": "TEXT",
-        "invites": "TEXT",
-        "date_created": "TEXT",
-        "multiplier": "REAL"
+        "discrim": "VARCHAR(64) NOT NULL",
+        "name": "MEDIUMTEXT",
+        "ceo": "BIGINT UNSIGNED",
+        "members": "MEDIUMTEXT",
+        "invites": "MEDIUMTEXT",
+        "date_created": "TIMESTAMP",
+        "multiplier": "REAL",
+        "CONSTRAINT companies_pk": "PRIMARY KEY (discrim)"
     },
     "log": {
-        "id": "INTEGER NOT NULL PRIMARY KEY",
-        "command": "TEXT",
-        "user": "INTEGER",
-        "guild": "INTEGER",
-        "date": "TEXT"
+        "id": "BIGINT UNSIGNED NOT NULL",
+        "command": "MEDIUMTEXT",
+        "user": "BIGINT UNSIGNED",
+        "guild": "BIGINT UNSIGNED",
+        "date": "TIMESTAMP",
+        "CONSTRAINT log_pk": "PRIMARY KEY (id)"
     }
 }
 
@@ -120,16 +133,15 @@ def config():
             other.log(f"Invalid configuration file (No \"{attr}\" attribute)")
 
 
-def db():
+def db(conn):
     """
     Initializes the database
 
-    1. Creates a temporary connection to the database
-    2. Makes sure each table required exists, and
-     if it doesn't it will create it
-    3. Commits to the database and closes the connection
+    1. Creates a new database cursor
+    2. Creates every table if it doesn't exist
+    3. Sets company invites
+    4. Commits
     """
-    conn = sqlite3.connect(other.load_config().db_path)
     cur = conn.cursor()
 
     for table in tables:
@@ -137,6 +149,5 @@ def db():
         cur.execute(f"CREATE TABLE IF NOT EXISTS {table} ({values})")
     conn.commit()
 
-    cur.execute("UPDATE companies SET invites = ?", (json.dumps([]),))
+    cur.execute("UPDATE companies SET invites = %s", (json.dumps([]),))
     conn.commit()
-    conn.close()

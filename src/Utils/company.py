@@ -18,7 +18,7 @@ def load_company(discrim, conn):
      spot in a company object
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM companies WHERE discrim = ?", (discrim,))
+    cur.execute("SELECT * FROM companies WHERE discrim = %s", (discrim,))
     companyinfo = cur.fetchone()
 
     if companyinfo is None:
@@ -43,7 +43,7 @@ def write_company(obj, conn, write=True):
     2. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute("INSERT INTO companies VALUES (?, ?, ?, ?, ?, ?, ?)", (
+    cur.execute(f"INSERT INTO companies VALUES (%s, %s, %s, %s, %s, %s, %s)", (
         obj.discrim,
         obj.name,
         obj.ceo,
@@ -72,7 +72,7 @@ def set_company_attr(discrim, attr, val, conn, write=True):
         val = json.dumps(val)
 
     cur = conn.cursor()
-    cur.execute(f"UPDATE companies SET {attr} = ? WHERE discrim = ?", (val, discrim))
+    cur.execute(f"UPDATE companies SET {attr} = %s WHERE discrim = %s", (val, discrim))
 
     if write:
         conn.commit()

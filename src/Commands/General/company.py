@@ -373,8 +373,8 @@ async def _company_disband(bot, msg, conn):
         return
 
     cur = conn.cursor()
-    cur.execute("DELETE FROM companies WHERE discrim = ?", (companyinfo.discrim,))
-    cur.execute("UPDATE users SET company = NULL WHERE company = ?", (companyinfo.discrim,))
+    cur.execute("DELETE FROM companies WHERE discrim = %s", (companyinfo.discrim,))
+    cur.execute("UPDATE users SET company = NULL WHERE company = %s", (companyinfo.discrim,))
     conn.commit()
 
     await message.edit_message(sent_msg, "Company disbanded", title="Disbanded")
