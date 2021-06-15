@@ -50,8 +50,6 @@ def load_user(user_id, conn):
         new_user.pickaxe = abc.Pickaxe(
             tmp_pickaxe["name"],
             tmp_pickaxe["worth"],
-            tmp_pickaxe["xp"],
-            tmp_pickaxe["level"],
             tmp_pickaxe["speed"],
             tmp_pickaxe["multiplier"]
         )
