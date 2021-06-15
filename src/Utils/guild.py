@@ -19,7 +19,7 @@ def load_guild(guild_id, conn):
      and get stored in a dictionary until converted
     """
     cur = conn.cursor()
-    cur.execute(f"SELECT * FROM guilds WHERE id = ?", (guild_id,))
+    cur.execute(f"SELECT * FROM guilds WHERE id = %s", (guild_id,))
     guildinfo = cur.fetchone()
     
     if guildinfo is None:
@@ -42,7 +42,7 @@ def write_guild(obj, conn, write=True):
     2. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute("INSERT INTO guilds VALUES (?, ?, ?, ?, ?)", (
+    cur.execute(f"INSERT INTO guilds VALUES (%s, %s, %s, %s, %s)", (
         obj.id,
         obj.prefix,
         json.dumps(obj.disabled_channels),
@@ -69,7 +69,7 @@ def set_guild_attr(guild_id, attr, val, conn, write=True):
         val = json.dumps(val)
     
     cur = conn.cursor()
-    cur.execute(f"UPDATE guilds SET {attr} = ? WHERE id = ?", (val, guild_id))
+    cur.execute(f"UPDATE guilds SET {attr} = %s WHERE id = %s", (val, guild_id))
     
     if write:
         conn.commit()
@@ -83,7 +83,7 @@ def load_guild_prefix(guild_id, conn):
     2. Returns just the prefix
     """
     cur = conn.cursor()
-    cur.execute("SELECT prefix FROM guilds WHERE id = ?", (guild_id,))
+    cur.execute("SELECT prefix FROM guilds WHERE id = %s", (guild_id,))
     guild_prefix = cur.fetchone()
 
     if guild_prefix is None:

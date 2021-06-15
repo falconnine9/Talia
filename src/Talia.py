@@ -14,19 +14,31 @@ On startup
  token. If the token is invalid it will exit
 """
 import discord
-import sqlite3
+import mysql.connector
+import sshtunnel
 import traceback
 
 from Routine import init, handle, loop, post_checks
 from Utils import guild, user, message, abc, other
 
 other.log("Starting")
-
 init.config()
-init.db()
 
+db_info = other.load_config().db
+with sshtunnel.SSHTunnelForwarder(
+    db_info["host"],
+    ssh_username=db_info["ssh_username"],
+    ssh_password=db_info["ssh_password"],
+    remote_bind_address=("127.0.0.1", 22)
+) as tunnel:
+    conn = mysql.connector.connect(
+        user=db_info["user"], password=db_info["password"],
+        host=db_info["host"], port=3306,
+        database=db_info["database"]
+    )
+
+init.db(conn)
 bot = discord.Client(intents=discord.Intents.all())
-conn = sqlite3.connect(other.load_config().db_path)
 
 
 @bot.event
@@ -71,7 +83,7 @@ async def on_guild_remove(remove_guild):
     """
     other.log(f"Removed from guild {remove_guild.name} ({remove_guild.id})")
     cur = conn.cursor()
-    cur.execute("DELETE FROM guilds WHERE id = ?", (remove_guild.id,))
+    cur.execute("DELETE FROM guilds WHERE id = %s", (remove_guild.id,))
     conn.commit()
 
 

@@ -47,6 +47,6 @@ async def run(bot, msg, conn):
             await message.send_error(msg, "I can't clear the timers of a bot")
             return
 
-        cur.execute("DELETE FROM timers WHERE user = ?", (person.id,))
+        cur.execute("DELETE FROM timers WHERE user = %s", (person.id,))
         conn.commit()
         await message.send_message(msg, f"All timers have been cleared for {str(person)}")

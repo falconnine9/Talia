@@ -98,7 +98,7 @@ async def command(bot, msg, conn):
         if max_id[0] is None:
             max_id = (0,)
 
-        cur.execute("INSERT INTO log VALUES (?, ?, ?, ?, ?)", (
+        cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s)", (
             max_id[0] + 1, command_,
             msg.author.id, msg.guild.id,
             datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")

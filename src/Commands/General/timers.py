@@ -43,13 +43,13 @@ async def run(bot, msg, conn):
 
     cur = conn.cursor()
 
-    cur.execute("SELECT name, time FROM timers WHERE user = ?", (person.id,))
+    cur.execute("SELECT name, time FROM timers WHERE user = %s", (person.id,))
     main_timers = cur.fetchall()
 
-    cur.execute("SELECT time FROM edu_timers WHERE id = ?", (person.id,))
+    cur.execute("SELECT time FROM edu_timers WHERE id = %s", (person.id,))
     edu_timer = cur.fetchone()
 
-    cur.execute("SELECT time FROM invest_timers WHERE id = ?", (person.id,))
+    cur.execute("SELECT time FROM invest_timers WHERE id = %s", (person.id,))
     invest_timer = cur.fetchone()
 
     all_timers = []

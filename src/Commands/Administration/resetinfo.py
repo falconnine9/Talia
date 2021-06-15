@@ -24,7 +24,7 @@ async def run(bot, msg, conn):
     cur = conn.cursor()
 
     if split_data[1] == "guild":
-        cur.execute("DELETE FROM guilds WHERE id = ?", (msg.guild.id,))
+        cur.execute("DELETE FROM guilds WHERE id = %s", (msg.guild.id,))
         conn.commit()
         await message.send_message(msg, "All information for this guild has been cleared")
 
@@ -47,7 +47,7 @@ async def run(bot, msg, conn):
             await message.send_error(msg, "I can't clear the information of a bot")
             return
 
-        cur.execute("DELETE FROM users WHERE id = ?", (person.id,))
-        cur.execute("DELETE FROM timers WHERE user = ?", (person.id,))
+        cur.execute("DELETE FROM users WHERE id = %s", (person.id,))
+        cur.execute("DELETE FROM timers WHERE user = %s", (person.id,))
         conn.commit()
         await message.send_message(msg, f"All information for {str(person)} has been cleared")

@@ -11,7 +11,7 @@ class Config:
     def __init__(self, value_dict):
         self.token = value_dict["token"]
         self.owners = value_dict["owners"]
-        self.db_path = value_dict["db_path"]
+        self.db = value_dict["db"]
         self.backups = value_dict["backups"]
         self.links = value_dict["links"]
         self.full_logging = value_dict["full_logging"]
@@ -20,7 +20,7 @@ class Config:
         return {
             "token": self.token,
             "owners": self.owners,
-            "db_path": self.db_path,
+            "db": self.db,
             "backups": self.backups,
             "links": self.links,
             "full_logging": self.full_logging
