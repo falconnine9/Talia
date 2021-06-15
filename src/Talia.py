@@ -6,12 +6,11 @@ Talia.py
 Main file for the discord bot
 
 On startup
-1. Initializes the config file and database
-2. Creates a discord client object with full intents
-3. Created a connection to the sqlite database. This connection
- will be used throughout the code
-4. Attempts to begin the async event loop with the provided
- token. If the token is invalid it will exit
+1. Initializes the configuration file
+2. Creates an ssh tunnel to the server hosting the db
+ and makes a connection to the database
+3. Initializes the database and makes a new bot object
+4. Starts the async event loop
 """
 import discord
 import mysql.connector
@@ -21,21 +20,35 @@ import traceback
 from Routine import init, handle, loop, post_checks
 from Utils import guild, user, message, abc, other
 
-other.log("Starting")
+other.log("Preparing")
 init.config()
 
 db_info = other.load_config().db
-with sshtunnel.SSHTunnelForwarder(
-    db_info["host"],
-    ssh_username=db_info["ssh_username"],
-    ssh_password=db_info["ssh_password"],
-    remote_bind_address=("127.0.0.1", 22)
-) as tunnel:
+if db_info["host"] == "localhost" or db_info["host"] == "127.0.0.1":
+    other.log("Opening connection to local database")
     conn = mysql.connector.connect(
         user=db_info["user"], password=db_info["password"],
-        host=db_info["host"], port=3306,
+        host="localhost", port=3306,
         database=db_info["database"]
     )
+    other.log("Complete", "success")
+
+else:
+    other.log(f"Establishing SSH tunnel connection to {db_info['ssh_username']}@{db_info['host']}")
+    with sshtunnel.SSHTunnelForwarder(
+        db_info["host"],
+        ssh_username=db_info["ssh_username"],
+        ssh_password=db_info["ssh_password"],
+        remote_bind_address=("127.0.0.1", 22)
+    ) as tunnel:
+        other.log("Complete", "success")
+        other.log("Opening connection to remote database")
+        conn = mysql.connector.connect(
+            user=db_info["user"], password=db_info["password"],
+            host=db_info["host"], port=3306,
+            database=db_info["database"]
+        )
+        other.log("Complete")
 
 init.db(conn)
 bot = discord.Client(intents=discord.Intents.all())
@@ -152,6 +165,7 @@ Error type: {type(errmsg).__name__}""")
 
 
 if __name__ == "__main__":
+    other.log("Establishing connection to discord")
     try:
         bot.run(other.load_config().token)
     except discord.LoginFailure:

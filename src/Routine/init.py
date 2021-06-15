@@ -40,7 +40,7 @@ tables = {
     },
     "users": {
         "id": "BIGINT UNSIGNED NOT NULL",
-        "coins": "INTEGER",
+        "coins": "BIGINT UNSIGNED",
         "xp": "INTEGER",
         "level": "INTEGER",
         "edu_level": "INTEGER",
@@ -51,19 +51,19 @@ tables = {
         "fusion_level": "INTEGER",
         "multiplier": "REAL",
         "company": "MEDIUMTEXT",
-        "showcase": "TEXT",
+        "showcase": "MEDIUMTEXT",
         "hourly": "INTEGER",
         "daily": "INTEGER",
-        "partner": "INTEGER",
+        "partner": "BIGINT UNSIGNED",
         "parents": "MEDIUMTEXT",
-        "children": "TEXT",
-        "settings": "TEXT",
+        "children": "MEDIUMTEXT",
+        "settings": "MEDIUMTEXT",
         "CONSTRAINT users_pk": "PRIMARY KEY (id)"
     },
     "timers": {
         "name": "VARCHAR(64) NOT NULL",
         "time": "INTEGER",
-        "user": "INTEGER",
+        "user": "BIGINT UNSIGNED",
         "meta": "MEDIUMTEXT",
         "CONSTRAINT timers_pk": "PRIMARY KEY (name)"
     },
@@ -76,17 +76,17 @@ tables = {
     "invest_timers": {
         "id": "BIGINT UNSIGNED NOT NULL",
         "time": "INTEGER",
-        "coins": "INTEGER",
+        "coins": "INTEGER UNSIGNED",
         "multiplier": "REAL",
         "CONSTRAINT invest_timers_pk": "PRIMARY KEY (id)"
     },
     "companies": {
         "discrim": "VARCHAR(64) NOT NULL",
         "name": "MEDIUMTEXT",
-        "ceo": "INTEGER",
+        "ceo": "BIGINT UNSIGNED",
         "members": "MEDIUMTEXT",
         "invites": "MEDIUMTEXT",
-        "date_created": "MEDIUMTEXT",
+        "date_created": "TIMESTAMP",
         "multiplier": "REAL",
         "CONSTRAINT companies_pk": "PRIMARY KEY (discrim)"
     },
@@ -95,7 +95,7 @@ tables = {
         "command": "MEDIUMTEXT",
         "user": "BIGINT UNSIGNED",
         "guild": "BIGINT UNSIGNED",
-        "date": "MEDIUMTEXT",
+        "date": "TIMESTAMP",
         "CONSTRAINT log_pk": "PRIMARY KEY (id)"
     }
 }
