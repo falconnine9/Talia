@@ -7,6 +7,7 @@ Handles events (Such as commands sent)
 """
 import datetime
 import discord
+import time
 import Commands
 from Utils import guild, user, abc, other
 
@@ -88,6 +89,7 @@ async def command(bot, msg, conn):
         else:
             return
 
+    start_time = time.time()
     await commands[command_].run(bot, msg, conn)
 
     if other.load_config().full_logging:
@@ -98,10 +100,11 @@ async def command(bot, msg, conn):
         if max_id[0] is None:
             max_id = (0,)
 
-        cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s)", (
+        cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s, %s)", (
             max_id[0] + 1, command_,
             msg.author.id, msg.guild.id,
-            datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+            datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
+            round((time.time() - start_time) * 1000)
         ))
         conn.commit()
 

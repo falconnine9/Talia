@@ -96,6 +96,7 @@ tables = {
         "user": "BIGINT UNSIGNED",
         "guild": "BIGINT UNSIGNED",
         "date": "TIMESTAMP",
+        "exc_time": "INTEGER UNSIGNED",
         "CONSTRAINT log_pk": "PRIMARY KEY (id)"
     }
 }
