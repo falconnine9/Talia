@@ -53,7 +53,6 @@ else:
 
 init.db(conn)
 bot = discord.Client(intents=discord.Intents.all())
-
 guild_prefixes = {}
 
 
@@ -142,7 +141,13 @@ You can use `{guild_prefixes[msg.guild.id]}help` for some help""", title="Hello!
         if not msg.content.startswith(guild_prefixes[msg.guild.id]):
             return
     except KeyError:
-        guild_prefixes[msg.guild.id] = "t!"
+        guildinfo = guild.load_guild(msg.guild.id, conn)
+
+        if guildinfo is None:
+            guild_prefixes[msg.guild.id] = "t!"
+        else:
+            guild_prefixes[msg.guild.id] = guildinfo.prefix
+
         if not msg.content.startswith(guild_prefixes[msg.guild.id]):
             return
 

@@ -84,8 +84,8 @@ async def run(bot, msg, conn):
 Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
 
-**Dealer busted, you win!** +{round(bet * 1.5)} {emojis.coin}""", title="You win")
-            user.set_user_attr(msg.author.id, "coins", userinfo.coins + round(bet * 1.5), conn)
+**Dealer busted, you win!** +{round(bet * 2)} {emojis.coin}""", title="You win")
+            user.set_user_attr(msg.author.id, "coins", userinfo.coins + round(bet * 2), conn)
             return
 
     if _card_amount(user_cards) == 21:
