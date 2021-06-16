@@ -25,7 +25,7 @@ commands = {
     "leaderboard": Commands.General.leaderboard,
     "company": Commands.General.company,
     "showcase": Commands.General.showcase,
-    "bal": Commands.General.bal,
+    "balance": Commands.General.balance,
     "timers": Commands.General.timers,
     "pay": Commands.General.pay,
 

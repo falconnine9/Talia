@@ -18,7 +18,7 @@ from Commands.General import (
     leaderboard,
     company,
     showcase,
-    bal,
+    balance,
     timers,
     pay
 )

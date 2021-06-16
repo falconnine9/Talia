@@ -22,7 +22,7 @@ help_info = {
         "leaderboard": help_list.leaderboard,
         "company": help_list.company,
         "showcase": help_list.showcase,
-        "bal": help_list.bal,
+        "balance": help_list.balance,
         "timers": help_list.timers,
         "pay": help_list.pay,
     },

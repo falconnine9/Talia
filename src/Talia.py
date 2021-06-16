@@ -68,14 +68,7 @@ async def on_ready():
     """
     other.log("Ready", "success")
 
-    cur = conn.cursor()
-    cur.execute("SELECT id, prefix FROM guilds")
-    all_prefixes = cur.fetchall()
-
-    for prefix in all_prefixes:
-        guild_prefixes[prefix[0]] = prefix[1]
-
-    bot.loop.create_task(_prefix_loading_loop())
+    bot.loop.create_task(cache_loading_loop())
     bot.loop.create_task(loop.main_timer(bot, conn))
     bot.loop.create_task(loop.edu_timer(bot, conn))
     bot.loop.create_task(loop.invest_timer(bot, conn))
@@ -185,16 +178,25 @@ Error type: {type(errmsg).__name__}""")
     await post_checks.achievements(bot, msg, conn)
 
 
-async def _prefix_loading_loop():
+async def cache_loading_loop():
     cur = conn.cursor()
     while True:
-        await asyncio.sleep(600)
-
         cur.execute("SELECT id, prefix FROM guilds")
         all_prefixes = cur.fetchall()
 
         for prefix in all_prefixes:
             guild_prefixes[prefix[0]] = prefix[1]
+
+        guild_num = 0
+        member_num = 0
+        for guild_ in bot.guilds:
+            guild_num += 1
+            member_num += len([member for member in guild_.members if not member.bot])
+
+        with open("stat_cache", "w") as f:
+            f.write(f"{guild_num},{member_num}")
+
+        await asyncio.sleep(600)
 
 
 if __name__ == "__main__":

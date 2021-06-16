@@ -98,9 +98,9 @@ showcase = {
     }
 }
 
-bal = {
+balance = {
     "desc": "Get just the your balance of coins",
-    "usage": "bal",
+    "usage": "balance",
     "args": {}
 }
 
