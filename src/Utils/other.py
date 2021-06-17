@@ -6,7 +6,9 @@ other.py (Utils)
 Random utilities
 """
 import datetime
+import discord
 import json
+import random
 import os
 import sys
 
@@ -17,6 +19,7 @@ except ImportError:
     colorama = None
 
 from Utils import company, abc
+from Storage import meta
 
 
 def log(info, level="info"):

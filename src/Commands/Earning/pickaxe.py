@@ -193,7 +193,7 @@ async def _pickaxe_sell(bot, msg, conn):
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins + sell_amount, conn, False)
     user.set_user_attr(msg.author.id, "pickaxe", abc.Pickaxe(
-        None, 0, 0, 1, 1, 1.0
+        None, 0, 1, 1.0
     ).cvt_dict(), conn)
 
     await message.edit_message(sent_msg, f"You sold your {userinfo.pickaxe.name} for {sell_amount}", title="Sold")

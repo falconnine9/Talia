@@ -12,7 +12,7 @@ import time
 from Utils import user, message, other
 
 
-async def main_timer(bot, conn):
+async def main_timer(conn):
     cur = conn.cursor()
     while True:
         start_time = time.time()
