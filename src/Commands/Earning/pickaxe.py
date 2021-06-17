@@ -139,7 +139,6 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
     user.set_user_attr(msg.author.id, "pickaxe", abc.Pickaxe(
         pickaxes[pickaxe_id]["name"],
         pickaxes[pickaxe_id]["cost"],
-        0, 1,
         pickaxes[pickaxe_id]["speed"],
         pickaxes[pickaxe_id]["multiplier"]
     ).cvt_dict(), conn)
