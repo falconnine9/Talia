@@ -58,6 +58,14 @@ help_info = {
     }
 }
 
+category_emojis = {
+    "general": "\U0001f4d6",
+    "earning": "\U0001fa99",
+    "family": "\U0001f46a",
+    "gambling": "\u2666",
+    "settings": "\u2699"
+}
+
 
 async def run(bot, msg, conn):
     split_data = msg.content.split(" ")
@@ -81,7 +89,7 @@ async def run(bot, msg, conn):
 
 
 async def _category_list(bot, msg):
-    cat_list = "\n".join([f"**{category[0].upper()}{category[1:]}**" for category in help_info.keys()])
+    cat_list = "\n".join([f"**{category[0].upper()}{category[1:]}** {category_emojis[category]}" for category in help_info.keys()])
     links = other.load_config().links
 
     if len(links) == 0:

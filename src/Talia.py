@@ -144,13 +144,13 @@ You can use `{guild_prefixes[msg.guild.id]}help` for some help""", title="Hello!
         if not msg.content.startswith(guild_prefixes[msg.guild.id]):
             return
 
-    if not msg.channel.permissions_for(msg.guild.me).send_messages:
-        return
-
     guildinfo = guild.load_guild(msg.guild.id, conn)
     if guildinfo is None:
         guildinfo = abc.Guild(msg.guild.id)
         guild.write_guild(guildinfo, conn, False)
+
+    if not msg.channel.permissions_for(msg.guild.me).send_messages:
+        return
 
     if msg.channel.id in guildinfo.disabled_channels:
         return

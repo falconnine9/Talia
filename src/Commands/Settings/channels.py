@@ -10,7 +10,7 @@ from Storage import help_list
 
 
 async def run(bot, msg, conn):
-    if not msg.author.guild_permissions.manage_guild and msg.author.id not in other.load_config().owners:
+    if not msg.author.guild_permissions.manage_channels and msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
 

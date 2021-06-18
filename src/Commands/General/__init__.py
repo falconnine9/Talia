@@ -20,5 +20,5 @@ from Commands.General import (
     showcase,
     balance,
     timers,
-    pay
+    pay,
 )

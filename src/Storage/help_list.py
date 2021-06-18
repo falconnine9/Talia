@@ -296,7 +296,7 @@ shopitem = {
 
 notifs = {
     "desc": "Turn on or off DM notifications",
-    "usage": "notifs <valie>",
+    "usage": "notifs <value>",
     "args": {
         "value": "on/off"
     }
