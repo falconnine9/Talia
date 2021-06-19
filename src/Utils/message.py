@@ -8,7 +8,7 @@ Utilities for easily sending embed based messages
 import discord
 
 
-async def send_message(msg, desc=None, channel=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None):
+async def send_message(msg, desc=None, channel=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None):
     """
     Sends a full message
 
@@ -43,11 +43,17 @@ async def send_message(msg, desc=None, channel=None, title=None, img=None, thumb
             embed.add_field(name=field[0], value=field[1])
     
     if channel is not None:
-        return await channel.send(embed=embed)
+        if components is None:
+            return await channel.send(embed=embed)
+        else:
+            return await channel.send(embed=embed, components=components)
     else:
         if msg is None:
             return None
-        return await msg.channel.send(embed=embed)
+        if components is None:
+            return await msg.channel.send(embed=embed)
+        else:
+            return await msg.channel.send(embed=embed, components=components)
 
 
 async def send_error(msg, desc=None, channel=None, title=None):
@@ -76,7 +82,7 @@ async def send_error(msg, desc=None, channel=None, title=None):
         return await msg.channel.send(embed=embed)
 
 
-async def edit_message(msg, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None):
+async def edit_message(msg, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None):
     """
     Edits an embed based message
 
@@ -110,7 +116,10 @@ async def edit_message(msg, desc=None, title=None, img=None, thumbnail=None, foo
             embed.add_field(name=field[0], value=field[1])
     
     if msg is not None:
-        await msg.edit(embed=embed)
+        if components is None:
+            await msg.edit(embed=embed)
+        else:
+            await msg.edit(embed=embed, components=components)
 
 
 async def edit_error(msg, desc=None, title=None):

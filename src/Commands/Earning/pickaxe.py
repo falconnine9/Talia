@@ -6,6 +6,7 @@ pickaxe.py (Commands/Earning)
 pickaxe command
 """
 import asyncio
+import discord_components
 from Utils import user, message, abc, other
 from Storage import help_list
 
@@ -98,40 +99,41 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         return
 
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg, f"Are you sure you want to buy a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Buying..")
+    sent_msg = await message.send_message(msg, f"Are you sure you want to buy a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Buying..",
+        components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != msg.author:
+    def button_check(interaction):
+        if interaction.author != msg.author:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled")
+    if interaction.component.label == "Cancel":
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pickaxe is not None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Buying..", components=[])
         await message.send_error(msg, "You already have a pickaxe equipped")
         return
 
     if pickaxes[pickaxe_id]["cost"] > userinfo.coins:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Buying..", components=[])
         await message.send_error(msg, "You no longer have enough coins")
         return
 
@@ -143,7 +145,7 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         pickaxes[pickaxe_id]["multiplier"]
     ).cvt_dict(), conn)
 
-    await message.edit_message(sent_msg, f"You bought a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Bought")
+    await message.edit_message(sent_msg, f"You bought a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Bought", components=[])
 
 
 async def _pickaxe_sell(bot, msg, conn):
@@ -155,36 +157,36 @@ async def _pickaxe_sell(bot, msg, conn):
 
     sell_amount = round(userinfo.pickaxe.worth / 4)
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg, f"Are you sure you want to sell your {userinfo.pickaxe.name} for {sell_amount} {emojis.coin}", title="Selling..")
+    sent_msg = await message.send_message(msg, f"Are you sure you want to sell your {userinfo.pickaxe.name} for {sell_amount} {emojis.coin}", title="Selling..",
+        components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != msg.author:
+    def button_check(interaction):
+        if interaction.author != msg.author:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled")
+    if interaction.component.label == "Cancel":
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pickaxe is None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Selling..", components=[])
         await message.send_error(msg, "You no longer have a pickaxe equipped")
         return
 
@@ -195,7 +197,7 @@ async def _pickaxe_sell(bot, msg, conn):
         None, 0, 1, 1.0
     ).cvt_dict(), conn)
 
-    await message.edit_message(sent_msg, f"You sold your {userinfo.pickaxe.name} for {sell_amount}", title="Sold")
+    await message.edit_message(sent_msg, f"You sold your {userinfo.pickaxe.name} for {sell_amount}", title="Sold", components=[])
 
 
 async def _pickaxe_list(bot, msg):

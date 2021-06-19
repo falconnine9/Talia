@@ -6,6 +6,7 @@ fuse.py (Commands/General)
 fuse command
 """
 import asyncio
+import discord_components
 from Utils import user, message
 
 fusion_levels = {
@@ -33,40 +34,41 @@ async def run(bot, msg, conn):
 
     sent_msg = await message.send_message(msg, f"""Are you sure you want to upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion
 
-You will become Level 1, and have a multiplier of x1.0""", title="Fusion..")
+You will become Level 1, and have a multiplier of x1.0""", title="Fusion..",
+        components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != msg.author:
+    def button_check(interaction):
+        if interaction.author != msg.author:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled")
+    if interaction.component.label == "Cancel":
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.fusion_level >= 8:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Fusion..", components=[])
         await message.send_error(msg, "You've already reached Hydra fusion")
         return
 
     if userinfo.level < 40:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Fusion..", components=[])
         await message.send_error(msg, "You no longer have the required level to fuse")
         return
 
@@ -75,4 +77,4 @@ You will become Level 1, and have a multiplier of x1.0""", title="Fusion..")
     user.set_user_attr(msg.author.id, "multiplier", 1.0, conn, False)
     user.set_user_attr(msg.author.id, "fusion_level", userinfo.fusion_level + 1, conn)
 
-    await message.edit_message(sent_msg, f"You upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion", title="Fused")
+    await message.edit_message(sent_msg, f"You upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion", title="Fused", components=[])

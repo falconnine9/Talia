@@ -7,6 +7,7 @@ marry command
 """
 import asyncio
 import discord
+import discord_components
 import random
 from Utils import user, message, other
 from Storage import help_list
@@ -73,49 +74,52 @@ async def run(bot, msg, conn):
         await message.send_error(msg, f"{str(person)} is already married")
         return
 
-    sent_msg = await message.send_message(msg, f"{str(msg.author)} has proposed to {str(person)}", title="Proposal..")
+    sent_msg = await message.send_message(msg, f"{str(msg.author)} has proposed to {str(person)}", title="Proposal..",
+        components=[[
+            discord_components.Button(label="Yes", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="No", style=discord_components.ButtonStyle.red)
+        ]]
+    )
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != person:
+    def button_check(interaction):
+        if interaction.author != msg.author:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined")
+    if interaction.component.label == "No":
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined", components=[])
         return
 
     userinfo = user.load_user(msg.author.id, conn)
     personinfo = user.load_user(person.id, conn)
 
     if userinfo.partner is not None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Proposal..", components=[])
         await message.send_error(msg, f"{str(msg.author)} is already married")
         return
 
     if personinfo.partner is not None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Proposal..", components=[])
         await message.send_error(msg, "You're already married")
         return
 
     if msg.author.id in personinfo.parents:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Proposal..", components=[])
         await message.send_error(msg, f"{str(msg.author)} is your parent")
         return
 
     if msg.author.id in personinfo.children:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Proposal..", components=[])
         await message.send_error(msg, f"{str(msg.author)} is your child")
         return
 
@@ -136,4 +140,4 @@ async def run(bot, msg, conn):
     user.set_user_attr(person.id, "children", new_children, conn)
 
     emojis = other.load_emojis(bot)
-    await message.edit_message(sent_msg, f"{emojis.confetti} {str(msg.author)} married {str(person)} {emojis.confetti}", title="Married")
+    await message.edit_message(sent_msg, f"{emojis.confetti} {str(msg.author)} married {str(person)} {emojis.confetti}", title="Married", components=[])
