@@ -6,6 +6,7 @@ invest.py (Commands/Earning)
 invest command
 """
 import asyncio
+import discord_components
 from Utils import user, timer, message, abc, other
 from Storage import help_list
 
@@ -70,42 +71,43 @@ async def run(bot, msg, conn):
         return
 
     sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
-You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""", title="Investing..")
+You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""", title="Investing..",
+        components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != msg.author:
+    def button_check(interaction):
+        if interaction.author != msg.author:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled")
+    if interaction.component.label == "Cancel":
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if amount > userinfo.coins:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Investing..", components=[])
         await message.send_error(msg, "You no longer have enough coins for this")
         return
 
     invest_timer = timer.load_invest_timer(msg.author.id, conn)
 
     if invest_timer is not None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Investing..", components=[])
         await message.send_error(msg, "You already have an investment going")
         return
 
@@ -114,4 +116,4 @@ You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - amount, conn, False)
     timer.new_invest_timer(new_timer, conn)
 
-    await message.edit_message(sent_msg, f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested")
+    await message.edit_message(sent_msg, f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested", components=[])

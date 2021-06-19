@@ -7,6 +7,7 @@ adopt command
 """
 import asyncio
 import discord
+import discord_components
 import random
 from Utils import user,message, other
 from Storage import help_list
@@ -73,45 +74,47 @@ async def run(bot, msg, conn):
         await message.send_error(msg, f"{str(person)} already has parents")
         return
 
-    sent_msg = await message.send_message(msg, f"{str(msg.author)} wants to adopt {str(person)}", title="Adoption..")
+    sent_msg = await message.send_message(msg, f"{str(msg.author)} wants to adopt {str(person)}", title="Adoption..",
+        components=[[
+            discord_components.Button(label="Accept", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Decline", style=discord_components.ButtonStyle.red)
+        ]]
+    )
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != person:
+    def button_check(interaction):
+        if interaction.author != msg.author:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+        interaction = await bot.wait_for("reaction_add", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined")
+    if interaction.component.label == "Decline":
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined", components=[])
         return
 
     userinfo = user.load_user(msg.author.id, conn)
     personinfo = user.load_user(person.id, conn)
 
     if len(userinfo.children) >= 10:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Adoption..", components=[])
         await message.send_error(msg, f"{str(msg.author)} already has the maximum of 10 children")
         return
 
     if len(personinfo.parents) != 0:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Adoption..", components=[])
         await message.send_error(msg, f"You already have parents")
         return
 
     if msg.author.id in personinfo.children:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Adoption..", components=[])
         await message.send_error(msg, f"{str(msg.author)} is your child")
         return
 
@@ -128,4 +131,4 @@ async def run(bot, msg, conn):
         user.set_user_attr(person.id, "parents", [msg.author.id], conn)
 
     emojis = other.load_emojis(bot)
-    await message.edit_message(sent_msg, f"{emojis.confetti} {str(person)} is now the child of {str(msg.author)} {emojis.confetti}", title="Adopted")
+    await message.edit_message(sent_msg, f"{emojis.confetti} {str(person)} is now the child of {str(msg.author)} {emojis.confetti}", title="Adopted", components=[])

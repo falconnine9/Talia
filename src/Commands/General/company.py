@@ -8,6 +8,7 @@ company command
 import asyncio
 import datetime
 import discord
+import discord_components
 from Utils import user, company, message, abc, other
 from Storage import help_list
 
@@ -152,7 +153,12 @@ async def _company_invite(bot, msg, conn, split_data):
     await message.send_message(msg, f"{str(person)} has been invited to join {companyinfo.name}")
 
     try:
-        sent_msg = await message.send_message(None, f"You've been invited to join {companyinfo.name}", title="Invite", channel=person)
+        sent_msg = await message.send_message(None, f"You've been invited to join {companyinfo.name}", title="Invite", channel=person,
+            components=[[
+                discord_components.Button(label="Accept", style=discord_components.ButtonStyle.green),
+                discord_components.Button(label="Decline", style=discord_components.ButtonStyle.red)
+            ]]
+        )
     except discord.Forbidden:
         await message.send_error(msg, f"{str(person)} can't receive DMs from me")
         return
@@ -163,20 +169,17 @@ async def _company_invite(bot, msg, conn, split_data):
     await sent_msg.add_reaction("\u2705")
     await sent_msg.add_reaction("\u274c")
 
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != msg.author:
+    def button_check(interaction):
+        if interaction.author != person:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" or str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=300, check=reaction_check)
+        interaction = await bot.wait_for("button_check", timeout=300, check=button_check)
     except asyncio.TimeoutError:
         userinfo = user.load_user(msg.author.id, conn)
 
@@ -193,10 +196,10 @@ async def _company_invite(bot, msg, conn, split_data):
                     except discord.Forbidden:
                         pass
 
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
+    if interaction.component.label == "Decline":
         userinfo = user.load_user(msg.author.id, conn)
 
         if userinfo.company is not None:
@@ -212,7 +215,7 @@ async def _company_invite(bot, msg, conn, split_data):
                     except discord.Forbidden:
                         pass
 
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined", components=[])
         return
 
     userinfo = user.load_user(msg.author.id, conn)
@@ -221,6 +224,7 @@ async def _company_invite(bot, msg, conn, split_data):
     company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
     if userinfo.company is None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Invite", components=[])
         try:
             await message.send_error(None, "There was a problem with joining the company", channel=person)
         except discord.Forbidden:
@@ -230,6 +234,7 @@ async def _company_invite(bot, msg, conn, split_data):
     personinfo = user.load_user(person.id, conn)
 
     if personinfo.company is not None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Invite", components=[])
         if userinfo.settings.notifs:
             try:
                 await message.send_error(None, f"{str(person)} joined another company", channel=msg.author)
@@ -244,6 +249,7 @@ async def _company_invite(bot, msg, conn, split_data):
     companyinfo = company.load_company(userinfo.company, conn)
 
     if companyinfo is None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Invite", components=[])
         try:
             await message.send_error(None, "There was a problem with joining the company", channel=person)
         except discord.Forbidden:
@@ -251,6 +257,7 @@ async def _company_invite(bot, msg, conn, split_data):
         return
 
     if len(companyinfo.members) >= 50:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Invite", components=[])
         try:
             await message.send_error(None, "The company no longer has enough space for you", channel=person)
         except discord.Forbidden:
@@ -261,7 +268,7 @@ async def _company_invite(bot, msg, conn, split_data):
     user.set_user_attr(person.id, "company", companyinfo.discrim, conn, False)
     company.set_company_attr(companyinfo.discrim, "members", companyinfo.members, conn)
 
-    await message.edit_message(sent_msg, "You joined the company", title="Joined")
+    await message.edit_message(sent_msg, "You joined the company", title="Joined", components=[])
 
     if userinfo.settings.notifs:
         try:
@@ -339,36 +346,39 @@ async def _company_disband(bot, msg, conn):
         await message.send_error(msg, "You're not the CEO")
         return
 
-    sent_msg = await message.send_message(msg, f"Are you sure you want to disband {companyinfo.name}", title="Disbanding..")
+    sent_msg = await message.send_message(msg, f"Are you sure you want to disband {companyinfo.name}", title="Disbanding..",
+        components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
 
     await sent_msg.add_reaction("\u2705")
     await sent_msg.add_reaction("\u274c")
 
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != msg.author:
+    def button_check(interaction):
+        if interaction.author != msg.author:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled")
+    if interaction.component.label == "Cancel":
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
         return
 
     companyinfo = company.load_company(companyinfo.discrim, conn)
 
     if companyinfo is None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Disbanding..", components=[])
         await message.send_error(msg, "The company no longer exists")
         return
 
@@ -377,7 +387,7 @@ async def _company_disband(bot, msg, conn):
     cur.execute("UPDATE users SET company = NULL WHERE company = %s", (companyinfo.discrim,))
     conn.commit()
 
-    await message.edit_message(sent_msg, "Company disbanded", title="Disbanded")
+    await message.edit_message(sent_msg, "Company disbanded", title="Disbanded", components=[])
 
 
 async def _company_info(bot, msg, conn, split_data):

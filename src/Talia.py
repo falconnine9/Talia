@@ -14,6 +14,7 @@ On startup
 """
 import asyncio
 import discord
+import discord_components
 import mysql.connector
 import sshtunnel
 import traceback
@@ -67,6 +68,8 @@ async def on_ready():
      added to the main event loop
     """
     other.log("Ready", "success")
+
+    discord_components.DiscordComponents(bot)
 
     bot.loop.create_task(cache_loading_loop())
     bot.loop.create_task(loop.main_timer(conn))

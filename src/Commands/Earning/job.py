@@ -6,6 +6,7 @@ job.py (Commands/Earning)
 job command
 """
 import asyncio
+import discord_components
 from Utils import user, message, abc, other
 from Storage import help_list
 
@@ -121,43 +122,43 @@ async def _job_quit(bot, msg, conn):
         await message.send_error(msg, "You don't have a job")
         return
 
-    sent_msg = await message.send_message(msg, "Are you sure you want to quit your job?", title="Quitting..")
+    sent_msg = await message.send_message(msg, "Are you sure you want to quit your job?", title="Quitting..",
+        components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != msg.author:
+    def button_check(interaction):
+        if interaction.author != msg.author:
             return False
 
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+        if interaction.message != sent_msg:
             return False
 
         return True
 
     try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
         return
 
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled")
+    if interaction.component.label == "Cancel":
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.job is None:
+        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Quitting..", components=[])
         await message.send_error(msg, "You don't have a job right now")
         return
 
     user.set_user_attr(msg.author.id, "job", abc.Job(
         None, 0, 1, [], []
     ).cvt_dict(), conn)
-    await message.edit_message(sent_msg, "You quit your job", title="Quit Job")
+    await message.edit_message(sent_msg, "You quit your job", title="Quit Job", components=[])
 
 
 async def _job_list(bot, msg):
