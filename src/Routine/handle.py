@@ -28,6 +28,7 @@ commands = {
     "balance": Commands.General.balance,
     "timers": Commands.General.timers,
     "pay": Commands.General.pay,
+    "pet": Commands.General.pet,
 
     # Earning
     "job": Commands.Earning.job,

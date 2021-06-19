@@ -26,7 +26,7 @@ init.config()
 
 db_info = other.load_config().db
 if db_info["host"] == "localhost" or db_info["host"] == "127.0.0.1":
-    other.log("Opening connection to local database")
+    other.log(f"Opening connection to local database ({db_info['database']})")
     conn = mysql.connector.connect(
         user=db_info["user"], password=db_info["password"],
         host="localhost", port=3306,
@@ -43,7 +43,7 @@ else:
         remote_bind_address=("127.0.0.1", 22)
     ) as tunnel:
         other.log("Complete", "success")
-        other.log("Opening connection to remote database")
+        other.log(f"Opening connection to remote database ({db_info['database']})")
         conn = mysql.connector.connect(
             user=db_info["user"], password=db_info["password"],
             host=db_info["host"], port=3306,
@@ -179,6 +179,17 @@ Error type: {type(errmsg).__name__}""")
 
 
 async def cache_loading_loop():
+    """
+    An async loop that is called once every 10 minutes.
+     It is used to load stat information and guild
+     prefixes into the cache
+
+    1. Creates a cursor object that will always be used
+    2. Fetches all prefixes from the database
+    3. Places each one into the cache
+    4. Gets guild numbers and members per guild
+    5. Puts the stat information int a file
+    """
     cur = conn.cursor()
     while True:
         cur.execute("SELECT id, prefix FROM guilds")

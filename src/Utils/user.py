@@ -54,16 +54,27 @@ def load_user(user_id, conn):
             tmp_pickaxe["multiplier"]
         )
 
-    new_user.achievements = json.loads(userinfo[7])
+    tmp_pet = json.loads(userinfo[7])
+    if tmp_pet["name"] is None:
+        new_user.pet = None
+    else:
+        new_user.pet = abc.Pet(
+            tmp_pet["name"],
+            tmp_pet["worth"],
+            tmp_pet["type"],
+            tmp_pet["breed"]
+        )
+
+    new_user.achievements = json.loads(userinfo[8])
     new_user.inventory = [abc.Item(
         item["name"], item["worth"],
         item["type"], item["stats"]
-    ) for item in json.loads(userinfo[8])]
-    new_user.fusion_level = userinfo[9]
-    new_user.multiplier = userinfo[10]
-    new_user.company = userinfo[11]
+    ) for item in json.loads(userinfo[9])]
+    new_user.fusion_level = userinfo[10]
+    new_user.multiplier = userinfo[11]
+    new_user.company = userinfo[12]
 
-    tmp_showcase = json.loads(userinfo[12])
+    tmp_showcase = json.loads(userinfo[13])
     if tmp_showcase["name"] is None:
         new_user.showcase = None
     else:
@@ -74,13 +85,13 @@ def load_user(user_id, conn):
             tmp_showcase["stats"]
         )
 
-    new_user.hourly = userinfo[13]
-    new_user.daily = userinfo[14]
-    new_user.partner = userinfo[15]
-    new_user.parents = json.loads(userinfo[16])
-    new_user.children = json.loads(userinfo[17])
+    new_user.hourly = userinfo[14]
+    new_user.daily = userinfo[15]
+    new_user.partner = userinfo[16]
+    new_user.parents = json.loads(userinfo[17])
+    new_user.children = json.loads(userinfo[18])
 
-    tmp_settings = json.loads(userinfo[18])
+    tmp_settings = json.loads(userinfo[19])
     new_user.settings = abc.Settings(
         tmp_settings["notifs"]
     )
@@ -107,13 +118,18 @@ def write_user(obj, conn, write=True):
     else:
         tmp_pickaxe = obj.pickaxe.cvt_dict()
 
+    if obj.pet is None:
+        tmp_pet = {"name": None, "worth": 0, "type": None, "breed": None}
+    else:
+        tmp_pet = obj.pet.cvt_dict()
+
     if obj.showcase is None:
         tmp_showcase = {"name": None, "worth": 0, "type": "box_item", "stats": {}}
     else:
         tmp_showcase = obj.showcase.cvt_dict()
 
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
         obj.id,
         obj.coins,
         obj.xp,
@@ -121,6 +137,7 @@ def write_user(obj, conn, write=True):
         obj.edu_level,
         json.dumps(tmp_job),
         json.dumps(tmp_pickaxe),
+        json.dumps(tmp_pet),
         json.dumps(obj.achievements),
         json.dumps([item.cvt_dict() for item in obj.inventory]),
         obj.fusion_level,

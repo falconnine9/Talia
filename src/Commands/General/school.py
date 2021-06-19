@@ -16,17 +16,17 @@ edu_levels = {
     },
     2: {
         "name": "Highschool",
-        "cost": 1000,
+        "cost": 2000,
         "time": 21600
     },
     3: {
         "name": "College",
-        "cost": 4000,
+        "cost": 10000,
         "time": 86400
     },
     4: {
         "name": "PhD",
-        "cost": 10000,
+        "cost": 40000,
         "time": 259200
     }
 }

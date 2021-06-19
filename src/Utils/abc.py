@@ -54,6 +54,7 @@ class User:
         self.edu_level = 1
         self.job = None
         self.pickaxe = None
+        self.pet = None
         self.achievements = []
         self.inventory = []
         self.fusion_level = 1
@@ -220,6 +221,22 @@ class Pickaxe:
             "worth": self.worth,
             "speed": self.speed,
             "multiplier": self.multiplier
+        }
+
+
+class Pet:
+    def __init__(self, name, worth, pet_type, breed):
+        self.name = name
+        self.worth = worth
+        self.type = pet_type
+        self.breed = breed
+
+    def cvt_dict(self):
+        return {
+            "name": self.name,
+            "worth": self.worth,
+            "type": self.type,
+            "breed": self.breed
         }
 
 

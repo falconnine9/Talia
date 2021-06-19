@@ -121,6 +121,15 @@ pay = {
     }
 }
 
+pet = {
+    "desc": "Manage your pet",
+    "usage": "pet <operation> [pet name]",
+    "args": {
+        "operation": "buy/sell/list/name",
+        "pet name": "The name of the pet (Only needed if buying or naming)"
+    }
+}
+
 
 # <--- Earning ---> #
 

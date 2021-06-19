@@ -46,6 +46,7 @@ tables = {
         "edu_level": "INTEGER",
         "job": "MEDIUMTEXT",
         "pickaxe": "MEDIUMTEXT",
+        "pet": "MEDIUMTEXT",
         "achievements": "MEDIUMTEXT",
         "inventory": "MEDIUMTEXT",
         "fusion_level": "INTEGER",

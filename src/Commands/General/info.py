@@ -57,6 +57,7 @@ async def run(bot, msg, conn):
     partner, parents, children = await _load_family_info(bot, personinfo)
     jobinfo = _load_job_info(personinfo.job)
     pickaxeinfo = _load_pickaxe_info(personinfo.pickaxe)
+    petinfo = _load_pet_info(personinfo.pet)
 
     if personinfo.company is not None:
         companyinfo = company.load_company(personinfo.company, conn)
@@ -86,7 +87,10 @@ Children: {children}
 {jobinfo}
 
 **--Pickaxe--**
-{pickaxeinfo}"""
+{pickaxeinfo}
+
+**--Pet--**
+{petinfo}"""
     await message.edit_message(sent_msg, send_str, title=str(person), thumbnail=person.avatar_url)
 
 
@@ -134,3 +138,11 @@ def _load_pickaxe_info(pickaxe):
         return f"""Pickaxe: {pickaxe.name}
 Mining Speed: {pickaxe.speed}
 Mining Multiplier: x{pickaxe.multiplier}"""
+
+
+def _load_pet_info(pet):
+    if pet is None:
+        return "No pet"
+    else:
+        return f"""Name: {pet.name}
+Breed: {pet.breed} ({pet.type})"""
