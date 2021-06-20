@@ -1,0 +1,7 @@
+discord.py
+discord-components
+colorama
+psutil
+mysql
+mysql-connector-python
+sshtunnel
