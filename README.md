@@ -4,16 +4,44 @@ Join the discord
 [![Discord Link](https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/icons/discord%20link.png)](https://discord.gg/7FqgBCVfvY)
 
 ## Setup
-1. Install all dependencies with `python3 -m pip install -r requirements.txt`
-2. Run `python3 Talia.py`, this will create a file in the same directory called "config.json"
-3. Fill in all the sections with their necessary requirements
-4. Run Talia.py again. If everyone worked correctly, you will see "Ready"
+(Note that all `python3` references may need to be changed out for `python` if you're on windows)
 
-## Configuration Attributes
-- `token`: The discord bot token
-- `owners`: A list of discord ID's of users with owner permissions
-- `db_path`: The path to the sqlite database file
-- `backups`: Information for backups
-  - `interval`: The interval that backups occur (0 to disable them)
-  - `path`: The path that the backups will be placed in
-- `links`: A dictionary of links that will be shown in some commands
+1. Make sure python is installed with `python3 --version` (If it's not, you can download it [here](https://www.python.org/downloads/))
+2. Install dependancies with `python3 -m pip install -r requirements.txt`
+3. Setup a MySQL database (If you need to download it, you can find it [here](https://www.mysql.com/downloads/))
+4. Run "Talia.py" (In the src folder) with `python3 Talia.py`. This will create a configuration (config.json) file in the same directory
+5. Fill in all the sections (A guide on that can be found [here](#config))
+6. Run `python3 Talia.py` again to start the bot, and if everything worked correctly you will see "Ready"
+
+## Config
+A description for each section of the configuration file
+
+- **token**: Discord client token
+- **owners**: A list of discord ID's with complete owner access
+- **db**
+  - **host**: IP to the server where it's located (Can be "localhost" for a local database)
+  - **user**: The MySQL user you want to use for access
+  - **password**: The password of the MySQL user
+  - **database**: Which database to use
+  - **ssh_username**: The username to use for access to a remote database through SSH (Only needed if accessing a remote database)
+  - **ssh_password**: The password to use for access to a remote database through SHH (Only needed if accessing a remote database)
+- **backups**
+  - **interval**: The interval (in seconds) to make a backup of the database
+  - **database**: The database to make a backup in
+- **links**: A dictionary of links to show
+- **full_logging**: Log EVERYTHING
+
+## Using
+Things Talia uses
+
+- [Python](https://www.python.org/) - High level programming language
+- [MySQL](https://www.mysql.com/) - Database system
+
+## Dependancies
+Python packages that Talia uses
+
+- [discord.py](https://pypi.org/project/discord.py/)/[discord-components](https://pypi.org/project/discord-components/) - API wrapper for discord
+- [colorama](https://pypi.org/project/colorama/) - For colored text in the terminal
+- [psutil](https://pypi.org/project/psutil/) - Getting system information
+- [mysql](https://pypi.org/project/mysql/)/[mysql-connector-python](https://pypi.org/project/mysql-connector-python/) - For connecting python to MySQL
+- [sshtunnel](https://pypi.org/project/sshtunnel/) - Package for opening SSH connections
