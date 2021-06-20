@@ -72,26 +72,24 @@ async def run(bot, msg, conn):
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
     userinfo.edu_level += 1
 
     if edu_levels[userinfo.edu_level]["cost"] > userinfo.coins:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Education", components=[])
-        await message.send_error(msg, "You no longer have enough coins")
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins")
         return
 
     school_timer = timer.load_edu_timer(msg.author.id, conn)
 
     if school_timer is not None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Education", components=[])
-        await message.send_error(msg, "You're already in class")
+        await message.response_send(sent_msg, interaction, "You're already in class")
         return
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - edu_levels[userinfo.edu_level]["cost"], conn, False)
@@ -100,5 +98,5 @@ async def run(bot, msg, conn):
         conn
     )
 
-    await message.edit_message(sent_msg, f"""You've started your {edu_levels[userinfo.edu_level]['name']} education level
-Time remaining: {timer.load_time(edu_levels[userinfo.edu_level]['time'])}""", title="Education", components=[])
+    await message.response_edit(sent_msg, interaction, f"""You've started your {edu_levels[userinfo.edu_level]['name']} education level
+Time remaining: {timer.load_time(edu_levels[userinfo.edu_level]['time'])}""", title="Education")

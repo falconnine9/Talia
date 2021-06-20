@@ -93,29 +93,26 @@ async def run(bot, msg, conn):
     try:
         interaction = await bot.wait_for("reaction_add", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Decline":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Declined")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
     personinfo = user.load_user(person.id, conn)
 
     if len(userinfo.children) >= 10:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Adoption..", components=[])
-        await message.send_error(msg, f"{str(msg.author)} already has the maximum of 10 children")
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} already has the maximum of 10 children")
         return
 
     if len(personinfo.parents) != 0:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Adoption..", components=[])
-        await message.send_error(msg, f"You already have parents")
+        await message.response_send(sent_msg, interaction, f"You already have parents")
         return
 
     if msg.author.id in personinfo.children:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Adoption..", components=[])
-        await message.send_error(msg, f"{str(msg.author)} is your child")
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your child")
         return
 
     userinfo.children.append(person.id)
@@ -131,4 +128,4 @@ async def run(bot, msg, conn):
         user.set_user_attr(person.id, "parents", [msg.author.id], conn)
 
     emojis = other.load_emojis(bot)
-    await message.edit_message(sent_msg, f"{emojis.confetti} {str(person)} is now the child of {str(msg.author)} {emojis.confetti}", title="Adopted", components=[])
+    await message.response_edit(sent_msg, interaction, f"{emojis.confetti} {str(person)} is now the child of {str(msg.author)} {emojis.confetti}", title="Adopted")

@@ -6,6 +6,7 @@ company.py (Utils)
 Utilities for easily sending embed based messages
 """
 import discord
+import discord_components
 
 
 async def send_message(msg, desc=None, channel=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None):
@@ -141,6 +142,70 @@ async def edit_error(msg, desc=None, title=None):
     
     if msg is not None:
         await msg.edit(embed=embed)
+
+
+async def response_edit(msg, interaction, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None):
+    embed = discord.Embed(color=discord.Colour.purple())
+
+    if desc is not None:
+        embed.description = desc
+
+    if title is not None:
+        embed.title = title
+
+    if img is not None:
+        embed.set_image(url=img)
+
+    if thumbnail is not None:
+        embed.set_thumbnail(url=thumbnail)
+
+    if footer is not None:
+        if footer_icon is None:
+            embed.set_footer(text=footer)
+        else:
+            embed.set_footer(text=footer, icon_url=footer_icon)
+
+    if fields is not None:
+        for field in fields:
+            embed.add_field(name=field[0], value=field[1])
+
+    for component_section in msg.components:
+        for component in component_section:
+            component.disabled = True
+
+    if interaction is not None:
+        await interaction.respond(type=7, embed=embed, components=msg.components)
+
+
+async def response_send(msg, interaction, desc=None, title=None):
+    embed = discord.Embed(color=discord.Colour.red())
+
+    if desc is not None:
+        embed.description = desc
+
+    if title is not None:
+        embed.title = title
+
+    for component_section in msg.components:
+        for component in component_section:
+            component.disabled = True
+
+    if interaction is not None:
+        await interaction.respond(embed=embed)
+
+    if msg is not None:
+        await msg.edit(embed=msg.embeds[0], components=msg.components)
+
+
+async def timeout_response(msg):
+    msg.embeds[0].title = "Timed out"
+
+    for component_section in msg.components:
+        for component in component_section:
+            component.disabled = True
+
+    if msg is not None:
+        await msg.edit(embed=msg.embeds[0], components=msg.components)
 
 
 async def invalid_use(msg, help_info, pre_msg):

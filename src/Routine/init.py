@@ -23,7 +23,7 @@ config_file = {
     },
     "backups": {
         "interval": 0,
-        "path": None
+        "database": None
     },
     "links": {},
     "full_logging": False

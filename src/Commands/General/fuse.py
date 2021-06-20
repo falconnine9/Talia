@@ -53,23 +53,21 @@ You will become Level 1, and have a multiplier of x1.0""", title="Fusion..",
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.fusion_level >= 8:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Fusion..", components=[])
-        await message.send_error(msg, "You've already reached Hydra fusion")
+        await message.response_send(sent_msg, interaction, "You've already reached Hydra fusion")
         return
 
     if userinfo.level < 40:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Fusion..", components=[])
-        await message.send_error(msg, "You no longer have the required level to fuse")
+        await message.response_send(sent_msg, interaction, "You no longer have the required level to fuse")
         return
 
     user.set_user_attr(msg.author.id, "xp", 0, conn, False)
@@ -77,4 +75,4 @@ You will become Level 1, and have a multiplier of x1.0""", title="Fusion..",
     user.set_user_attr(msg.author.id, "multiplier", 1.0, conn, False)
     user.set_user_attr(msg.author.id, "fusion_level", userinfo.fusion_level + 1, conn)
 
-    await message.edit_message(sent_msg, f"You upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion", title="Fused", components=[])
+    await message.response_edit(sent_msg, interaction, f"You upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion", title="Fused")

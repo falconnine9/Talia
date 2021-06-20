@@ -166,9 +166,6 @@ async def _company_invite(bot, msg, conn, split_data):
     companyinfo.invites.append(str(person.id))
     company.set_company_attr(userinfo.company, "invites", companyinfo.invites, conn)
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
     def button_check(interaction):
         if interaction.author != person:
             return False
@@ -196,7 +193,7 @@ async def _company_invite(bot, msg, conn, split_data):
                     except discord.Forbidden:
                         pass
 
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Decline":
@@ -215,7 +212,7 @@ async def _company_invite(bot, msg, conn, split_data):
                     except discord.Forbidden:
                         pass
 
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Declined")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
@@ -224,7 +221,7 @@ async def _company_invite(bot, msg, conn, split_data):
     company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
     if userinfo.company is None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Invite", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Invite")
         try:
             await message.send_error(None, "There was a problem with joining the company", channel=person)
         except discord.Forbidden:
@@ -234,7 +231,7 @@ async def _company_invite(bot, msg, conn, split_data):
     personinfo = user.load_user(person.id, conn)
 
     if personinfo.company is not None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Invite", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Invite")
         if userinfo.settings.notifs:
             try:
                 await message.send_error(None, f"{str(person)} joined another company", channel=msg.author)
@@ -249,7 +246,7 @@ async def _company_invite(bot, msg, conn, split_data):
     companyinfo = company.load_company(userinfo.company, conn)
 
     if companyinfo is None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Invite", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Invite")
         try:
             await message.send_error(None, "There was a problem with joining the company", channel=person)
         except discord.Forbidden:
@@ -257,7 +254,7 @@ async def _company_invite(bot, msg, conn, split_data):
         return
 
     if len(companyinfo.members) >= 50:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Invite", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Invite")
         try:
             await message.send_error(None, "The company no longer has enough space for you", channel=person)
         except discord.Forbidden:
@@ -268,7 +265,7 @@ async def _company_invite(bot, msg, conn, split_data):
     user.set_user_attr(person.id, "company", companyinfo.discrim, conn, False)
     company.set_company_attr(companyinfo.discrim, "members", companyinfo.members, conn)
 
-    await message.edit_message(sent_msg, "You joined the company", title="Joined", components=[])
+    await message.response_edit(sent_msg, interaction, "You joined the company", title="Joined")
 
     if userinfo.settings.notifs:
         try:
@@ -353,9 +350,6 @@ async def _company_disband(bot, msg, conn):
         ]]
     )
 
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
     def button_check(interaction):
         if interaction.author != msg.author:
             return False
@@ -368,18 +362,17 @@ async def _company_disband(bot, msg, conn):
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     companyinfo = company.load_company(companyinfo.discrim, conn)
 
     if companyinfo is None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Disbanding..", components=[])
-        await message.send_error(msg, "The company no longer exists")
+        await message.response_send(sent_msg, interaction, "The company no longer exists")
         return
 
     cur = conn.cursor()
@@ -387,7 +380,7 @@ async def _company_disband(bot, msg, conn):
     cur.execute("UPDATE users SET company = NULL WHERE company = %s", (companyinfo.discrim,))
     conn.commit()
 
-    await message.edit_message(sent_msg, "Company disbanded", title="Disbanded", components=[])
+    await message.response_edit(sent_msg, interaction, "Company disbanded", title="Disbanded")
 
 
 async def _company_info(bot, msg, conn, split_data):

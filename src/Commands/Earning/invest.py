@@ -90,25 +90,23 @@ You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if amount > userinfo.coins:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Investing..", components=[])
-        await message.send_error(msg, "You no longer have enough coins for this")
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins for this")
         return
 
     invest_timer = timer.load_invest_timer(msg.author.id, conn)
 
     if invest_timer is not None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Investing..", components=[])
-        await message.send_error(msg, "You already have an investment going")
+        await message.response_send(sent_msg, interaction, "You already have an investment going")
         return
 
     new_timer = abc.InvestTimer(msg.author.id, times[split_data[2]], amount, multipliers[split_data[2]])
@@ -116,4 +114,4 @@ You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - amount, conn, False)
     timer.new_invest_timer(new_timer, conn)
 
-    await message.edit_message(sent_msg, f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested", components=[])
+    await message.response_edit(sent_msg, interaction, f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested")

@@ -77,18 +77,17 @@ async def _shop_buy(bot, msg, conn, split_data):
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if guildinfo.shop[item]["cost"] > userinfo.coins:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Buying..", components=[])
-        await message.send_error(msg, "You no longer have enough coins to buy this item")
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this item")
         return
 
     userinfo.inventory.append(abc.Item(
@@ -100,7 +99,7 @@ async def _shop_buy(bot, msg, conn, split_data):
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - guildinfo.shop[item]["cost"], conn, False)
     user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
 
-    await message.edit_message(sent_msg, f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin}", title="Bought", components=[])
+    await message.response_edit(sent_msg, interaction, f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin}", title="Bought")
 
 
 async def _shop_list(bot, msg, conn):

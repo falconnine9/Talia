@@ -251,27 +251,25 @@ async def _box_buy(bot, msg, conn, split_data):
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if boxes[box_id]["cost"] > userinfo.coins:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Buying..", components=[])
-        await message.send_error(msg, "You no longer have enough coins to buy this box")
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this box")
         return
 
     if len(userinfo.inventory) >= 40:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Buying..", components=[])
-        await message.edit_message(msg, "You no longer have enough space in your inventory")
+        await message.response_send(sent_msg, interaction, "You no longer have enough space in your inventory")
         return
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - boxes[box_id]["cost"], conn)
-    await message.edit_message(sent_msg, f"You bought a {boxes[box_id]['name']} for {boxes[box_id]['cost']} {emojis.coin}\n\n**Opening..**", title="Box Bought", components=[])
+    await message.response_edit(sent_msg, interaction, f"You bought a {boxes[box_id]['name']} for {boxes[box_id]['cost']} {emojis.coin}\n\n**Opening..**", title="Box Bought")
 
     await asyncio.sleep(random.randint(2, 3))
 

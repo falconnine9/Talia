@@ -152,23 +152,21 @@ async def _pet_buy(bot, msg, conn, split_data):
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pet is not None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Buying..", components=[])
-        await message.send_error(msg, "You already have a pet")
+        await message.response_send(sent_msg, interaction, "You already have a pet")
         return
 
     if pets[split_data[2]]["cost"] > userinfo.coins:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Buying..", components=[])
-        await message.send_error(msg, "You no longer have enough coins to buy this pet")
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this pet")
         return
 
     def_name = random.choice(default_names)
@@ -182,9 +180,9 @@ async def _pet_buy(bot, msg, conn, split_data):
         breed
     ).cvt_dict(), conn)
 
-    await message.edit_message(sent_msg, f"""You bought a pet!
+    await message.response_edit(sent_msg, interaction, f"""You bought a pet!
 Your pet is a {breed} ({split_data[2][0].upper()}{split_data[2][1:]})
-By default is has the name **{def_name}**. But that can be changed with `pet name`""", title="Bought", components=[])
+By default is has the name **{def_name}**. But that can be changed with `pet name`""", title="Bought")
 
 
 async def _pet_sell(bot, msg, conn):
@@ -214,18 +212,17 @@ async def _pet_sell(bot, msg, conn):
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pet is None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Selling..", components=[])
-        await message.send_error(msg, "You don't have a pet")
+        await message.send_error(sent_msg, interaction, "You don't have a pet")
         return
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins + userinfo.pet.worth, conn, False)
@@ -233,7 +230,7 @@ async def _pet_sell(bot, msg, conn):
         None, 0, None, None
     ).cvt_dict(), conn)
 
-    await message.edit_message(sent_msg, f"You sold your pet for {userinfo.pet.worth} {emojis.coin}", title="Sold", components=[])
+    await message.response_edit(sent_msg, interaction, f"You sold your pet for {userinfo.pet.worth} {emojis.coin}", title="Sold")
 
 
 async def _pet_list(bot, msg):

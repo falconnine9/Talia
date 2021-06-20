@@ -93,34 +93,30 @@ async def run(bot, msg, conn):
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "No":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Declined", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Declined")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
     personinfo = user.load_user(person.id, conn)
 
     if userinfo.partner is not None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Proposal..", components=[])
-        await message.send_error(msg, f"{str(msg.author)} is already married")
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is already married")
         return
 
     if personinfo.partner is not None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Proposal..", components=[])
-        await message.send_error(msg, "You're already married")
+        await message.response_send(sent_msg, interaction, "You're already married")
         return
 
     if msg.author.id in personinfo.parents:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Proposal..", components=[])
-        await message.send_error(msg, f"{str(msg.author)} is your parent")
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your parent")
         return
 
     if msg.author.id in personinfo.children:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Proposal..", components=[])
-        await message.send_error(msg, f"{str(msg.author)} is your child")
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your child")
         return
 
     new_children = []
@@ -140,4 +136,4 @@ async def run(bot, msg, conn):
     user.set_user_attr(person.id, "children", new_children, conn)
 
     emojis = other.load_emojis(bot)
-    await message.edit_message(sent_msg, f"{emojis.confetti} {str(msg.author)} married {str(person)} {emojis.confetti}", title="Married", components=[])
+    await message.response_edit(sent_msg, interaction, f"{emojis.confetti} {str(msg.author)} married {str(person)} {emojis.confetti}", title="Married")

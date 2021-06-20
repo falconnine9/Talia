@@ -141,24 +141,23 @@ async def _job_quit(bot, msg, conn):
     try:
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=[])
+        await message.timeout_response(sent_msg)
         return
 
     if interaction.component.label == "Cancel":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled", components=[])
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.job is None:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Quitting..", components=[])
-        await message.send_error(msg, "You don't have a job right now")
+        await message.response_send(sent_msg, interaction, "You don't have a job right now")
         return
 
     user.set_user_attr(msg.author.id, "job", abc.Job(
         None, 0, 1, [], []
     ).cvt_dict(), conn)
-    await message.edit_message(sent_msg, "You quit your job", title="Quit Job", components=[])
+    await message.response_edit(sent_msg, interaction, "You quit your job", title="Quit Job")
 
 
 async def _job_list(bot, msg):
