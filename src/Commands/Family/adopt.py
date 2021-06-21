@@ -91,7 +91,7 @@ async def run(bot, msg, conn):
         return True
 
     try:
-        interaction = await bot.wait_for("reaction_add", timeout=120, check=button_check)
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
         await message.timeout_response(sent_msg)
         return
