@@ -163,7 +163,7 @@ async def _company_invite(bot, msg, conn, split_data):
         await message.send_error(msg, f"{str(person)} can't receive DMs from me")
         return
 
-    companyinfo.invites.append(str(person.id))
+    companyinfo.invites.append(person.id)
     company.set_company_attr(userinfo.company, "invites", companyinfo.invites, conn)
 
     def button_check(interaction):
@@ -176,7 +176,7 @@ async def _company_invite(bot, msg, conn, split_data):
         return True
 
     try:
-        interaction = await bot.wait_for("button_check", timeout=300, check=button_check)
+        interaction = await bot.wait_for("button_click", timeout=300, check=button_check)
     except asyncio.TimeoutError:
         userinfo = user.load_user(msg.author.id, conn)
 
@@ -184,7 +184,7 @@ async def _company_invite(bot, msg, conn, split_data):
             companyinfo = company.load_company(userinfo.company, conn)
 
             if companyinfo is not None:
-                companyinfo.invites.remove(str(person.id))
+                companyinfo.invites.remove(person.id)
                 company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
                 if userinfo.settings.notifs:
@@ -203,7 +203,7 @@ async def _company_invite(bot, msg, conn, split_data):
             companyinfo = company.load_company(userinfo.company, conn)
 
             if companyinfo is not None:
-                companyinfo.invites.remove(str(msg.author.id))
+                companyinfo.invites.remove(person.id)
                 company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
                 if userinfo.settings.notifs:
@@ -217,7 +217,7 @@ async def _company_invite(bot, msg, conn, split_data):
 
     userinfo = user.load_user(msg.author.id, conn)
 
-    companyinfo.invites.remove(str(person.id))
+    companyinfo.invites.remove(person.id)
     company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
     if userinfo.company is None:
