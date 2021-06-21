@@ -7,7 +7,7 @@ Join the discord
 (Note that all `python3` references may need to be changed out for `python` if you're on windows)
 
 1. Make sure python is installed with `python3 --version` (If it's not, you can download it [here](https://www.python.org/downloads/))
-2. Install dependancies with `python3 -m pip install -r requirements.txt`
+2. Install dependencies with `python3 -m pip install -r requirements.txt`
 3. Setup a MySQL database (If you need to download it, you can find it [here](https://www.mysql.com/downloads/))
 4. Run "Talia.py" (In the src folder) with `python3 Talia.py`. This will create a configuration (config.json) file in the same directory
 5. Fill in all the sections (A guide on that can be found [here](#config))
@@ -37,7 +37,7 @@ Things Talia uses
 - [Python](https://www.python.org/) - High level programming language
 - [MySQL](https://www.mysql.com/) - Database system
 
-## Dependancies
+## Dependencies
 Python packages that Talia uses
 
 - [discord.py](https://pypi.org/project/discord.py/)/[discord-components](https://pypi.org/project/discord-components/) - API wrapper for discord
