@@ -125,16 +125,23 @@ async def _company_invite(bot, msg, conn, split_data):
     split_data[2] = split_data[2].replace("<@", "").replace("!", "").replace(">", "")
 
     try:
-        person = await bot.fetch_user(int(split_data[2]))
+        person_id = int(split_data[2])
     except ValueError:
         await message.send_error(msg, "Invalid user")
         return
-    except discord.NotFound:
-        await message.send_error(msg, "I can't find that person")
+
+    if person_id == msg.author.id:
+        await message.send_error(msg, "You can't invite yourself to a company")
         return
-    except discord.HTTPException:
-        await message.send_error(msg, "An error occurred and the command couldn't be run")
-        return
+    else:
+        try:
+            person = await bot.fetch_user(int(split_data[1]))
+        except discord.NotFound:
+            await message.send_error(msg, "I can't find that person")
+            return
+        except discord.HTTPException:
+            await message.send_error(msg, "An error occurred and the command couldn't be run")
+            return
 
     if person.bot:
         await message.send_error(msg, "I can't invite a bot to the company")
@@ -292,23 +299,26 @@ async def _company_kick(bot, msg, conn, split_data):
         return
 
     try:
-        person = await bot.fetch_user(int(split_data[2]))
+        person_id = int(split_data[2])
     except ValueError:
         await message.send_error(msg, "Invalid user")
         return
-    except discord.NotFound:
-        await message.send_error(msg, "I can't find that person")
+
+    if person_id == msg.author.id:
+        await message.send_error(msg, "You can't kick yourself")
         return
-    except discord.HTTPException:
-        await message.send_error(msg, "An error occurred and the command couldn't be run")
-        return
+    else:
+        try:
+            person = await bot.fetch_user(int(split_data[1]))
+        except discord.NotFound:
+            await message.send_error(msg, "I can't find that person")
+            return
+        except discord.HTTPException:
+            await message.send_error(msg, "An error occurred and the command couldn't be run")
+            return
 
     if person.bot:
         await message.send_error(msg, f"{str(person)} isn't in the company")
-        return
-
-    if person == msg.author:
-        await message.send_error(msg, "You can't kick yourself from the company")
         return
 
     if str(person.id) not in companyinfo.members.key():

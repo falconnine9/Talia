@@ -128,6 +128,8 @@ async def mentioned_users(bot, msg, conn):
                 mentioned = await bot.fetch_user(int(arg))
             except discord.NotFound:
                 continue
+            except discord.HTTPException:
+                continue
             mentioned_userinfo = user.load_user(mentioned.id, conn)
             if mentioned_userinfo is None:
                 new_user = abc.User(mentioned.id)

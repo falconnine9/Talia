@@ -18,16 +18,22 @@ async def run(bot, msg, conn):
         split_data[1] = split_data[1].replace("<@", "").replace("!", "").replace(">", "")
 
     try:
-        person = await bot.fetch_user(int(split_data[1]))
+        person_id = int(split_data[1])
     except ValueError:
         await message.send_error(msg, "Invalid user")
         return
-    except discord.NotFound:
-        await message.send_error(msg, "I can't find that person")
-        return
-    except discord.HTTPException:
-        await message.send_error(msg, "An error occurred and the command couldn't be run")
-        return
+
+    if person_id == msg.author.id:
+        person = msg.author
+    else:
+        try:
+            person = await bot.fetch_user(int(split_data[1]))
+        except discord.NotFound:
+            await message.send_error(msg, "I can't find that person")
+            return
+        except discord.HTTPException:
+            await message.send_error(msg, "An error occurred and the command couldn't be run")
+            return
 
     if person.bot:
         await message.send_error(msg, "I can't get the inventory of a bot")

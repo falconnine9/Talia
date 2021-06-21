@@ -36,22 +36,27 @@ async def run(bot, msg, conn):
         split_data[1] = split_data[1].replace("<@", "").replace("!", "").replace(">", "")
 
     try:
-        person = await bot.fetch_user(int(split_data[1]))
+        person_id = int(split_data[1])
     except ValueError:
         await message.send_error(msg, "Invalid user")
         return
-    except discord.NotFound:
-        await message.send_error(msg, "I can't find that person")
-        return
-    except discord.HTTPException:
-        await message.send_error(msg, "An error occurred and the command couldn't be run")
-        return
+
+    if person_id == msg.author.id:
+        person = msg.author
+    else:
+        try:
+            person = await bot.fetch_user(int(split_data[1]))
+        except discord.NotFound:
+            await message.send_error(msg, "I can't find that person")
+            return
+        except discord.HTTPException:
+            await message.send_error(msg, "An error occurred and the command couldn't be run")
+            return
 
     if person.bot:
         await message.send_error(msg, "I can't get the information of a bot")
         return
 
-    sent_msg = await message.send_message(msg, "Gathering information...")
     personinfo = user.load_user(person.id, conn)
 
     partner, parents, children = await _load_family_info(bot, personinfo)
@@ -91,7 +96,7 @@ Children: {children}
 
 **--Pet--**
 {petinfo}"""
-    await message.edit_message(sent_msg, send_str, title=str(person), thumbnail=person.avatar_url)
+    await message.send_message(msg, send_str, title=str(person), thumbnail=person.avatar_url)
 
 
 async def _load_family_info(bot, personinfo):

@@ -20,16 +20,23 @@ async def run(bot, msg, conn):
     split_data[1] = split_data[1].replace("<@", "").replace("!", "").replace(">", "")
 
     try:
-        person = await bot.fetch_user(int(split_data[1]))
+        person_id = int(split_data[1])
     except ValueError:
         await message.send_error(msg, "Invalid user")
         return
-    except discord.NotFound:
-        await message.send_error(msg, "I can't find that person")
+
+    if person_id == msg.author.id:
+        await message.send_error(msg, "You can't disown yourself")
         return
-    except discord.HTTPException:
-        await message.send_error(msg, "An error occurred and the command couldn't be run")
-        return
+    else:
+        try:
+            person = await bot.fetch_user(int(split_data[1]))
+        except discord.NotFound:
+            await message.send_error(msg, "I can't find that person")
+            return
+        except discord.HTTPException:
+            await message.send_error(msg, "An error occurred and the command couldn't be run")
+            return
 
     userinfo = user.load_user(msg.author.id, conn)
 
