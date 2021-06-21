@@ -82,7 +82,7 @@ async def run(bot, msg, conn):
     )
 
     def button_check(interaction):
-        if interaction.author != msg.author:
+        if interaction.author != person:
             return False
 
         if interaction.message != sent_msg:
