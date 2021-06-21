@@ -98,14 +98,14 @@ async def _load_family_info(bot, personinfo):
     if personinfo.partner is None:
         partner = None
     else:
-        partner = await bot.fetch_user(personinfo.partner)
+        partner = bot.get_user(personinfo.partner)
 
     if len(personinfo.parents) == 0:
         parents = None
     else:
         all_parents = []
         for parent in personinfo.parents:
-            parent_user = await bot.fetch_user(parent)
+            parent_user = bot.get_user(parent)
             all_parents.append(str(parent_user))
         parents = ", ".join(all_parents)
 
@@ -114,7 +114,7 @@ async def _load_family_info(bot, personinfo):
     else:
         all_children = []
         for child in personinfo.children:
-            child_user = await bot.fetch_user(child)
+            child_user = bot.get_user(child)
             all_children.append(str(child_user))
         children = ", ".join(all_children)
 

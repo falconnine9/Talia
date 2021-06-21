@@ -63,8 +63,7 @@ commands = {
     # Administration
     "resetinfo": Commands.Administration.resetinfo,
     "resettimers": Commands.Administration.resettimers,
-    "setuserattr": Commands.Administration.setuserattr,
-    "activity": Commands.Administration.activity
+    "setuserattr": Commands.Administration.setuserattr
 }
 
 

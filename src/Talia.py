@@ -53,7 +53,10 @@ else:
         other.log("Complete")
 
 init.db(conn)
+
 bot = discord.Client(intents=discord.Intents.all())
+bot.activity = discord.Game(name="t!help")
+
 guild_prefixes = {}
 
 
@@ -64,17 +67,16 @@ async def on_ready():
      to discord and all data has processed
 
     1. A success log will be made
-    2. The main timer, edu timer and invest timer will be
-     added to the main event loop
+    2. Puts each timer into the main loop
     """
     other.log("Ready", "success")
-
     discord_components.DiscordComponents(bot)
 
     bot.loop.create_task(cache_loading_loop())
     bot.loop.create_task(loop.main_timer(conn))
     bot.loop.create_task(loop.edu_timer(bot, conn))
     bot.loop.create_task(loop.invest_timer(bot, conn))
+    bot.loop.create_task(loop.activity_loop(bot))
 
 
 @bot.event
@@ -190,8 +192,6 @@ async def cache_loading_loop():
     1. Creates a cursor object that will always be used
     2. Fetches all prefixes from the database
     3. Places each one into the cache
-    4. Gets guild numbers and members per guild
-    5. Puts the stat information int a file
     """
     cur = conn.cursor()
     while True:
@@ -200,15 +200,6 @@ async def cache_loading_loop():
 
         for prefix in all_prefixes:
             guild_prefixes[prefix[0]] = prefix[1]
-
-        guild_num = 0
-        member_num = 0
-        for guild_ in bot.guilds:
-            guild_num += 1
-            member_num += len([member for member in guild_.members if not member.bot])
-
-        with open("stat_cache", "w") as f:
-            f.write(f"{guild_num},{member_num}")
 
         await asyncio.sleep(600)
 

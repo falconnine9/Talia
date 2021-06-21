@@ -8,6 +8,5 @@ Initialization file for the Administration command category
 from Commands.Administration import (
     resetinfo,
     resettimers,
-    setuserattr,
-    activity
+    setuserattr
 )

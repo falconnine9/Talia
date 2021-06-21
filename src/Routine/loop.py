@@ -89,3 +89,27 @@ async def invest_timer(bot, conn):
             other.log(f"Invest timer is {wait_time * -1} seconds behind schedule", "warning")
         else:
             await asyncio.sleep(1 - wait_time)
+
+
+async def activity_loop(bot):
+    current_activity = 0
+
+    while True:
+        await asyncio.sleep(600)
+
+        if current_activity == 0:
+            await bot.change_presence(
+                activity=discord.Activity(
+                    type=discord.ActivityType.watching,
+                    name=f"{len(bot.guilds)} servers and {len(bot.users)} members"
+                )
+            )
+            current_activity = 1
+
+        elif current_activity == 1:
+            await bot.change_presence(
+                activity=discord.Game(
+                    name="t!help"
+                )
+            )
+            current_activity = 0

@@ -46,12 +46,11 @@ async def lb_coins(bot, msg, conn):
     emojis = other.load_emojis(bot)
 
     for i, user in enumerate(top_users):
-        try:
-            user_obj = await bot.fetch_user(user[0])
-        except discord.NotFound:
+        user_obj = bot.get_user(user[0])
+
+        if user_obj is None:
             continue
-        except discord.HTTPException:
-            continue
+
         user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]} {emojis.coin}")
 
     await message.edit_message(sent_msg, "\n".join(user_list), title="Coins Leaderboard")
@@ -70,12 +69,11 @@ async def lb_level(bot, msg, conn):
     user_list = []
 
     for i, user in enumerate(top_users):
-        try:
-            user_obj = await bot.fetch_user(user[0])
-        except discord.NotFound:
+        user_obj = bot.get_user(user[0])
+
+        if user_obj is None:
             continue
-        except discord.HTTPException:
-            continue
+
         user_list.append(f"{i + 1}. {str(user_obj)} | Level {user[1]}")
 
     await message.edit_message(sent_msg, "\n".join(user_list), title="Level Leaderboard")
@@ -94,12 +92,11 @@ async def lb_multiplier(bot, msg, conn):
     user_list = []
 
     for i, user in enumerate(top_users):
-        try:
-            user_obj = await bot.fetch_user(user[0])
-        except discord.NotFound:
+        user_obj = bot.get_user(user[0])
+
+        if user_obj is None:
             continue
-        except discord.HTTPException:
-            continue
+
         user_list.append(f"{i + 1}. {str(user_obj)} | x{user[1]}")
 
     await message.edit_message(sent_msg, "\n".join(user_list), title="Multiplier Leaderboard")
