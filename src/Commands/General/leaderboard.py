@@ -48,9 +48,9 @@ async def lb_coins(bot, msg, conn):
         user_obj = bot.get_user(user[0])
 
         if user_obj is None:
-            continue
-
-        user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]} {emojis.coin}")
+            user_list.append(f"{i + 1}: Unknown#0000 | {user[1]} {emojis.coin}")
+        else:
+            user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]} {emojis.coin}")
 
     await message.send_message(msg, "\n".join(user_list), title="Coins Leaderboard")
 
@@ -70,9 +70,9 @@ async def lb_level(bot, msg, conn):
         user_obj = bot.get_user(user[0])
 
         if user_obj is None:
-            continue
-
-        user_list.append(f"{i + 1}. {str(user_obj)} | Level {user[1]}")
+            user_list.append(f"{i + 1}: Unknown#0000 | Level {user[1]}")
+        else:
+            user_list.append(f"{i + 1}. {str(user_obj)} | Level {user[1]}")
 
     await message.send_message(msg, "\n".join(user_list), title="Level Leaderboard")
 
@@ -92,8 +92,8 @@ async def lb_multiplier(bot, msg, conn):
         user_obj = bot.get_user(user[0])
 
         if user_obj is None:
-            continue
-
-        user_list.append(f"{i + 1}. {str(user_obj)} | x{user[1]}")
+            user_list.append(f"{i + 1}: Unknown#0000 | x{user[1]}")
+        else:
+            user_list.append(f"{i + 1}. {str(user_obj)} | x{user[1]}")
 
     await message.send_message(msg, "\n".join(user_list), title="Multiplier Leaderboard")

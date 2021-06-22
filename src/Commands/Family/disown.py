@@ -56,7 +56,7 @@ async def run(bot, msg, conn):
     await message.send_message(msg, f"{str(person)} is not longer your child", title="Disowned")
 
     personinfo = user.load_user(person.id, conn)
-    if personinfo.settings.notifs:
+    if personinfo.settings.notifs["disowned"]:
         try:
             await message.send_message(None, f"{str(msg.author)} disowned you", title="Disowned", channel=person)
         except discord.Forbidden:

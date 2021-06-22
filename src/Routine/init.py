@@ -7,6 +7,8 @@ Initializing for the program
 """
 import json
 import os
+import mysql.connector
+import sshtunnel
 import sys
 from Utils import other
 
@@ -26,7 +28,8 @@ config_file = {
         "database": None
     },
     "links": {},
-    "full_logging": False
+    "full_logging": False,
+    "cache_size": 1000
 }
 
 tables = {
@@ -153,3 +156,31 @@ def db(conn):
 
     cur.execute("UPDATE companies SET invites = %s", (json.dumps([]),))
     conn.commit()
+
+
+def open_main_database(db_info):
+    if db_info["host"] == "localhost" or db_info["host"] == "127.0.0.1":
+        other.log(f"Opening connection to local database ({db_info['database']})")
+        conn = mysql.connector.connect(
+            user=db_info["user"], password=db_info["password"],
+            host="localhost", port=3306,
+            database=db_info["database"]
+        )
+        other.log("Complete", "success")
+
+    else:
+        other.log(f"Establishing SSH tunnel connection to {db_info['ssh_username']}@{db_info['host']}")
+        with sshtunnel.SSHTunnelForwarder(
+                db_info["host"], ssh_username=db_info["ssh_username"],
+                ssh_password=db_info["ssh_password"], remote_bind_address=("127.0.0.1", 22)
+        ) as tunnel:
+            other.log("Complete", "success")
+            other.log(f"Opening connection to remote database ({db_info['database']})")
+            conn = mysql.connector.connect(
+                user=db_info["user"], password=db_info["password"],
+                host=db_info["host"], port=3306,
+                database=db_info["database"]
+            )
+            other.log("Complete")
+
+    return conn

@@ -47,7 +47,7 @@ async def run(bot, msg, conn):
     await message.send_message(msg, f"You divorced {str(person)}", title="Divorced")
 
     personinfo = user.load_user(person.id, conn)
-    if personinfo.settings.notifs:
+    if personinfo.settings.notifs["divorced"]:
         try:
             await message.send_message(None, f"{str(msg.author)} divorced you", title="Divorced", channel=person)
         except discord.Forbidden:

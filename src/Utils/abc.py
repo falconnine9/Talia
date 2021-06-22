@@ -15,6 +15,7 @@ class Config:
         self.backups = value_dict["backups"]
         self.links = value_dict["links"]
         self.full_logging = value_dict["full_logging"]
+        self.cache_size = value_dict["cache_size"]
 
     def cvt_dict(self):
         return {
@@ -23,7 +24,8 @@ class Config:
             "db": self.db,
             "backups": self.backups,
             "links": self.links,
-            "full_logging": self.full_logging
+            "full_logging": self.full_logging,
+            "cache_size": self.cache_size
         }
 
 
@@ -66,7 +68,14 @@ class User:
         self.partner = None
         self.parents = []
         self.children = []
-        self.settings = Settings(True)
+        self.settings = Settings({
+            "paid": True,
+            "company_invites": True,
+            "divorced": True,
+            "disowned": True,
+            "school": True,
+            "investment": True
+        })
 
     def cvt_dict(self):
         return {

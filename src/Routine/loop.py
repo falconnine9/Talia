@@ -40,13 +40,7 @@ async def edu_timer(bot, conn):
 
         for c_user in completed_users:
             user.set_user_attr(c_user[0], "edu_level", c_user[2], conn, False)
-            try:
-                c_user_obj = await bot.fetch_user(c_user[0])
-                await message.send_message(None, "Your education level has been upgraded", channel=c_user_obj)
-            except discord.NotFound:
-                continue
-            except discord.Forbidden:
-                continue
+            bot.loop.create_task(_edu_timer_alert(bot, c_user, conn))
 
         cur.execute("DELETE FROM edu_timers WHERE time <= 0")
         conn.commit()
@@ -57,6 +51,20 @@ async def edu_timer(bot, conn):
             other.log(f"Edu timer is {wait_time * -1} seconds behind schedule", "warning")
         else:
             await asyncio.sleep(1 - wait_time)
+
+
+async def _edu_timer_alert(bot, c_user, conn):
+    c_user_obj = bot.get_user(c_user[0])
+
+    if c_user_obj is not None:
+        c_userinfo = user.load_user(c_user_obj.id, conn)
+
+        if c_userinfo is not None:
+            if c_userinfo.settings.notifs["school"]:
+                try:
+                    await message.send_message(None, "Your education level has been upgraded", channel=c_user_obj)
+                except discord.Forbidden:
+                    pass
 
 
 async def invest_timer(bot, conn):
@@ -71,14 +79,10 @@ async def invest_timer(bot, conn):
 
         for c_user in completed_users:
             c_userinfo = user.load_user(c_user[0], conn)
-            user.set_user_attr(c_user[0], "coins", c_userinfo.coins + round(c_user[2] * c_user[3]), conn, False)
-            try:
-                c_user_obj = await bot.fetch_user(c_user[0])
-                await message.send_message(None, f"You earned {round(c_user[2] * c_user[3])} {emojis.coin} from your investment", channel=c_user_obj)
-            except discord.NotFound:
-                continue
-            except discord.Forbidden:
-                continue
+
+            if c_userinfo is not None:
+                user.set_user_attr(c_user[0], "coins", c_userinfo.coins + round(c_user[2] * c_user[3]), conn, False)
+                bot.loop.create_task(_invest_timer_alert(bot, c_user, c_userinfo, emojis))
 
         cur.execute("DELETE FROM invest_timers WHERE time <= 0")
         conn.commit()
@@ -89,6 +93,16 @@ async def invest_timer(bot, conn):
             other.log(f"Invest timer is {wait_time * -1} seconds behind schedule", "warning")
         else:
             await asyncio.sleep(1 - wait_time)
+
+
+async def _invest_timer_alert(bot, c_user, c_userinfo, emojis):
+    c_user_obj = bot.get_user(c_user[0])
+    if c_user_obj is not None:
+        if c_userinfo.settings.notifs["investment"]:
+            try:
+                await message.send_message(None, f"You earned {round(c_user[2] * c_user[3])} {emojis.coin} from your investment", channel=c_user_obj)
+            except discord.Forbidden:
+                pass
 
 
 async def activity_loop(bot):

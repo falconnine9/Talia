@@ -194,7 +194,7 @@ async def _company_invite(bot, msg, conn, split_data):
                 companyinfo.invites.remove(person.id)
                 company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
-                if userinfo.settings.notifs:
+                if userinfo.settings.notifs["company_invites"]:
                     try:
                         await message.send_message(None, f"{str(person)} didn't respond to the invite", channel=msg.author)
                     except discord.Forbidden:
@@ -213,7 +213,7 @@ async def _company_invite(bot, msg, conn, split_data):
                 companyinfo.invites.remove(person.id)
                 company.set_company_attr(companyinfo.discrim, "invites", companyinfo.invites, conn)
 
-                if userinfo.settings.notifs:
+                if userinfo.settings.notifs["company_invites"]:
                     try:
                         await message.send_message(None, f"{str(person)} declined the invite", channel=msg.author)
                     except discord.Forbidden:
@@ -239,7 +239,7 @@ async def _company_invite(bot, msg, conn, split_data):
 
     if personinfo.company is not None:
         await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Invite")
-        if userinfo.settings.notifs:
+        if userinfo.settings.notifs["company_invites"]:
             try:
                 await message.send_error(None, f"{str(person)} joined another company", channel=msg.author)
             except discord.Forbidden:
@@ -274,7 +274,7 @@ async def _company_invite(bot, msg, conn, split_data):
 
     await message.response_edit(sent_msg, interaction, "You joined the company", title="Joined")
 
-    if userinfo.settings.notifs:
+    if userinfo.settings.notifs["company_invites"]:
         try:
             await message.send_message(None, f"{str(person)} joined the company", channel=msg.author)
         except discord.Forbidden:

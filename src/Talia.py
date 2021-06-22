@@ -15,8 +15,6 @@ On startup
 import asyncio
 import discord
 import discord_components
-import mysql.connector
-import sshtunnel
 import traceback
 
 from Routine import init, handle, loop, post_checks
@@ -25,36 +23,10 @@ from Utils import guild, user, message, abc, other
 other.log("Preparing")
 init.config()
 
-db_info = other.load_config().db
-if db_info["host"] == "localhost" or db_info["host"] == "127.0.0.1":
-    other.log(f"Opening connection to local database ({db_info['database']})")
-    conn = mysql.connector.connect(
-        user=db_info["user"], password=db_info["password"],
-        host="localhost", port=3306,
-        database=db_info["database"]
-    )
-    other.log("Complete", "success")
-
-else:
-    other.log(f"Establishing SSH tunnel connection to {db_info['ssh_username']}@{db_info['host']}")
-    with sshtunnel.SSHTunnelForwarder(
-        db_info["host"],
-        ssh_username=db_info["ssh_username"],
-        ssh_password=db_info["ssh_password"],
-        remote_bind_address=("127.0.0.1", 22)
-    ) as tunnel:
-        other.log("Complete", "success")
-        other.log(f"Opening connection to remote database ({db_info['database']})")
-        conn = mysql.connector.connect(
-            user=db_info["user"], password=db_info["password"],
-            host=db_info["host"], port=3306,
-            database=db_info["database"]
-        )
-        other.log("Complete")
-
+conn = init.open_main_database(other.load_config().db)
 init.db(conn)
 
-bot = discord.Client(intents=discord.Intents.all())
+bot = discord.Client(intents=discord.Intents.all(), max_messages=other.load_config().cache_size)
 bot.activity = discord.Game(name="t!help")
 
 guild_prefixes = {}
