@@ -23,7 +23,7 @@ async def main_timer(bot, conn):
         completed_users = cur.fetchall()
 
         for c_user in completed_users:
-            userinfo = user.load_user(c_user[2], conn)
+            userinfo = user.load_user(c_user[1], conn)
 
             if userinfo.settings.timernotifs[c_user[0].split(".")[0]]:
                 bot.loop.create_task(_main_timer_alert(bot, c_user))
@@ -40,11 +40,14 @@ async def main_timer(bot, conn):
 
 
 async def _main_timer_alert(bot, c_user):
-    c_user_obj = bot.get_user(c_user[2])
+    c_user_obj = bot.get_user(c_user[1])
 
     if c_user_obj is not None:
         timer_name = meta.timer_names[c_user[0].split(" ")[0]]
-        await message.send_message(None, f"Your {timer_name} timer has ran out", title="Timer notification", channel=c_user_obj)
+        try:
+            await message.send_message(None, f"Your {timer_name} timer has ran out", title="Timer notification", channel=c_user_obj)
+        except discord.Forbidden:
+            pass
 
 
 async def edu_timer(bot, conn):
