@@ -1,23 +1,15 @@
 """
 Talia Discord Bot
 GNU General Public License v3.0
-notifs.py (Commands/Settings)
+timernotifs.py (Commands/Settings)
 
-notifs command
+timernotifs command
 """
 import asyncio
 import discord
 import discord_components
 from Utils import user, message
-
-notif_names = {
-    "paid": "Paid",
-    "company_invites": "Company Invites",
-    "divorced": "Divorced",
-    "disowned": "Disowned",
-    "school": "Education",
-    "investment": "Investment"
-}
+from Storage import meta
 
 
 async def run(bot, msg, conn):
@@ -26,14 +18,14 @@ async def run(bot, msg, conn):
     i = 0
     tmp = []
 
-    for notif in userinfo.settings.notifs.keys():
-        if userinfo.settings.notifs[notif]:
+    for notif in userinfo.settings.timernotifs.keys():
+        if userinfo.settings.timernotifs[notif]:
             tmp.append(discord_components.Button(
-                label=notif_names[notif], style=discord_components.ButtonStyle.green, id=notif
+                label=meta.timer_names[notif], style=discord_components.ButtonStyle.green, id=notif
             ))
         else:
             tmp.append(discord_components.Button(
-                label=notif_names[notif], style=discord_components.ButtonStyle.red, id=notif
+                label=meta.timer_names[notif], style=discord_components.ButtonStyle.red, id=notif
             ))
 
         if i == 2:
@@ -46,12 +38,12 @@ async def run(bot, msg, conn):
     if len(tmp) != 0:
         components.append(tmp)
 
-    sent_msg = await message.send_message(msg, f"""Enable or disable any notifications
+    sent_msg = await message.send_message(msg, f"""Enable or disable any timer notifications
 
 Green: Enabled
 Red: Disabled
 
-(Press on the button to enable or disable the notification)""", title="Notification Settings", components=components)
+(Press on the button to enable or disable the notification)""", title="Timer Notification Settings", components=components)
 
     def button_check(interaction):
         if interaction.author != msg.author:
@@ -74,20 +66,21 @@ Red: Disabled
             return
 
         userinfo = user.load_user(msg.author.id, conn)
-        userinfo.settings.notifs[interaction.component.id] = not userinfo.settings.notifs[interaction.component.id]
+        userinfo.settings.timernotifs[interaction.component.id] = not userinfo.settings.timernotifs[interaction.component.id]
         user.set_user_attr(msg.author.id, "settings", userinfo.settings.cvt_dict(), conn)
 
         components = []
         i = 0
         tmp = []
-        for notif in userinfo.settings.notifs.keys():
-            if userinfo.settings.notifs[notif]:
+
+        for notif in userinfo.settings.timernotifs.keys():
+            if userinfo.settings.timernotifs[notif]:
                 tmp.append(discord_components.Button(
-                    label=notif_names[notif], style=discord_components.ButtonStyle.green, id=notif
+                    label=meta.timer_names[notif], style=discord_components.ButtonStyle.green, id=notif
                 ))
             else:
                 tmp.append(discord_components.Button(
-                    label=notif_names[notif], style=discord_components.ButtonStyle.red, id=notif
+                    label=meta.timer_names[notif], style=discord_components.ButtonStyle.red, id=notif
                 ))
 
             if i == 2:
@@ -100,10 +93,10 @@ Red: Disabled
         if len(tmp) != 0:
             components.append(tmp)
 
-        embed = discord.Embed(description=f"""Enable or disable any notifications
+        embed = discord.Embed(description=f"""Enable or disable any timer notifications
 
 Green: Enabled
 Red: Disabled
 
-(Press on the button to enable or disable the notification)""", color=discord.Colour.purple(), title="Notification Settings")
+(Press on the button to enable or disable the notification)""", color=discord.Colour.purple(), title="Timer Notification Settings")
         await interaction.respond(type=7, embed=embed, components=components)

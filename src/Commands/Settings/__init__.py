@@ -10,5 +10,6 @@ from Commands.Settings import (
     channels,
     alias,
     shopitem,
-    notifs
+    notifs,
+    timernotifs
 )

@@ -7,14 +7,7 @@ timers command
 """
 import discord
 from Utils import timer, message
-
-timer_names = {
-    "work": "Work",
-    "mine": "Mining",
-    "sidejob": "Side Job",
-    "hourly": "Hourly",
-    "daily": "Daily"
-}
+from Storage import meta
 
 
 async def run(bot, msg, conn):
@@ -54,7 +47,7 @@ async def run(bot, msg, conn):
 
     all_timers = []
     for timer_ in main_timers:
-        all_timers.append(f"{timer_names[timer_[0].split('.')[0]]}: {timer.load_time(timer_[1])}")
+        all_timers.append(f"{meta.timer_names[timer_[0].split('.')[0]]}: {timer.load_time(timer_[1])}")
 
     if edu_timer is not None:
         all_timers.append(f"School: {timer.load_time(edu_timer[0])}")

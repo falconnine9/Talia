@@ -68,14 +68,7 @@ class User:
         self.partner = None
         self.parents = []
         self.children = []
-        self.settings = Settings({
-            "paid": True,
-            "company_invites": True,
-            "divorced": True,
-            "disowned": True,
-            "school": True,
-            "investment": True
-        })
+        self.settings = Settings(None, None).default()
 
     def cvt_dict(self):
         return {
@@ -250,13 +243,33 @@ class Pet:
 
 
 class Settings:
-    def __init__(self, notifs):
+    def __init__(self, notifs, timernotifs):
         self.notifs = notifs
+        self.timernotifs = timernotifs
 
     def cvt_dict(self):
         return {
-            "notifs": self.notifs
+            "notifs": self.notifs,
+            "timernotifs": self.timernotifs
         }
+
+    def default(self):
+        self.notifs = {
+            "paid": True,
+            "company_invites": True,
+            "divorced": True,
+            "disowned": True,
+            "school": True,
+            "investment": True
+        }
+        self.timernotifs = {
+            "work": False,
+            "mine": False,
+            "sidejob": False,
+            "hourly": False,
+            "daily": False
+        }
+        return self
 
 
 class BJCard:

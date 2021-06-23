@@ -93,7 +93,8 @@ def load_user(user_id, conn):
 
     tmp_settings = json.loads(userinfo[19])
     new_user.settings = abc.Settings(
-        tmp_settings["notifs"]
+        tmp_settings["notifs"],
+        tmp_settings["timernotifs"]
     )
     
     return new_user
@@ -151,7 +152,7 @@ def write_user(obj, conn, write=True):
         json.dumps(obj.children),
         json.dumps(obj.settings.cvt_dict())
     ))
-    
+
     if write:
         conn.commit()
 
@@ -161,9 +162,9 @@ def set_user_attr(user_id, attr, val, conn, write=True):
     Sets a certain attribute of a user in the database
 
     1. Checks for the value type and converts it to a value
-     that sqlite can understand
-    2. Creates a new cursor and sets the value
-    3. Commits if the write parameter is true
+     that MySQL can understand
+    3. Creates a new cursor and sets the value
+    4. Commits if the write parameter is true
     """
     if attr == "inventory":
         val = json.dumps([item.cvt_dict() for item in val])
@@ -172,9 +173,9 @@ def set_user_attr(user_id, attr, val, conn, write=True):
             val = str(val)
         elif type(val) == list or type(val) == dict:
             val = json.dumps(val)
-    
+
     cur = conn.cursor()
     cur.execute(f"UPDATE users SET {attr} = %s WHERE id = %s", (val, user_id))
-    
+
     if write:
         conn.commit()

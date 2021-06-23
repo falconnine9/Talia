@@ -21,5 +21,6 @@ from Commands.General import (
     balance,
     timers,
     pay,
-    pet
+    pet,
+    sell
 )

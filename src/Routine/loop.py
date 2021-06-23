@@ -10,14 +10,24 @@ import asyncio
 import discord
 import time
 from Utils import user, message, other
+from Storage import meta
 
 
-async def main_timer(conn):
+async def main_timer(bot, conn):
     cur = conn.cursor()
     while True:
         start_time = time.time()
 
         cur.execute("UPDATE timers SET time = time - 1")
+        cur.execute("SELECT name, user FROM timers WHERE time <= 0 AND user IS NOT NULL")
+        completed_users = cur.fetchall()
+
+        for c_user in completed_users:
+            userinfo = user.load_user(c_user[2], conn)
+
+            if userinfo.settings.timernotifs[c_user[0].split(".")[0]]:
+                bot.loop.create_task(_main_timer_alert(bot, c_user))
+
         cur.execute("DELETE FROM timers WHERE time <= 0")
         conn.commit()
 
@@ -27,6 +37,14 @@ async def main_timer(conn):
             other.log(f"Main timer is {wait_time * -1} seconds behind schedule", "warning")
         else:
             await asyncio.sleep(1 - wait_time)
+
+
+async def _main_timer_alert(bot, c_user):
+    c_user_obj = bot.get_user(c_user[2])
+
+    if c_user_obj is not None:
+        timer_name = meta.timer_names[c_user[0].split(" ")[0]]
+        await message.send_message(None, f"Your {timer_name} timer has ran out", title="Timer notification", channel=c_user_obj)
 
 
 async def edu_timer(bot, conn):
@@ -62,7 +80,7 @@ async def _edu_timer_alert(bot, c_user, conn):
         if c_userinfo is not None:
             if c_userinfo.settings.notifs["school"]:
                 try:
-                    await message.send_message(None, "Your education level has been upgraded", channel=c_user_obj)
+                    await message.send_message(None, "Your education level has been upgraded", title="School notification", channel=c_user_obj)
                 except discord.Forbidden:
                     pass
 
@@ -100,7 +118,7 @@ async def _invest_timer_alert(bot, c_user, c_userinfo, emojis):
     if c_user_obj is not None:
         if c_userinfo.settings.notifs["investment"]:
             try:
-                await message.send_message(None, f"You earned {round(c_user[2] * c_user[3])} {emojis.coin} from your investment", channel=c_user_obj)
+                await message.send_message(None, f"You earned {round(c_user[2] * c_user[3])} {emojis.coin} from your investment", title="Investment notification", channel=c_user_obj)
             except discord.Forbidden:
                 pass
 

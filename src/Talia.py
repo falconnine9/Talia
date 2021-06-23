@@ -45,7 +45,7 @@ async def on_ready():
     discord_components.DiscordComponents(bot)
 
     bot.loop.create_task(cache_loading_loop())
-    bot.loop.create_task(loop.main_timer(conn))
+    bot.loop.create_task(loop.main_timer(bot, conn))
     bot.loop.create_task(loop.edu_timer(bot, conn))
     bot.loop.create_task(loop.invest_timer(bot, conn))
     bot.loop.create_task(loop.activity_loop(bot))

@@ -29,6 +29,7 @@ commands = {
     "timers": Commands.General.timers,
     "pay": Commands.General.pay,
     "pet": Commands.General.pet,
+    "sell": Commands.General.sell,
 
     # Earning
     "job": Commands.Earning.job,
@@ -59,6 +60,7 @@ commands = {
     "alias": Commands.Settings.alias,
     "shopitem": Commands.Settings.shopitem,
     "notifs": Commands.Settings.notifs,
+    "timernotifs": Commands.Settings.timernotifs,
 
     # Administration
     "resetinfo": Commands.Administration.resetinfo,

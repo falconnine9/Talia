@@ -130,6 +130,14 @@ pet = {
     }
 }
 
+sell = {
+    "desc": "Sell an item from your inventory",
+    "usage": "sell [item]",
+    "args": {
+        "item": "The ID of the item in your inventory"
+    }
+}
+
 
 # <--- Earning ---> #
 
@@ -306,5 +314,11 @@ shopitem = {
 notifs = {
     "desc": "Manage your DM notifications",
     "usage": "notifs",
+    "args": {}
+}
+
+timernotifs = {
+    "desc": "Manage your timer DM notifications",
+    "usage": "timernotifs",
     "args": {}
 }

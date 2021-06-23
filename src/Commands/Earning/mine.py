@@ -8,6 +8,64 @@ mine command
 import random
 from Utils import user, timer, message, abc, other
 
+artifacts = [
+    {
+        "name": "Copper Artifact",
+        "worth": [100, 200],
+        "chance": 0.4
+    },
+    {
+        "name": "Iron Artifact",
+        "worth": [150, 300],
+        "chance": 0.3
+    },
+    {
+        "name": "Gold Artifact",
+        "worth": [500, 1000],
+        "chance": 0.1
+    },
+    {
+        "name": "Diamond Artifact",
+        "worth": [2000, 5000],
+        "chance": 0.05
+    },
+    {
+        "name": "Mithril Artifact",
+        "worth": [7000, 10000],
+        "chance": 0.03
+    },
+    {
+        "name": "Glowing Artifact",
+        "worth": [8000, 10000],
+        "chance": 0.03
+    },
+    {
+        "name": "Silicon Artifact",
+        "worth": [9000, 11000],
+        "chance": 0.02
+    },
+    {
+        "name": "Uranium Artifact",
+        "worth": [10000, 13000],
+        "chance": 0.02
+    },
+    {
+        "name": "Sodium Artifact",
+        "worth": [10000, 14000],
+        "chance": 0.02
+    },
+    {
+        "name": "Neon Artifact",
+        "worth": [10000, 15000],
+        "chance": 0.02
+    },
+    {
+        "name": "Magnesium Artifact",
+        "worth": [14000, 18000],
+        "chance": 0.01
+    }
+]
+
 
 async def run(bot, msg, conn):
     mining_timer = timer.load_timer(f"mine.{msg.author.id}", conn)
@@ -22,6 +80,8 @@ async def run(bot, msg, conn):
         await message.send_error(msg, "You need a pickaxe equipped to mine\n(You can buy one with the `pickaxe` command)")
         return
 
+    artifact_chance = random.randint(1, 3)
+
     earned_coins = round(random.randint(1, 450) * (other.load_multi(userinfo, conn) * userinfo.pickaxe.multiplier))
     earned_xp = round(random.randint(1, 20) * (other.load_multi(userinfo, conn) * userinfo.pickaxe.multiplier))
 
@@ -33,7 +93,31 @@ async def run(bot, msg, conn):
 
     if cooldown_time > 0:
         new_timer = abc.Timer(f"mine.{msg.author.id}", cooldown_time, msg.author.id, None)
-        timer.new_timer(new_timer, conn)
+        if artifact_chance == 1:
+            timer.new_timer(new_timer, conn, False)
+        else:
+            timer.new_timer(new_timer, conn)
 
     emojis = other.load_emojis(bot)
     await message.send_message(msg, f"You did some mining in the caves\n+{earned_coins} {emojis.coin}\n+{earned_xp} XP", title="Mined")
+
+    if len(userinfo.inventory) < 40 and artifact_chance == 1:
+        chance = random.random()
+        total_chance = 0.0
+
+        for artifact in artifacts:
+            if total_chance < chance < total_chance + artifact["chance"]:
+                item = abc.Item(
+                    artifact["name"],
+                    random.randint(artifact["worth"][0], artifact["worth"][1]),
+                    "artifact", {}
+                )
+
+                userinfo.inventory.append(item)
+                user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn, False)
+
+                await message.send_message(msg, f"You found a {artifact['name']}!")
+                break
+
+    if artifact_chance == 1:
+        conn.commit()

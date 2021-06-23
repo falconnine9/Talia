@@ -25,7 +25,8 @@ help_info = {
         "balance": help_list.balance,
         "timers": help_list.timers,
         "pay": help_list.pay,
-        "pet": help_list.pet
+        "pet": help_list.pet,
+        "sell": help_list.sell
     },
     "earning": {
         "job": help_list.job,
@@ -55,7 +56,8 @@ help_info = {
         "channels": help_list.channels,
         "alias": help_list.alias,
         "shopitem": help_list.shopitem,
-        "notifs": help_list.notifs
+        "notifs": help_list.notifs,
+        "timernotifs": help_list.timernotifs
     }
 }
 
