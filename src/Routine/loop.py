@@ -43,7 +43,7 @@ async def _main_timer_alert(bot, c_user):
     c_user_obj = bot.get_user(c_user[1])
 
     if c_user_obj is not None:
-        timer_name = meta.timer_names[c_user[0].split(" ")[0]]
+        timer_name = meta.timer_names[c_user[0].split(".")[0]]
         try:
             await message.send_message(None, f"Your {timer_name} timer has ran out", title="Timer notification", channel=c_user_obj)
         except discord.Forbidden:
