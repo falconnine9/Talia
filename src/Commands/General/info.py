@@ -8,6 +8,11 @@ info command
 import discord
 from Utils import user, company, message, other
 
+#   Command Information   #
+name = "info"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 edu_levels = {
     1: "Elementary",
     2: "Highschool",

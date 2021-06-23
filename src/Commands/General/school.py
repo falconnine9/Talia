@@ -9,6 +9,11 @@ import asyncio
 import discord_components
 from Utils import user, timer, message, abc, other
 
+#   Command Information   #
+name = "school"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 edu_levels = {
     1: {
         "name": "Elementary",

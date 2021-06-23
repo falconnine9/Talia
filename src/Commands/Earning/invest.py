@@ -10,6 +10,11 @@ import discord_components
 from Utils import user, timer, message, abc, other
 from Storage import help_list
 
+#   Command Information   #
+name = "invest"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 times = {
     "8hour": 28800,
     "day": 86400,

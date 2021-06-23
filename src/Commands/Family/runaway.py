@@ -8,6 +8,11 @@ runaway command
 import discord
 from Utils import user, message
 
+#   Command Information   #
+name = "runaway"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)

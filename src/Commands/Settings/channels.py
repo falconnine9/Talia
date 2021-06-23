@@ -8,6 +8,11 @@ channels command
 from Utils import guild, message, other
 from Storage import help_list
 
+#   Command Information   #
+name = "channels"
+dm_capable = False
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     if not msg.author.guild_permissions.manage_channels and msg.author.id not in other.load_config().owners:

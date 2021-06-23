@@ -9,6 +9,11 @@ import random
 from Utils import user, message, abc, other
 from Storage import help_list
 
+#   Command Information   #
+name = "blackjack"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 suits = ["\u2660", "\u2663", "\u2665", "\u2666"]
 values = {
     "A": 11,

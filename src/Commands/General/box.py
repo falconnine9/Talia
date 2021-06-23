@@ -11,6 +11,11 @@ import random
 from Utils import user, message, abc, other
 from Storage import help_list
 
+#   Command Information   #
+name = "box"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 boxes = {
     1: {
         "name": "Carboard Box",

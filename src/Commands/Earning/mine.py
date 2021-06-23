@@ -8,6 +8,11 @@ mine command
 import random
 from Utils import user, timer, message, abc, other
 
+#   Command Information   #
+name = "mine"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 artifacts = [
     {
         "name": "Copper Artifact",

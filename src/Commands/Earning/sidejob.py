@@ -8,6 +8,11 @@ sidejob command
 import random
 from Utils import user, timer, message, abc, other
 
+#   Command Information   #
+name = "sidejob"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 job_messages = [
     "You do some box moving at your local warehouse",
     "You give some rich guy a lap dance",

@@ -9,6 +9,11 @@ import asyncio
 from Utils import guild, message, other
 from Storage import help_list
 
+#   Command Information   #
+name = "alias"
+dm_capable = False
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     if not msg.author.guild_permissions.manage_guild and msg.author.id not in other.load_config().owners:

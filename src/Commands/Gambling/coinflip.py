@@ -10,6 +10,11 @@ import random
 from Utils import user, message, other
 from Storage import help_list
 
+#   Command Information   #
+name = "coinflip"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 sides = ["heads", "tails"]
 
 

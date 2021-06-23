@@ -10,6 +10,11 @@ import random
 from Utils import user, message, other
 from Storage import help_list
 
+#   Command Information   #
+name = "pay"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 self_pay = [
     "You can't pay yourself",
     "Um, you can't pay yourself",

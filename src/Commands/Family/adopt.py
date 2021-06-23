@@ -9,8 +9,13 @@ import asyncio
 import discord
 import discord_components
 import random
-from Utils import user,message, other
+from Utils import user, message, other
 from Storage import help_list
+
+#   Command Information   #
+name = "adopt"
+dm_capable = False
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 partner_adopt = [
     "{user} is your partner",

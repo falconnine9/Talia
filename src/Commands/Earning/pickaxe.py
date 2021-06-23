@@ -10,6 +10,10 @@ import discord_components
 from Utils import user, message, abc, other
 from Storage import help_list
 
+#   Command Information   #
+name = "pickaxe"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 pickaxes = {
     1: {

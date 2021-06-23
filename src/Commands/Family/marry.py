@@ -12,6 +12,11 @@ import random
 from Utils import user, message, other
 from Storage import help_list
 
+#   Command Information   #
+name = "marry"
+dm_capable = False
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 already_married = [
     "But you're already married",
     "You're already married"

@@ -8,6 +8,11 @@ help command
 from Utils import message, other
 from Storage import meta, help_list
 
+#   Command Information   #
+name = "help"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 help_info = {
     "general": {
         "help": help_list.help_,

@@ -5,9 +5,13 @@ leaderboard.py (Commands/General)
 
 leaderboard command
 """
-import discord
 from Utils import message, other
 from Storage import help_list
+
+#   Command Information   #
+name = "leaderboard"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

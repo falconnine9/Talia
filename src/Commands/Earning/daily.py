@@ -8,6 +8,11 @@ daily command
 import random
 from Utils import user, timer, message, abc, other
 
+#   Command Information   #
+name = "daily"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     daily_timer = timer.load_timer(f"daily.{msg.author.id}", conn)

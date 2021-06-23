@@ -8,6 +8,11 @@ showcase command
 from Utils import user, message, abc
 from Storage import help_list
 
+#   Command Information   #
+name = "showcase"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     split_data = msg.content.split(" ")

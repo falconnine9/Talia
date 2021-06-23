@@ -9,6 +9,11 @@ import asyncio
 import discord_components
 from Utils import user, message
 
+#   Command Information   #
+name = "fuse"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 fusion_levels = {
     1: "Human",
     2: "Tiger",

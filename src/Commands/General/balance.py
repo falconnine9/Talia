@@ -8,6 +8,11 @@ bal command
 import random
 from Utils import user, message, other
 
+#   Command Information   #
+name = "balance"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 no_coins = [
     "You have no coins :(",
     "You don't have any coins",

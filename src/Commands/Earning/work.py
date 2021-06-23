@@ -8,6 +8,11 @@ work command
 import random
 from Utils import user, timer, message, abc, other
 
+#   Command Information   #
+name = "work"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)

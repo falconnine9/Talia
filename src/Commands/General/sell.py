@@ -10,6 +10,11 @@ import discord_components
 from Utils import user, message, other
 from Storage import help_list
 
+#   Command Information   #
+name = "sell"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     split_data = msg.content.split(" ")

@@ -8,6 +8,11 @@ hourly command
 import random
 from Utils import user, timer, message, abc, other
 
+#   Command Information   #
+name = "hourly"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     hourly_timer = timer.load_timer(f"hourly.{msg.author.id}", conn)

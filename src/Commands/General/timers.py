@@ -9,6 +9,11 @@ import discord
 from Utils import timer, message
 from Storage import meta
 
+#   Command Information   #
+name = "timers"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     split_data = msg.content.split(" ")

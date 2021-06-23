@@ -8,6 +8,11 @@ inventory command
 import discord
 from Utils import user, message
 
+#   Command Information   #
+name = "inventory"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     split_data = msg.content.split(" ")

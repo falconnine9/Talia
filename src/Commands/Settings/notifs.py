@@ -10,6 +10,11 @@ import discord
 import discord_components
 from Utils import user, message
 
+#   Command Information   #
+name = "notifs"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 notif_names = {
     "paid": "Paid",
     "company_invites": "Company Invites",

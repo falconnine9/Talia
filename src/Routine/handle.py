@@ -68,15 +68,6 @@ commands = {
     "setuserattr": Commands.Administration.setuserattr
 }
 
-dm_blocked = [
-    "marry",
-    "adopt",
-    "prefix",
-    "channels",
-    "alias",
-    "shopitem"
-]
-
 
 async def command(bot, msg, conn):
     """
@@ -94,26 +85,27 @@ async def command(bot, msg, conn):
 
     if msg.guild is None:
         if split_data[0] in commands:
-            if split_data[0] in dm_blocked:
-                await message.send_error(msg, "This command can't be used in DMs")
-                return
+            if commands[split_data[0]].dm_capable:
+                command_ = commands[split_data[0]]
             else:
-                command_ = split_data[0]
+                await message.send_error(msg, "This command can only be run in servers")
+                return
         else:
             return
 
     else:
-        if split_data[0] in commands:
-            command_ = split_data[0]
+        if split_data[0] in commands.keys():
+            command_ = commands[split_data[0]]
         else:
             guildinfo = guild.load_guild(msg.guild.id, conn)
-            if split_data[0] in guildinfo.aliases.keys():
-                command_ = guildinfo.aliases[split_data[0]]
+
+            if split_data[0] in guildinfo.aliases.keys() and guildinfo.aliases[split_data[0]] in commands.keys():
+                command_ = commands[guildinfo.aliases[split_data[0]]]
             else:
                 return
 
     start_time = time.time()
-    await commands[command_].run(bot, msg, conn)
+    await command_.run(bot, msg, conn)
 
     if other.load_config().full_logging:
         cur = conn.cursor()
@@ -125,14 +117,14 @@ async def command(bot, msg, conn):
 
         if msg.guild is None:
             cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s, %s)", (
-                max_id[0] + 1, command_,
+                max_id[0] + 1, split_data[0],
                 msg.author.id, None,
                 datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                 round((time.time() - start_time) * 1000)
             ))
         else:
             cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s, %s)", (
-                max_id[0] + 1, command_,
+                max_id[0] + 1, split_data[0],
                 msg.author.id, msg.guild.id,
                 datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                 round((time.time() - start_time) * 1000)
