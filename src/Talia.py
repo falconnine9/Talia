@@ -94,50 +94,33 @@ async def on_message(msg):
     if msg.author.bot:
         return
 
-    if msg.guild is None:
-        return
-
     if bot.user in msg.mentions:
+        await handle.ping(bot, msg, conn)
+
+    if not handle.prefix(msg, conn, guild_prefixes):
+        return
+
+    if msg.guild is not None:
         guildinfo = guild.load_guild(msg.guild.id, conn)
-
-        if guildinfo is not None and msg.channel.id not in guildinfo.disabled_channels:
-            emojis = other.load_emojis(bot)
-            await message.send_message(msg, f"""I see that you pinged me {emojis.ping}
-
-My prefix is **{guild_prefixes[msg.guild.id]}**
-You can use `{guild_prefixes[msg.guild.id]}help` for some help""", title="Hello!")
-
-    try:
-        if not msg.content.startswith(guild_prefixes[msg.guild.id]):
-            return
-    except KeyError:
-        guildinfo = guild.load_guild(msg.guild.id, conn)
-
         if guildinfo is None:
-            guild_prefixes[msg.guild.id] = "t!"
-        else:
-            guild_prefixes[msg.guild.id] = guildinfo.prefix
+            guildinfo = abc.Guild(msg.guild.id)
+            guild.write_guild(guildinfo, conn, False)
 
-        if not msg.content.startswith(guild_prefixes[msg.guild.id]):
+        if not msg.channel.permissions_for(msg.guild.me).send_messages:
             return
 
-    guildinfo = guild.load_guild(msg.guild.id, conn)
-    if guildinfo is None:
-        guildinfo = abc.Guild(msg.guild.id)
-        guild.write_guild(guildinfo, conn, False)
-
-    if not msg.channel.permissions_for(msg.guild.me).send_messages:
-        return
-
-    if msg.channel.id in guildinfo.disabled_channels:
-        return
+        if msg.channel.id in guildinfo.disabled_channels:
+            return
 
     userinfo = user.load_user(msg.author.id, conn)
     if userinfo is None:
         userinfo = abc.User(msg.author.id)
         user.write_user(userinfo, conn, False)
 
-    msg.content = msg.content.strip()[len(guild_prefixes[msg.guild.id]):]
+    if msg.guild is None:
+        msg.content = msg.content.strip()[2:]
+    else:
+        msg.content = msg.content.strip()[len(guild_prefixes[msg.guild.id]):]
 
     await handle.mentioned_users(bot, msg, conn)
     conn.commit()

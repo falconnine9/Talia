@@ -9,7 +9,7 @@ import datetime
 import discord
 import time
 import Commands
-from Utils import guild, user, abc, other
+from Utils import guild, user, message, abc, other
 
 commands = {
     # General
@@ -68,6 +68,15 @@ commands = {
     "setuserattr": Commands.Administration.setuserattr
 }
 
+dm_blocked = [
+    "marry",
+    "adopt",
+    "prefix",
+    "channels",
+    "alias",
+    "shopitem"
+]
+
 
 async def command(bot, msg, conn):
     """
@@ -83,14 +92,25 @@ async def command(bot, msg, conn):
     split_data = msg.content.split(" ")
     split_data[0] = split_data[0].lower()
 
-    if split_data[0] in commands:
-        command_ = split_data[0]
-    else:
-        guildinfo = guild.load_guild(msg.guild.id, conn)
-        if split_data[0] in guildinfo.aliases.keys():
-            command_ = guildinfo.aliases[split_data[0]]
+    if msg.guild is None:
+        if split_data[0] in commands:
+            if split_data[0] in dm_blocked:
+                await message.send_error(msg, "This command can't be used in DMs")
+                return
+            else:
+                command_ = split_data[0]
         else:
             return
+
+    else:
+        if split_data[0] in commands:
+            command_ = split_data[0]
+        else:
+            guildinfo = guild.load_guild(msg.guild.id, conn)
+            if split_data[0] in guildinfo.aliases.keys():
+                command_ = guildinfo.aliases[split_data[0]]
+            else:
+                return
 
     start_time = time.time()
     await commands[command_].run(bot, msg, conn)
@@ -103,12 +123,20 @@ async def command(bot, msg, conn):
         if max_id[0] is None:
             max_id = (0,)
 
-        cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s, %s)", (
-            max_id[0] + 1, command_,
-            msg.author.id, msg.guild.id,
-            datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
-            round((time.time() - start_time) * 1000)
-        ))
+        if msg.guild is None:
+            cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s, %s)", (
+                max_id[0] + 1, command_,
+                msg.author.id, None,
+                datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
+                round((time.time() - start_time) * 1000)
+            ))
+        else:
+            cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s, %s)", (
+                max_id[0] + 1, command_,
+                msg.author.id, msg.guild.id,
+                datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
+                round((time.time() - start_time) * 1000)
+            ))
         conn.commit()
 
 
@@ -142,3 +170,50 @@ async def mentioned_users(bot, msg, conn):
         if mentioned_userinfo is None:
             new_user = abc.User(mention.id)
             user.write_user(new_user, conn, False)
+
+
+async def ping(bot, msg, conn):
+    emojis = other.load_emojis(bot)
+
+    if msg.guild is None:
+        await message.send_message(msg, await message.send_message(msg, f"""I see that you pinged me {emojis.ping}
+
+My prefix is **t!**
+You can use `t!help` for some help""", title="Hello!"))
+
+    else:
+        guildinfo = guild.load_guild(msg.guild.id, conn)
+
+        if guildinfo is None:
+            return
+
+        if msg.channel.id in guildinfo.disabled_channels:
+            return
+
+        await message.send_message(msg, await message.send_message(msg, f"""I see that you pinged me {emojis.ping}
+
+My prefix is **{guildinfo.prefix}**
+You can use `{guildinfo.prefix}help` for some help""", title="Hello!"))
+
+
+def prefix(msg, conn, guild_prefixes):
+    if msg.guild is None:
+        if not msg.content.startswith("t!"):
+            return False
+
+    else:
+        try:
+            if not msg.content.startswith(guild_prefixes[msg.guild.id]):
+                return False
+        except KeyError:
+            guildinfo = guild.load_guild(msg.guild.id, conn)
+
+            if guildinfo is None:
+                guild_prefixes[msg.guild.id] = "t!"
+            else:
+                guild_prefixes[msg.guild.id] = guildinfo.prefix
+
+            if not msg.content.startswith(guild_prefixes[msg.guild.id]):
+                return False
+
+    return True
