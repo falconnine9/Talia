@@ -128,7 +128,9 @@ async def run(bot, msg, conn):
 ## Certain variable names
 There are a few variable names which should always be used
 
-- **userinfo**: When you load a user with `user.load_user`
+- **person**: The return value from `bot.get_user` or `bot.fetch_user`
+- **userinfo**: When you load a user with `user.load_user` (From msg.author.id)
+- **personinfo**: When you load a user with `user.load_user` (From person.id)
 - **guildinfo**: When you load a user with `guild.load_guild`
 - **companyinfo**: When you load a company with `company.load_company`
 - **split_data**: When you make the message content into arguments with `msg.content.split`
