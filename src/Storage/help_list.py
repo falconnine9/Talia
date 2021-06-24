@@ -132,9 +132,19 @@ pet = {
 
 sell = {
     "desc": "Sell an item from your inventory",
-    "usage": "sell [item]",
+    "usage": "sell <item>",
     "args": {
         "item": "The ID of the item in your inventory"
+    }
+}
+
+color = {
+    "desc": "Change your profile color using RGB",
+    "usage": "color <red> <green> <blue>",
+    "args": {
+        "red": "Red value (0-255)",
+        "green": "Green value (0-255)",
+        "blue": "Blue value (0-255)"
     }
 }
 

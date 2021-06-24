@@ -31,7 +31,8 @@ help_info = {
         "timers": help_list.timers,
         "pay": help_list.pay,
         "pet": help_list.pet,
-        "sell": help_list.sell
+        "sell": help_list.sell,
+        "color": help_list.color
     },
     "earning": {
         "job": help_list.job,

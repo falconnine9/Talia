@@ -101,7 +101,8 @@ Children: {children}
 
 **--Pet--**
 {petinfo}"""
-    await message.send_message(msg, send_str, title=str(person), thumbnail=person.avatar_url)
+
+    await message.send_message(msg, send_str, title=str(person), thumbnail=person.avatar_url, color=personinfo.color)
 
 
 async def _load_family_info(bot, personinfo):

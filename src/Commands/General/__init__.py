@@ -22,5 +22,6 @@ from Commands.General import (
     timers,
     pay,
     pet,
-    sell
+    sell,
+    color
 )

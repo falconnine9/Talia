@@ -69,6 +69,7 @@ class User:
         self.parents = []
         self.children = []
         self.settings = Settings(None, None).default()
+        self.color = [155, 89, 182]
 
     def cvt_dict(self):
         return {
@@ -90,7 +91,8 @@ class User:
             "partner": self.partner,
             "parents": self.parents,
             "children": self.children,
-            "settings": self.settings
+            "settings": self.settings,
+            "color": self.color
         }
 
 

@@ -6,7 +6,7 @@ timers.py (Commands/General)
 timers command
 """
 import discord
-from Utils import timer, message
+from Utils import user, timer, message
 from Storage import meta
 
 #   Command Information   #
@@ -60,4 +60,6 @@ async def run(bot, msg, conn):
     if invest_timer is not None:
         all_timers.append(f"Investment: {timer.load_time(invest_timer[0])}")
 
-    await message.send_message(msg, "\n".join(all_timers), title=f"{str(person)}'s timers", thumbnail=person.avatar_url)
+    personinfo = user.load_user(person.id, conn)
+    await message.send_message(msg, "\n".join(all_timers), title=f"{str(person)}'s timers", thumbnail=person.avatar_url,
+        color=personinfo.color)

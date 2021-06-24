@@ -47,5 +47,5 @@ async def run(bot, msg, conn):
     personinfo = user.load_user(person.id, conn)
     await message.send_message(msg,
         "\n".join([f"ID {i + 1}: {item.name}" for i, item in enumerate(personinfo.inventory)]),
-        title=f"{str(person)}'s inventory", thumbnail=person.avatar_url, footer=f"{len(personinfo.inventory)}/40 items"
-    )
+        title=f"{str(person)}'s inventory", thumbnail=person.avatar_url,
+        footer=f"{len(personinfo.inventory)}/40 items", color=personinfo.color)

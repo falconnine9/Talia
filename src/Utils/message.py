@@ -6,10 +6,9 @@ company.py (Utils)
 Utilities for easily sending embed based messages
 """
 import discord
-import discord_components
 
 
-async def send_message(msg, desc=None, channel=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None):
+async def send_message(msg, desc=None, channel=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None, color=None):
     """
     Sends a full message
 
@@ -19,7 +18,10 @@ async def send_message(msg, desc=None, channel=None, title=None, img=None, thumb
     3. Determines the channel to send the message in
     4. Sends the message
     """
-    embed = discord.Embed(color=discord.Colour.purple())
+    if color is None:
+        embed = discord.Embed(color=discord.Colour.purple())
+    else:
+        embed = discord.Embed(color=discord.Colour.from_rgb(color[0], color[1], color[2]))
     
     if desc is not None:
         embed.description = desc
@@ -83,7 +85,7 @@ async def send_error(msg, desc=None, channel=None, title=None):
         return await msg.channel.send(embed=embed)
 
 
-async def edit_message(msg, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None):
+async def edit_message(msg, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None, color=None):
     """
     Edits an embed based message
 
@@ -92,7 +94,10 @@ async def edit_message(msg, desc=None, title=None, img=None, thumbnail=None, foo
      none, then it will add it to the embed
     3. Edits the message given
     """
-    embed = discord.Embed(color=discord.Colour.purple())
+    if color is None:
+        embed = discord.Embed(color=discord.Colour.purple())
+    else:
+        embed = discord.Embed(color=discord.Colour.from_rgb(color[0], color[1], color[2]))
     
     if desc is not None:
         embed.description = desc
@@ -144,8 +149,11 @@ async def edit_error(msg, desc=None, title=None):
         await msg.edit(embed=embed)
 
 
-async def response_edit(msg, interaction, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None):
-    embed = discord.Embed(color=discord.Colour.purple())
+async def response_edit(msg, interaction, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, color=None):
+    if color is None:
+        embed = discord.Embed(color=discord.Colour.purple())
+    else:
+        embed = discord.Embed(color=discord.Colour.from_rgb(color[0], color[1], color[2]))
 
     if desc is not None:
         embed.description = desc

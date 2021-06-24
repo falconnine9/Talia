@@ -62,6 +62,7 @@ tables = {
         "parents": "MEDIUMTEXT",
         "children": "MEDIUMTEXT",
         "settings": "MEDIUMTEXT",
+        "color": "MEDIUMTEXT",
         "CONSTRAINT users_pk": "PRIMARY KEY (id)"
     },
     "timers": {

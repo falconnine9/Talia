@@ -96,6 +96,8 @@ def load_user(user_id, conn):
         tmp_settings["notifs"],
         tmp_settings["timernotifs"]
     )
+
+    new_user.color = json.loads(userinfo[20])
     
     return new_user
 
@@ -130,7 +132,7 @@ def write_user(obj, conn, write=True):
         tmp_showcase = obj.showcase.cvt_dict()
 
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
         obj.id,
         obj.coins,
         obj.xp,
@@ -150,7 +152,8 @@ def write_user(obj, conn, write=True):
         obj.partner,
         json.dumps(obj.parents),
         json.dumps(obj.children),
-        json.dumps(obj.settings.cvt_dict())
+        json.dumps(obj.settings.cvt_dict()),
+        json.dumps(obj.color)
     ))
 
     if write:
