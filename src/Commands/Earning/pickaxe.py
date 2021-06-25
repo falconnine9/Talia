@@ -59,7 +59,9 @@ async def run(bot, msg, conn):
     split_data = msg.content.split(" ")
 
     if len(split_data) < 2:
-        await message.invalid_use(msg, help_list.pickaxe, "No operation given")
+        await message.invalid_use(msg,
+            help_list.pickaxe,
+            "No operation given")
         return
 
     split_data[1] = split_data[1].lower()
@@ -74,36 +76,45 @@ async def run(bot, msg, conn):
         await _pickaxe_list(bot, msg)
 
     else:
-        await message.send_error(msg, f"Unknown operation: {split_data[1]}")
+        await message.send_error(msg,
+            f"Unknown operation: {split_data[1]}")
 
 
 async def _pickaxe_buy(bot, msg, conn, split_data):
     if len(split_data) < 3:
-        await message.invalid_use(msg, help_list.pickaxe, "No pickaxe given")
+        await message.invalid_use(msg,
+            help_list.pickaxe,
+            "No pickaxe given")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pickaxe is not None:
-        await message.send_error(msg, "You already have a pickaxe")
+        await message.send_error(msg,
+            "You already have a pickaxe")
         return
 
     try:
         pickaxe_id = int(split_data[2])
     except ValueError:
-        await message.send_error(msg, "Invalid pickaxe ID")
+        await message.send_error(msg,
+            "Invalid pickaxe ID")
         return
 
     if pickaxe_id not in pickaxes:
-        await message.send_message(msg, "There's no pickaxe with that ID")
+        await message.send_message(msg,
+            "There's no pickaxe with that ID")
         return
 
     if pickaxes[pickaxe_id]["cost"] > userinfo.coins:
-        await message.send_error(msg, "You don't have enough coins for this pickaxe")
+        await message.send_error(msg,
+            "You don't have enough coins for this pickaxe")
         return
 
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg, f"Are you sure you want to buy a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Buying..",
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to buy a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}",
+        title="Buying..",
         components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
@@ -126,7 +137,10 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         return
 
     if interaction.component.label == "Cancel":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
+        await message.response_edit(sent_msg,
+            interaction,
+            sent_msg.embeds[0].description,
+            title="Cancelled")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
@@ -147,7 +161,9 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         pickaxes[pickaxe_id]["multiplier"]
     ).cvt_dict(), conn)
 
-    await message.response_edit(sent_msg, interaction, f"You bought a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Bought")
+    await message.response_edit(sent_msg, interaction,
+        f"You bought a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Bought"
+    )
 
 
 async def _pickaxe_sell(bot, msg, conn):
@@ -159,8 +175,9 @@ async def _pickaxe_sell(bot, msg, conn):
 
     sell_amount = round(userinfo.pickaxe.worth / 4)
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg, f"Are you sure you want to sell your {userinfo.pickaxe.name} for {sell_amount} {emojis.coin}", title="Selling..",
-        components=[[
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to sell your {userinfo.pickaxe.name} for {sell_amount} {emojis.coin}",
+        title="Selling..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
         ]]

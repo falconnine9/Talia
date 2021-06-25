@@ -97,7 +97,9 @@ async def _company_leave(msg, conn):
     companyinfo = company.load_company(userinfo.company, conn)
 
     if companyinfo.ceo == msg.author.id:
-        await message.send_error(msg, "You're the CEO of the company\nIf you want to leave, you have to disband the party")
+        await message.send_error(msg,
+            "You're the CEO of the company\nIf you want to leave, you have to disband the party"
+        )
         return
 
     del companyinfo.members[str(msg.author.id)]
@@ -165,12 +167,13 @@ async def _company_invite(bot, msg, conn, split_data):
     await message.send_message(msg, f"{str(person)} has been invited to join {companyinfo.name}")
 
     try:
-        sent_msg = await message.send_message(None, f"You've been invited to join {companyinfo.name}", title="Invite", channel=person,
+        sent_msg = await message.send_message(None,
+            f"You've been invited to join {companyinfo.name}",
+            title="Invite",
+            channel=person,
             components=[[
                 discord_components.Button(label="Accept", style=discord_components.ButtonStyle.green),
-                discord_components.Button(label="Decline", style=discord_components.ButtonStyle.red)
-            ]]
-        )
+                discord_components.Button(label="Decline", style=discord_components.ButtonStyle.red)]])
     except discord.Forbidden:
         await message.send_error(msg, f"{str(person)} can't receive DMs from me")
         return
@@ -201,7 +204,9 @@ async def _company_invite(bot, msg, conn, split_data):
 
                 if userinfo.settings.notifs["company_invites"]:
                     try:
-                        await message.send_message(None, f"{str(person)} didn't respond to the invite", channel=msg.author)
+                        await message.send_message(None,
+                            f"{str(person)} didn't respond to the invite",
+                            channel=msg.author)
                     except discord.Forbidden:
                         pass
 
@@ -358,8 +363,8 @@ async def _company_disband(bot, msg, conn):
         await message.send_error(msg, "You're not the CEO")
         return
 
-    sent_msg = await message.send_message(msg, f"Are you sure you want to disband {companyinfo.name}", title="Disbanding..",
-        components=[[
+    sent_msg = await message.send_message(msg, f"Are you sure you want to disband {companyinfo.name}",
+        title="Disbanding..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
         ]]

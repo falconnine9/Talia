@@ -140,4 +140,6 @@ async def run(bot, msg, conn):
         user.set_user_attr(person.id, "parents", [msg.author.id], conn)
 
     emojis = other.load_emojis(bot)
-    await message.response_edit(sent_msg, interaction, f"{emojis.confetti} {str(person)} is now the child of {str(msg.author)} {emojis.confetti}", title="Adopted")
+    await message.response_edit(sent_msg, interaction,
+        f"{emojis.confetti} {str(person)} is now the child of {str(msg.author)} {emojis.confetti}", title="Adopted"
+    )

@@ -82,7 +82,9 @@ async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pickaxe is None:
-        await message.send_error(msg, "You need a pickaxe equipped to mine\n(You can buy one with the `pickaxe` command)")
+        await message.send_error(msg,
+            "You need a pickaxe equipped to mine\n(You can buy one with the `pickaxe` command)"
+        )
         return
 
     artifact_chance = random.randint(1, 3)
@@ -104,7 +106,9 @@ async def run(bot, msg, conn):
             timer.new_timer(new_timer, conn)
 
     emojis = other.load_emojis(bot)
-    await message.send_message(msg, f"You did some mining in the caves\n+{earned_coins} {emojis.coin}\n+{earned_xp} XP", title="Mined")
+    await message.send_message(msg, f"You did some mining in the caves\n+{earned_coins} {emojis.coin}\n+{earned_xp} XP",
+        title="Mined"
+    )
 
     if len(userinfo.inventory) < 40 and artifact_chance == 1:
         chance = random.random()

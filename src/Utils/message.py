@@ -8,7 +8,8 @@ Utilities for easily sending embed based messages
 import discord
 
 
-async def send_message(msg, desc=None, channel=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None, color=None):
+async def send_message(msg, desc=None, channel=None, title=None, img=None, thumbnail=None, footer=None,
+                       footer_icon=None, fields=None, components=None, color=None):
     """
     Sends a full message
 
@@ -85,7 +86,8 @@ async def send_error(msg, desc=None, channel=None, title=None):
         return await msg.channel.send(embed=embed)
 
 
-async def edit_message(msg, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, components=None, color=None):
+async def edit_message(msg, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None,
+                       components=None, color=None):
     """
     Edits an embed based message
 
@@ -149,7 +151,16 @@ async def edit_error(msg, desc=None, title=None):
         await msg.edit(embed=embed)
 
 
-async def response_edit(msg, interaction, desc=None, title=None, img=None, thumbnail=None, footer=None, footer_icon=None, fields=None, color=None):
+async def response_edit(msg, interaction, desc=None, title=None, img=None, thumbnail=None, footer=None,
+                        footer_icon=None, fields=None, color=None):
+    """
+    Sends a response with an edit to the message given
+
+    1. Creates a new discord embed object
+    2. Checks if each parameter is not none, if it's not
+     none, then it will add it to the embed
+    3. Edits the message given
+    """
     if color is None:
         embed = discord.Embed(color=discord.Colour.purple())
     else:
@@ -228,4 +239,5 @@ async def invalid_use(msg, help_info, pre_msg):
         await send_error(msg, f"{pre_msg}\n\n**Usage**: `{help_info['usage']}`", title="Invalid use")
     else:
         arg_list = "\n".join([f"`{arg}`: {help_info['args'][arg]}" for arg in help_info["args"]])
-        await send_error(msg, f"{pre_msg}\n\n**Usage**: `{help_info['usage']}`\n\n**Arguments**\n{arg_list}", title="Invalid use")
+        await send_error(msg, f"{pre_msg}\n\n**Usage**: `{help_info['usage']}`\n\n**Arguments**\n{arg_list}",
+            title="Invalid use")

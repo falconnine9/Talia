@@ -48,7 +48,9 @@ async def run(bot, msg, conn):
 Green: Enabled
 Red: Disabled
 
-(Press on the button to enable or disable the notification)""", title="Timer Notification Settings", components=components)
+(Press on the button to enable or disable the notification)""", title="Timer Notification Settings",
+        components=components
+    )
 
     def button_check(interaction):
         if interaction.author != msg.author:
@@ -63,11 +65,7 @@ Red: Disabled
         try:
             interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
         except asyncio.TimeoutError:
-            for section in components:
-                for component in section:
-                    component.disabled = True
-
-            await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out", components=components)
+            await message.timeout_response(sent_msg)
             return
 
         userinfo = user.load_user(msg.author.id, conn)
@@ -103,5 +101,7 @@ Red: Disabled
 Green: Enabled
 Red: Disabled
 
-(Press on the button to enable or disable the notification)""", color=discord.Colour.purple(), title="Timer Notification Settings")
+(Press on the button to enable or disable the notification)""", color=discord.Colour.purple(),
+            title="Timer Notification Settings"
+        )
         await interaction.respond(type=7, embed=embed, components=components)

@@ -18,13 +18,15 @@ async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.job is None:
-        await message.send_error(msg, "You need a job to work\n(You can join one with the `job` command)")
+        await message.send_error(msg,
+            "You need a job to work\n(You can join one with the `job` command)")
         return
 
     job_timer = timer.load_timer(f"work.{msg.author.id}", conn)
 
     if job_timer is not None:
-        await message.send_error(msg, f"Wait {timer.load_time(job_timer.time)} before working again")
+        await message.send_error(msg,
+            f"Wait {timer.load_time(job_timer.time)} before working again")
         return
 
     coins = round(random.randint(userinfo.job.salary[0], userinfo.job.salary[1]) * other.load_multi(userinfo, conn) * (1 + (userinfo.job.level / 10) - 0.1))
@@ -42,7 +44,9 @@ async def run(bot, msg, conn):
     timer.new_timer(cooldown_timer, conn)
 
     emojis = other.load_emojis(bot)
-    await message.send_message(msg, f"You worked as a {userinfo.job.name}\n+{coins} {emojis.coin}\n+{xp} XP", title="Work")
+    await message.send_message(msg,
+        f"You worked as a {userinfo.job.name}\n+{coins} {emojis.coin}\n+{xp} XP",
+        title="Work")
     await _job_xp_check(msg, conn, userinfo, emojis)
 
 
@@ -51,4 +55,7 @@ async def _job_xp_check(msg, conn, userinfo, emojis):
         userinfo.job.level += 1
         userinfo.job.xp = 0
         user.set_user_attr(msg.author.id, "job", userinfo.job.cvt_dict(), conn)
-        await message.send_message(msg, f"{emojis.confetti} {str(msg.author)} reached job level {userinfo.job.level} {emojis.confetti}", title="Job level up")
+        await message.send_message(msg,
+            f"{emojis.confetti} {str(msg.author)} reached job level {userinfo.job.level} {emojis.confetti}",
+            title="Job level up"
+        )

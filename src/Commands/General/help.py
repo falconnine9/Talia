@@ -117,8 +117,7 @@ async def _category_list(bot, msg):
 
 async def _command_list(bot, msg, choice):
     comm_list = ", ".join([f"`{command}`" for command in help_info[choice].keys()])
-    await message.send_message(msg,
-        f"You can use `help <command>` for details of that command\n\n{comm_list}",
+    await message.send_message(msg, f"You can use `help <command>` for details of that command\n\n{comm_list}",
         title=f"{choice[0].upper()}{choice[1:]}", footer=f"Talia version {meta.version}",
         footer_icon=bot.user.avatar_url
     )

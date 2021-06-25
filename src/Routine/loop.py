@@ -45,7 +45,9 @@ async def _main_timer_alert(bot, c_user):
     if c_user_obj is not None:
         timer_name = meta.timer_names[c_user[0].split(".")[0]]
         try:
-            await message.send_message(None, f"Your {timer_name} timer has ran out", title="Timer notification", channel=c_user_obj)
+            await message.send_message(None, f"Your {timer_name} timer has ran out", title="Timer notification",
+                channel=c_user_obj
+            )
         except discord.Forbidden:
             pass
 
@@ -83,7 +85,9 @@ async def _edu_timer_alert(bot, c_user, conn):
         if c_userinfo is not None:
             if c_userinfo.settings.notifs["school"]:
                 try:
-                    await message.send_message(None, "Your education level has been upgraded", title="School notification", channel=c_user_obj)
+                    await message.send_message(None, "Your education level has been upgraded",
+                        title="School notification", channel=c_user_obj
+                    )
                 except discord.Forbidden:
                     pass
 
@@ -121,7 +125,10 @@ async def _invest_timer_alert(bot, c_user, c_userinfo, emojis):
     if c_user_obj is not None:
         if c_userinfo.settings.notifs["investment"]:
             try:
-                await message.send_message(None, f"You earned {round(c_user[2] * c_user[3])} {emojis.coin} from your investment", title="Investment notification", channel=c_user_obj)
+                await message.send_message(None,
+                    f"You earned {round(c_user[2] * c_user[3])} {emojis.coin} from your investment",
+                    title="Investment notification", channel=c_user_obj
+                )
             except discord.Forbidden:
                 pass
 

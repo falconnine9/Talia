@@ -36,7 +36,8 @@ async def run(bot, msg, conn):
         return
 
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg, f"Are you sure you want to sell a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth} {emojis.coin}",
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to sell a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth} {emojis.coin}",
         title="Selling..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

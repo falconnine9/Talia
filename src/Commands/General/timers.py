@@ -62,4 +62,5 @@ async def run(bot, msg, conn):
 
     personinfo = user.load_user(person.id, conn)
     await message.send_message(msg, "\n".join(all_timers), title=f"{str(person)}'s timers", thumbnail=person.avatar_url,
-        color=personinfo.color)
+        color=personinfo.color
+    )

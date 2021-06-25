@@ -138,8 +138,9 @@ async def _pet_buy(bot, msg, conn, split_data):
         return
 
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg, f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {pets[split_data[2]]['cost']} {emojis.coin}", title="Buying..",
-        components=[[
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {pets[split_data[2]]['cost']} {emojis.coin}",
+        title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
         ]]
@@ -198,7 +199,8 @@ async def _pet_sell(bot, msg, conn):
         return
 
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg, f"Are you sure you want to sell your pet for {userinfo.pet.worth} {emojis.coin}", title="Selling..",
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to sell your pet for {userinfo.pet.worth} {emojis.coin}", title="Selling..",
         components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
@@ -235,7 +237,9 @@ async def _pet_sell(bot, msg, conn):
         None, 0, None, None
     ).cvt_dict(), conn)
 
-    await message.response_edit(sent_msg, interaction, f"You sold your pet for {userinfo.pet.worth} {emojis.coin}", title="Sold")
+    await message.response_edit(sent_msg, interaction, f"You sold your pet for {userinfo.pet.worth} {emojis.coin}",
+        title="Sold"
+    )
 
 
 async def _pet_list(bot, msg):

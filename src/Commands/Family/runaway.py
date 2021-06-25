@@ -34,6 +34,8 @@ async def run(bot, msg, conn):
         parentinfo = user.load_user(parent_user.id, conn)
         if parentinfo.settings.notifs:
             try:
-                await message.send_message(None, f"{str(msg.author)} ran away from you", title="Ran away", channel=parent_user)
+                await message.send_message(None, f"{str(msg.author)} ran away from you", title="Ran away",
+                    channel=parent_user
+                )
             except discord.Forbidden:
                 pass

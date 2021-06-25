@@ -54,12 +54,15 @@ async def run(bot, msg, conn):
     emojis = other.load_emojis(bot)
 
     if edu_levels[userinfo.edu_level + 1]["cost"] > userinfo.coins:
-        await message.send_error(msg, f"""You don't have enough coins to get a {edu_levels[userinfo.edu_level + 1]['name']} education level
-(Costs {edu_levels[userinfo.edu_level + 1]['cost']} {emojis.coin})""")
+        await message.send_error(msg,
+            f"""You don't have enough coins to get a {edu_levels[userinfo.edu_level + 1]['name']} education level
+(Costs {edu_levels[userinfo.edu_level + 1]['cost']} {emojis.coin})"""
+        )
         return
 
-    sent_msg = await message.send_message(msg, f"Are you sure you want to pay {edu_levels[userinfo.edu_level + 1]['cost']} {emojis.coin} for a {edu_levels[userinfo.edu_level + 1]['name']} education level?", title="Education",
-        components=[[
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to pay {edu_levels[userinfo.edu_level + 1]['cost']} {emojis.coin} for a {edu_levels[userinfo.edu_level + 1]['name']} education level?",
+        title="Education", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
         ]]
@@ -103,5 +106,7 @@ async def run(bot, msg, conn):
         conn
     )
 
-    await message.response_edit(sent_msg, interaction, f"""You've started your {edu_levels[userinfo.edu_level]['name']} education level
-Time remaining: {timer.load_time(edu_levels[userinfo.edu_level]['time'])}""", title="Education")
+    await message.response_edit(sent_msg, interaction,
+        f"""You've started your {edu_levels[userinfo.edu_level]['name']} education level
+Time remaining: {timer.load_time(edu_levels[userinfo.edu_level]['time'])}""", title="Education"
+    )

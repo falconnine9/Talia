@@ -142,4 +142,7 @@ async def _alias_list(msg, conn):
     if len(guildinfo.aliases) == 0:
         await message.send_message(msg, "No aliases found", title="Command aliases")
     else:
-        await message.send_message(msg, "\n".join([f"{alias}: {guildinfo.aliases[alias]}" for alias in guildinfo.aliases]), title="Command aliases")
+        await message.send_message(msg,
+            "\n".join([f"{alias}: {guildinfo.aliases[alias]}" for alias in guildinfo.aliases]),
+            title="Command aliases"
+        )

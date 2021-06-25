@@ -34,7 +34,9 @@ async def run(bot, msg, conn):
     invest_timer = timer.load_invest_timer(msg.author.id, conn)
 
     if invest_timer is not None:
-        await message.send_error(msg, f"You've already invested some money, it will be completed in {timer.load_time(invest_timer.time)}")
+        await message.send_error(msg,
+            f"You've already invested some money, it will be completed in {timer.load_time(invest_timer.time)}"
+        )
         return
 
     split_data = msg.content.split(" ")
@@ -75,9 +77,10 @@ async def run(bot, msg, conn):
 `week` - Multiply the amount by x11 after 1 week""")
         return
 
-    sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
-You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""", title="Investing..",
-        components=[[
+    sent_msg = await message.send_message(msg,
+        f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
+You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""",
+        title="Investing..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
         ]]
@@ -119,4 +122,6 @@ You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - amount, conn, False)
     timer.new_invest_timer(new_timer, conn)
 
-    await message.response_edit(sent_msg, interaction, f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested")
+    await message.response_edit(sent_msg, interaction,
+        f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested"
+    )

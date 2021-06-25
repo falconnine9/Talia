@@ -37,10 +37,10 @@ async def run(bot, msg, conn):
         await message.send_error(msg, "You've already reached Hydra fusion")
         return
 
-    sent_msg = await message.send_message(msg, f"""Are you sure you want to upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion
+    sent_msg = await message.send_message(msg,
+        f"""Are you sure you want to upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion
 
-You will become Level 1, and have a multiplier of x1.0""", title="Fusion..",
-        components=[[
+You will become Level 1, and have a multiplier of x1.0""", title="Fusion..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
         ]]
@@ -80,4 +80,6 @@ You will become Level 1, and have a multiplier of x1.0""", title="Fusion..",
     user.set_user_attr(msg.author.id, "multiplier", 1.0, conn, False)
     user.set_user_attr(msg.author.id, "fusion_level", userinfo.fusion_level + 1, conn)
 
-    await message.response_edit(sent_msg, interaction, f"You upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion", title="Fused")
+    await message.response_edit(sent_msg, interaction,
+        f"You upgrade to {fusion_levels[userinfo.fusion_level + 1]} fusion", title="Fused"
+    )

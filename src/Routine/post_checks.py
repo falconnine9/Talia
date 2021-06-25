@@ -40,11 +40,16 @@ async def level(bot, msg, conn):
         user.set_user_attr(msg.author.id, "multiplier", 1 + (userinfo.fusion_level * ((userinfo.level + 1) / 10)), conn)
 
         emojis = other.load_emojis(bot)
-        await message.send_message(msg, f"{emojis.confetti} {str(msg.author)} reached level {userinfo.level + 1} {emojis.confetti}", title="Level up")
+        await message.send_message(msg,
+            f"{emojis.confetti} {str(msg.author)} reached level {userinfo.level + 1} {emojis.confetti}",
+            title="Level up"
+        )
 
         if userinfo.level + 1 == 40:
             try:
-                await message.send_message(None, "You've reached level 40, you can fuse with the `fuse` command", channel=msg.author)
+                await message.send_message(None, "You've reached level 40, you can fuse with the `fuse` command",
+                    channel=msg.author
+                )
             except discord.Forbidden:
                 pass
 
@@ -62,7 +67,10 @@ async def achievements(bot, msg, conn):
         userinfo.achievements.append(money_achievements[milestone])
 
         emojis = other.load_emojis(bot)
-        await message.send_message(msg, f"{emojis.confetti} {str(msg.author)} earned the {money_achievements[milestone]} achievement {emojis.confetti}", title="Achievement")
+        await message.send_message(msg,
+            f"{emojis.confetti} {str(msg.author)} earned the {money_achievements[milestone]} achievement {emojis.confetti}",
+            title="Achievement"
+        )
 
     for milestone in level_achievements:
         if milestone > userinfo.level:
@@ -74,6 +82,9 @@ async def achievements(bot, msg, conn):
         userinfo.achievements.append(level_achievements[milestone])
 
         emojis = other.load_emojis(bot)
-        await message.send_message(msg, f"{emojis.confetti} {str(msg.author)} earned the {level_achievements[milestone]} achievement {emojis.confetti}", title="Achievement")
+        await message.send_message(msg,
+            f"{emojis.confetti} {str(msg.author)} earned the {level_achievements[milestone]} achievement {emojis.confetti}",
+            title="Achievement"
+        )
 
     user.set_user_attr(msg.author.id, "achievements", userinfo.achievements, conn)

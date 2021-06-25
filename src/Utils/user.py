@@ -5,6 +5,8 @@ user.py (Utils)
 
 Utilities for the management of users within the database
 """
+import asyncio
+import concurrent.futures
 import json
 from Utils import abc
 

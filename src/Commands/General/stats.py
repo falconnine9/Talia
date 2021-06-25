@@ -26,7 +26,8 @@ async def run(bot, msg, conn):
     all_investments = cur.fetchall()
 
     emojis = other.load_emojis(bot)
-    await message.send_message(msg, f"""Used in **{len(bot.guilds)}** servers with a total of **{len(bot.users)}** members
+    await message.send_message(msg,
+        f"""Used in **{len(bot.guilds)}** servers with a total of **{len(bot.users)}** members
 
 A total of {sum_coins[0]} {emojis.coin} between everyone
 {len(all_education)} people in school

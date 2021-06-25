@@ -63,8 +63,9 @@ async def _shop_buy(bot, msg, conn, split_data):
         return
 
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg, f"Are you sure you want to buy a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin} from {msg.guild.name}", title="Buying..",
-        components=[[
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to buy a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin} from {msg.guild.name}",
+        title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
         ]]
@@ -104,14 +105,19 @@ async def _shop_buy(bot, msg, conn, split_data):
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - guildinfo.shop[item]["cost"], conn, False)
     user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
 
-    await message.response_edit(sent_msg, interaction, f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin}", title="Bought")
+    await message.response_edit(sent_msg, interaction,
+        f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin}",
+        title="Bought"
+    )
 
 
 async def _shop_list(bot, msg, conn):
     guildinfo = guild.load_guild(msg.guild.id, conn)
 
     if len(guildinfo.shop) == 0:
-        await message.send_message(msg, f"{msg.guild.name} has no items in their shop", title="Server shop", thumbnail=msg.guild.icon_url)
+        await message.send_message(msg, f"{msg.guild.name} has no items in their shop", title="Server shop",
+            thumbnail=msg.guild.icon_url
+        )
         return
 
     fields = []

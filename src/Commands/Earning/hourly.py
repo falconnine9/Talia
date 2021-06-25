@@ -18,7 +18,8 @@ async def run(bot, msg, conn):
     hourly_timer = timer.load_timer(f"hourly.{msg.author.id}", conn)
 
     if hourly_timer is not None:
-        await message.send_error(msg, f"Wait {timer.load_time(hourly_timer.time)} before collecting your next hourly")
+        await message.send_error(msg,
+            f"Wait {timer.load_time(hourly_timer.time)} before collecting your next hourly")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
@@ -34,7 +35,8 @@ async def run(bot, msg, conn):
 
     emojis = other.load_emojis(bot)
 
-    await message.send_message(msg, f"""+{earned_coins} {emojis.coin}
+    await message.send_message(msg,
+        f"""+{earned_coins} {emojis.coin}
 +{earned_xp} XP
 
 **You've collected {userinfo.hourly + 1} hourlies**""", title="Hourly")
