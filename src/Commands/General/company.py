@@ -142,7 +142,7 @@ async def _company_invite(bot, msg, conn, split_data):
         return
     else:
         try:
-            person = await bot.fetch_user(int(split_data[1]))
+            person = await user.load_user_obj(bot, int(split_data[1]))
         except discord.NotFound:
             await message.send_error(msg, "I can't find that person")
             return
@@ -319,7 +319,7 @@ async def _company_kick(bot, msg, conn, split_data):
         return
     else:
         try:
-            person = await bot.fetch_user(int(split_data[1]))
+            person = await user.load_user_obj(bot, int(split_data[1]))
         except discord.NotFound:
             await message.send_error(msg, "I can't find that person")
             return
@@ -426,8 +426,10 @@ async def _company_info(bot, msg, conn, split_data):
             total_coins += memberinfo.coins
 
     try:
-        ceo = await bot.fetch_user(companyinfo.ceo)
+        ceo = await user.load_user_obj(bot, companyinfo.ceo)
     except discord.NotFound:
+        ceo = companyinfo.ceo
+    except discord.HTTPException:
         ceo = companyinfo.ceo
 
     emojis = other.load_emojis(bot)

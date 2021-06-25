@@ -35,7 +35,7 @@ async def run(bot, msg, conn):
         return
     else:
         try:
-            person = await bot.fetch_user(int(split_data[1]))
+            person = await user.load_user_obj(bot, int(split_data[1]))
         except discord.NotFound:
             await message.send_error(msg, "I can't find that person")
             return

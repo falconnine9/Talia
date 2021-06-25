@@ -117,13 +117,13 @@ async def on_message(msg):
         userinfo = abc.User(msg.author.id)
         user.write_user(userinfo, conn, False)
 
+    await handle.mentioned_users(bot, msg, conn)
+    conn.commit()
+
     if msg.guild is None:
         msg.content = msg.content.strip()[2:]
     else:
         msg.content = msg.content.strip()[len(guild_prefixes[msg.guild.id]):]
-
-    await handle.mentioned_users(bot, msg, conn)
-    conn.commit()
 
     try:
         await handle.command(bot, msg, conn)

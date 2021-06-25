@@ -23,7 +23,7 @@ async def run(bot, msg, conn):
         return
 
     try:
-        person = await bot.fetch_user(userinfo.partner)
+        person = await user.load_user_obj(bot, userinfo.partner)
     except discord.NotFound:
         await message.send_error(msg, "An error occurred and the command couldn't be run")
         return

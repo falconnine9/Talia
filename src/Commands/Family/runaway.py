@@ -30,7 +30,7 @@ async def run(bot, msg, conn):
     await message.send_message(msg, "You ran away from your parents", title="Ran away")
 
     for parent in userinfo.parents:
-        parent_user = await bot.fetch_user(parent)
+        parent_user = await user.load_user_obj(bot, parent)
         parentinfo = user.load_user(parent_user.id, conn)
         if parentinfo.settings.notifs:
             try:

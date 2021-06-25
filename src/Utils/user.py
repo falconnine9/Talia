@@ -184,3 +184,12 @@ def set_user_attr(user_id, attr, val, conn, write=True):
 
     if write:
         conn.commit()
+
+
+async def load_user_obj(bot, user_id):
+    user_obj = bot.get_user(user_id)
+
+    if user_obj is None:
+        return await bot.fetch_user(user_id)
+    else:
+        return user_obj

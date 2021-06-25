@@ -145,18 +145,18 @@ async def mentioned_users(bot, msg, conn):
     """
     split_data = msg.content.split(" ")
 
-    for arg in split_data:
-        if arg.isdigit():
-            try:
-                mentioned = await bot.fetch_user(int(arg))
-            except discord.NotFound:
-                continue
-            except discord.HTTPException:
-                continue
-            mentioned_userinfo = user.load_user(mentioned.id, conn)
-            if mentioned_userinfo is None:
-                new_user = abc.User(mentioned.id)
-                user.write_user(new_user, conn, False)
+    for arg in [arg for arg in split_data if arg.isdigit()]:
+        try:
+            mentioned = await user.load_user_obj(bot, int(arg))
+        except discord.NotFound:
+            continue
+        except discord.HTTPException:
+            continue
+
+        mentioned_userinfo = user.load_user(mentioned.id, conn)
+        if mentioned_userinfo is None:
+            new_user = abc.User(mentioned.id)
+            user.write_user(new_user, conn, False)
 
     for mention in msg.mentions:
         mentioned_userinfo = user.load_user(mention.id, conn)
