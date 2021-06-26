@@ -71,7 +71,13 @@ Red: Disabled
         try:
             interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
         except asyncio.TimeoutError:
-            await message.timeout_response(sent_msg)
+            for section in components:
+                for component in section:
+                    component.disabled = True
+
+            await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out",
+                components=components
+            )
             return
 
         userinfo = user.load_user(msg.author.id, conn)

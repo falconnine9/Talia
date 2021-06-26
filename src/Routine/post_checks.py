@@ -41,7 +41,8 @@ async def level(bot, msg, conn):
 
         emojis = other.load_emojis(bot)
         await message.send_message(msg,
-            f"{emojis.confetti} {str(msg.author)} reached level {userinfo.level + 1} {emojis.confetti}",
+            f"""{emojis.confetti} {str(msg.author)} reached level {userinfo.level + 1} {emojis.confetti}
+Multiplier: x{userinfo.multiplier} -> x{1 + (userinfo.fusion_level * ((userinfo.level + 1) / 10))}""",
             title="Level up"
         )
 
