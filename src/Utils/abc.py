@@ -68,7 +68,7 @@ class User:
         self.partner = None
         self.parents = []
         self.children = []
-        self.settings = Settings(None, None).default()
+        self.settings = Settings(None, None, None).default()
         self.color = [155, 89, 182]
 
     def cvt_dict(self):
@@ -245,14 +245,16 @@ class Pet:
 
 
 class Settings:
-    def __init__(self, notifs, timernotifs):
+    def __init__(self, notifs, timernotifs, reaction_confirm):
         self.notifs = notifs
         self.timernotifs = timernotifs
+        self.reaction_confirm = reaction_confirm
 
     def cvt_dict(self):
         return {
             "notifs": self.notifs,
-            "timernotifs": self.timernotifs
+            "timernotifs": self.timernotifs,
+            "reaction_confirm": self.reaction_confirm
         }
 
     def default(self):
@@ -271,6 +273,7 @@ class Settings:
             "hourly": False,
             "daily": False
         }
+        self.reaction_confirm = False
         return self
 
 

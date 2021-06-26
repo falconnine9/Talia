@@ -138,41 +138,33 @@ async def _pet_buy(bot, msg, conn, split_data):
         return
 
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {pets[split_data[2]]['cost']} {emojis.coin}",
-        title="Buying..", components=[[
-            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
-            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
-        ]]
-    )
 
-    def button_check(interaction):
-        if interaction.author != msg.author:
-            return False
+    if userinfo.settings.reaction_confirm:
+        sent_msg, interaction, result = await _pet_buy_reaction_confirm(bot, msg, split_data, emojis)
+    else:
+        sent_msg, interaction, result = await _pet_buy_button_confirm(bot, msg, split_data, emojis)
 
-        if interaction.message != sent_msg:
-            return False
-
-        return True
-
-    try:
-        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
-    except asyncio.TimeoutError:
-        await message.timeout_response(sent_msg)
+    if result is None:
         return
 
-    if interaction.component.label == "Cancel":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
+    if result == "cancel":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pet is not None:
-        await message.response_send(sent_msg, interaction, "You already have a pet")
+        await message.response_send(sent_msg, interaction, "You already have a pet",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
     if pets[split_data[2]]["cost"] > userinfo.coins:
-        await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this pet")
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this pet",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
     def_name = random.choice(default_names)
@@ -188,7 +180,9 @@ async def _pet_buy(bot, msg, conn, split_data):
 
     await message.response_edit(sent_msg, interaction, f"""You bought a pet!
 Your pet is a {breed} ({split_data[2][0].upper()}{split_data[2][1:]})
-By default is has the name **{def_name}**. But that can be changed with `pet name`""", title="Bought")
+By default is has the name **{def_name}**. But that can be changed with `pet name`""", title="Bought",
+        from_reaction=userinfo.settings.reaction_confirm
+    )
 
 
 async def _pet_sell(bot, msg, conn):
@@ -199,37 +193,27 @@ async def _pet_sell(bot, msg, conn):
         return
 
     emojis = other.load_emojis(bot)
-    sent_msg = await message.send_message(msg,
-        f"Are you sure you want to sell your pet for {userinfo.pet.worth} {emojis.coin}", title="Selling..",
-        components=[[
-            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
-            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
-        ]]
-    )
 
-    def button_check(interaction):
-        if interaction.author != msg.author:
-            return False
+    if userinfo.settings.reaction_confirm:
+        sent_msg, interaction, result = await _pet_sell_reaction_confirm(bot, msg, userinfo, emojis)
+    else:
+        sent_msg, interaction, result = await _pet_sell_button_confirm(bot, msg, userinfo, emojis)
 
-        if interaction.message != sent_msg:
-            return False
-
-        return True
-
-    try:
-        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
-    except asyncio.TimeoutError:
-        await message.timeout_response(sent_msg)
+    if result is None:
         return
 
-    if interaction.component.label == "Cancel":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
+    if result == "cancel":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pet is None:
-        await message.send_error(sent_msg, interaction, "You don't have a pet")
+        await message.response_send(sent_msg, interaction, "You don't have a pet",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins + userinfo.pet.worth, conn, False)
@@ -238,7 +222,7 @@ async def _pet_sell(bot, msg, conn):
     ).cvt_dict(), conn)
 
     await message.response_edit(sent_msg, interaction, f"You sold your pet for {userinfo.pet.worth} {emojis.coin}",
-        title="Sold"
+        title="Sold", from_reaction=userinfo.settings.reaction_confirm
     )
 
 
@@ -277,3 +261,128 @@ async def _pet_name(msg, conn, split_data):
     user.set_user_attr(msg.author.id, "pet", userinfo.pet.cvt_dict(), conn)
 
     await message.send_message(msg, f"You changed your pet's name to **{pet_name}**", title="Renamed")
+
+
+async def _pet_buy_reaction_confirm(bot, msg, split_data, emojis):
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {pets[split_data[2]]['cost']} {emojis.coin}",
+        title="Buying.."
+    )
+
+    await sent_msg.add_reaction("\u2705")
+    await sent_msg.add_reaction("\u274c")
+
+    def reaction_check(reaction, reaction_user):
+        if reaction_user != msg.author:
+            return False
+
+        if reaction.message != sent_msg:
+            return False
+
+        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+            return False
+
+        return True
+
+    try:
+        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if str(reaction.emoji) == "\u2705":
+        return sent_msg, None, "confirm"
+    else:
+        return sent_msg, None, "cancel"
+
+
+async def _pet_buy_button_confirm(bot, msg, split_data, emojis):
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {pets[split_data[2]]['cost']} {emojis.coin}",
+        title="Buying..", components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
+
+    def button_check(interaction):
+        if interaction.author != msg.author:
+            return False
+
+        if interaction.message != sent_msg:
+            return False
+
+        return True
+
+    try:
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if interaction.component.label == "Confirm":
+        return sent_msg, interaction, "confirm"
+    else:
+        return sent_msg, interaction, "cancel"
+
+
+async def _pet_sell_reaction_confirm(bot, msg, userinfo, emojis):
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to sell your pet for {userinfo.pet.worth} {emojis.coin}", title="Selling.."
+    )
+
+    await sent_msg.add_reaction("\u2705")
+    await sent_msg.add_reaction("\u274c")
+
+    def reaction_check(reaction, reaction_user):
+        if reaction_user != msg.author:
+            return False
+
+        if reaction.message != sent_msg:
+            return False
+
+        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+            return False
+
+        return True
+
+    try:
+        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if str(reaction.emoji) == "\u2705":
+        return sent_msg, None, "confirm"
+    else:
+        return sent_msg, None, "cancel"
+
+
+async def _pet_sell_button_confirm(bot, msg, userinfo, emojis):
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to sell your pet for {userinfo.pet.worth} {emojis.coin}", title="Selling..",
+        components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
+
+    def button_check(interaction):
+        if interaction.author != msg.author:
+            return False
+
+        if interaction.message != sent_msg:
+            return False
+
+        return True
+
+    try:
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if interaction.component.label == "Confirm":
+        return sent_msg, interaction, "confirm"
+    else:
+        return sent_msg, interaction, "cancel"

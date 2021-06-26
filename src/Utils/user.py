@@ -96,7 +96,8 @@ def load_user(user_id, conn):
     tmp_settings = json.loads(userinfo[19])
     new_user.settings = abc.Settings(
         tmp_settings["notifs"],
-        tmp_settings["timernotifs"]
+        tmp_settings["timernotifs"],
+        tmp_settings["reaction_confirm"]
     )
 
     new_user.color = json.loads(userinfo[20])

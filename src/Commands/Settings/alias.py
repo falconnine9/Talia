@@ -34,9 +34,6 @@ async def run(bot, msg, conn):
     elif split_data[1] == "remove":
         await _alias_remove(msg, conn, split_data)
 
-    elif split_data[1] == "clear":
-        await _alias_clear(bot, msg, conn)
-
     elif split_data[1] == "list":
         await _alias_list(msg, conn)
 
@@ -102,38 +99,6 @@ async def _alias_remove(msg, conn, split_data):
     guild.set_guild_attr(msg.guild.id, "aliases", guildinfo.aliases, conn)
 
     await message.send_message(msg, "Alias removed", title="Alias removed")
-
-
-async def _alias_clear(bot, msg, conn):
-    sent_msg = await message.send_message(msg, "Are you sure you want to clear all aliases", title="Clearing..")
-
-    await sent_msg.add_reaction("\u2705")
-    await sent_msg.add_reaction("\u274c")
-
-    def reaction_check(reaction, reaction_user):
-        if reaction_user != msg.author:
-            return False
-
-        if reaction.message != sent_msg:
-            return False
-
-        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
-            return False
-
-        return True
-
-    try:
-        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
-    except asyncio.TimeoutError:
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
-        return
-
-    if str(reaction.emoji) == "\u274c":
-        await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Cancelled")
-        return
-
-    guild.set_guild_attr(msg.guild.id, "aliases", {}, conn)
-    await message.edit_message(sent_msg, "All aliases have been cleared", title="Cleared")
 
 
 async def _alias_list(msg, conn):

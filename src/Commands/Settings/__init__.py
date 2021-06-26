@@ -11,5 +11,6 @@ from Commands.Settings import (
     alias,
     shopitem,
     notifs,
-    timernotifs
+    timernotifs,
+    buttons
 )

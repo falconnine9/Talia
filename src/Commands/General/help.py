@@ -63,7 +63,8 @@ help_info = {
         "alias": help_list.alias,
         "shopitem": help_list.shopitem,
         "notifs": help_list.notifs,
-        "timernotifs": help_list.timernotifs
+        "timernotifs": help_list.timernotifs,
+        "buttons": help_list.buttons
     }
 }
 

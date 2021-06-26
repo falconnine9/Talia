@@ -152,7 +152,7 @@ async def edit_error(msg, desc=None, title=None):
 
 
 async def response_edit(msg, interaction, desc=None, title=None, img=None, thumbnail=None, footer=None,
-                        footer_icon=None, fields=None, color=None):
+                        footer_icon=None, fields=None, color=None, from_reaction=False):
     """
     Sends a response with an edit to the message given
 
@@ -188,6 +188,10 @@ async def response_edit(msg, interaction, desc=None, title=None, img=None, thumb
         for field in fields:
             embed.add_field(name=field[0], value=field[1])
 
+    if from_reaction:
+        await msg.edit(embed=embed)
+        return
+
     for component_section in msg.components:
         for component in component_section:
             component.disabled = True
@@ -196,7 +200,7 @@ async def response_edit(msg, interaction, desc=None, title=None, img=None, thumb
         await interaction.respond(type=7, embed=embed, components=msg.components)
 
 
-async def response_send(msg, interaction, desc=None, title=None):
+async def response_send(msg, interaction, desc=None, title=None, from_reaction=False):
     embed = discord.Embed(color=discord.Colour.red())
 
     if desc is not None:
@@ -204,6 +208,10 @@ async def response_send(msg, interaction, desc=None, title=None):
 
     if title is not None:
         embed.title = title
+
+    if from_reaction:
+        await msg.channel.send(embed=embed)
+        return
 
     for component_section in msg.components:
         for component in component_section:
@@ -216,8 +224,12 @@ async def response_send(msg, interaction, desc=None, title=None):
         await msg.edit(embed=msg.embeds[0], components=msg.components)
 
 
-async def timeout_response(msg):
+async def timeout_response(msg, from_reaction=False):
     msg.embeds[0].title = "Timed out"
+
+    if from_reaction:
+        await msg.embed(embed=msg.embeds[0])
+        return
 
     for component_section in msg.components:
         for component in component_section:

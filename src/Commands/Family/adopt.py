@@ -86,6 +86,91 @@ async def run(bot, msg, conn):
         await message.send_error(msg, f"{str(person)} already has parents")
         return
 
+    if personinfo.settings.reaction_confirm:
+        sent_msg, interaction, result = await _reaction_confirm(bot, msg, person)
+    else:
+        sent_msg, interaction, result = await _button_confirm(bot, msg, person)
+
+    if result is None:
+        return
+
+    if result == "decline":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Declined",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
+        return
+
+    userinfo = user.load_user(msg.author.id, conn)
+    personinfo = user.load_user(person.id, conn)
+
+    if len(userinfo.children) >= 10:
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} already has the maximum of 10 children",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
+        return
+
+    if len(personinfo.parents) != 0:
+        await message.response_send(sent_msg, interaction, f"You already have parents",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
+        return
+
+    if msg.author.id in personinfo.children:
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your child",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
+        return
+
+    userinfo.children.append(person.id)
+    user.set_user_attr(msg.author.id, "children", userinfo.children, conn, False)
+
+    if userinfo.partner is not None:
+        partnerinfo = user.load_user(userinfo.partner, conn)
+        partnerinfo.children.append(person.id)
+        user.set_user_attr(partnerinfo.id, "children", partnerinfo.children, conn, False)
+        user.set_user_attr(person.id, "parents", [msg.author.id, partnerinfo.id], conn)
+
+    else:
+        user.set_user_attr(person.id, "parents", [msg.author.id], conn)
+
+    emojis = other.load_emojis(bot)
+    await message.response_edit(sent_msg, interaction,
+        f"{emojis.confetti} {str(person)} is now the child of {str(msg.author)} {emojis.confetti}", title="Adopted",
+        from_reaction=personinfo.settings.reaction_confirm
+    )
+
+
+async def _reaction_confirm(bot, msg, person):
+    sent_msg = await message.send_message(msg, f"{str(msg.author)} wants to adopt {str(person)}", title="Adoption..")
+
+    await sent_msg.add_reaction("\u2705")
+    await sent_msg.add_reaction("\u274c")
+
+    def reaction_check(reaction, reaction_user):
+        if reaction_user != person:
+            return False
+
+        if reaction.message != sent_msg:
+            return False
+
+        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+            return False
+
+        return True
+
+    try:
+        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if str(reaction.emoji) == "\u2705":
+        return sent_msg, None, "accept"
+    else:
+        return sent_msg, None, "decline"
+
+
+async def _button_confirm(bot, msg, person):
     sent_msg = await message.send_message(msg, f"{str(msg.author)} wants to adopt {str(person)}", title="Adoption..",
         components=[[
             discord_components.Button(label="Accept", style=discord_components.ButtonStyle.green),
@@ -106,40 +191,9 @@ async def run(bot, msg, conn):
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
         await message.timeout_response(sent_msg)
-        return
+        return None, None, None
 
-    if interaction.component.label == "Decline":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Declined")
-        return
-
-    userinfo = user.load_user(msg.author.id, conn)
-    personinfo = user.load_user(person.id, conn)
-
-    if len(userinfo.children) >= 10:
-        await message.response_send(sent_msg, interaction, f"{str(msg.author)} already has the maximum of 10 children")
-        return
-
-    if len(personinfo.parents) != 0:
-        await message.response_send(sent_msg, interaction, f"You already have parents")
-        return
-
-    if msg.author.id in personinfo.children:
-        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your child")
-        return
-
-    userinfo.children.append(person.id)
-    user.set_user_attr(msg.author.id, "children", userinfo.children, conn, False)
-
-    if userinfo.partner is not None:
-        partnerinfo = user.load_user(userinfo.partner, conn)
-        partnerinfo.children.append(person.id)
-        user.set_user_attr(partnerinfo.id, "children", partnerinfo.children, conn, False)
-        user.set_user_attr(person.id, "parents", [msg.author.id, partnerinfo.id], conn)
-
+    if interaction.component.label == "Accept":
+        return sent_msg, interaction, "accept"
     else:
-        user.set_user_attr(person.id, "parents", [msg.author.id], conn)
-
-    emojis = other.load_emojis(bot)
-    await message.response_edit(sent_msg, interaction,
-        f"{emojis.confetti} {str(person)} is now the child of {str(msg.author)} {emojis.confetti}", title="Adopted"
-    )
+        return sent_msg, interaction, "decline"

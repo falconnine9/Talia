@@ -63,6 +63,96 @@ async def _shop_buy(bot, msg, conn, split_data):
         return
 
     emojis = other.load_emojis(bot)
+
+    if userinfo.settings.reaction_confirm:
+        sent_msg, interaction, result = await _reaction_confirm(bot, msg, guildinfo, item, emojis)
+    else:
+        sent_msg, interaction, result = await _button_confirm(bot, msg, guildinfo, item, emojis)
+
+    if result is None:
+        return
+
+    if result == "cancel":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    userinfo = user.load_user(msg.author.id, conn)
+
+    if guildinfo.shop[item]["cost"] > userinfo.coins:
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this item",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    userinfo.inventory.append(abc.Item(
+        guildinfo.shop[item]["name"],
+        guildinfo.shop[item]["cost"],
+        "guild_item", {"from": msg.guild.id}
+    ))
+
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins - guildinfo.shop[item]["cost"], conn, False)
+    user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
+
+    await message.response_edit(sent_msg, interaction,
+        f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin}",
+        title="Bought", from_reaction=userinfo.settings.reaction_confirm
+    )
+
+
+async def _shop_list(bot, msg, conn):
+    guildinfo = guild.load_guild(msg.guild.id, conn)
+
+    if len(guildinfo.shop) == 0:
+        await message.send_message(msg, f"{msg.guild.name} has no items in their shop", title="Server shop",
+            thumbnail=msg.guild.icon_url
+        )
+        return
+
+    fields = []
+    emojis = other.load_emojis(bot)
+
+    for i, item in enumerate(guildinfo.shop):
+        fields.append([item["name"], f"ID: {i + 1}\nCost: {item['cost']} {emojis.coin}"])
+
+    await message.send_message(msg, title="Server shop", thumbnail=msg.guild.icon_url, fields=fields)
+
+
+async def _reaction_confirm(bot, msg, guildinfo, item, emojis):
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to buy a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin} from {msg.guild.name}",
+        title="Buying.."
+    )
+
+    await sent_msg.add_reaction("\u2705")
+    await sent_msg.add_reaction("\u274c")
+
+    def reaction_check(reaction, reaction_user):
+        if reaction_user != msg.author:
+            return False
+
+        if reaction.message != sent_msg:
+            return False
+
+        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+            return False
+
+        return True
+
+    try:
+        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if str(reaction.emoji) == "\u2705":
+        return sent_msg, None, "confirm"
+    else:
+        return sent_msg, None, "cancel"
+
+
+async def _button_confirm(bot, msg, guildinfo, item, emojis):
     sent_msg = await message.send_message(msg,
         f"Are you sure you want to buy a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin} from {msg.guild.name}",
         title="Buying..", components=[[
@@ -84,46 +174,9 @@ async def _shop_buy(bot, msg, conn, split_data):
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
         await message.timeout_response(sent_msg)
-        return
+        return None, None, None
 
-    if interaction.component.label == "Cancel":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
-        return
-
-    userinfo = user.load_user(msg.author.id, conn)
-
-    if guildinfo.shop[item]["cost"] > userinfo.coins:
-        await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this item")
-        return
-
-    userinfo.inventory.append(abc.Item(
-        guildinfo.shop[item]["name"],
-        guildinfo.shop[item]["cost"],
-        "guild_item", {"from": msg.guild.id}
-    ))
-
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins - guildinfo.shop[item]["cost"], conn, False)
-    user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
-
-    await message.response_edit(sent_msg, interaction,
-        f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin}",
-        title="Bought"
-    )
-
-
-async def _shop_list(bot, msg, conn):
-    guildinfo = guild.load_guild(msg.guild.id, conn)
-
-    if len(guildinfo.shop) == 0:
-        await message.send_message(msg, f"{msg.guild.name} has no items in their shop", title="Server shop",
-            thumbnail=msg.guild.icon_url
-        )
-        return
-
-    fields = []
-    emojis = other.load_emojis(bot)
-
-    for i, item in enumerate(guildinfo.shop):
-        fields.append([item["name"], f"ID: {i + 1}\nCost: {item['cost']} {emojis.coin}"])
-
-    await message.send_message(msg, title="Server shop", thumbnail=msg.guild.icon_url, fields=fields)
+    if interaction.component.label == "Confirm":
+        return sent_msg, interaction, "confirm"
+    else:
+        return sent_msg, interaction, "cancel"

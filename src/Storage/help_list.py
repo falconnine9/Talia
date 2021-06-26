@@ -308,7 +308,7 @@ alias = {
     "desc": "Create or remove a command alias",
     "usage": "alias <operation> [alias] [command]",
     "args": {
-        "operation": "create/remove/clear/list"
+        "operation": "create/remove/list"
     }
 }
 
@@ -331,4 +331,12 @@ timernotifs = {
     "desc": "Manage your timer DM notifications",
     "usage": "timernotifs",
     "args": {}
+}
+
+buttons = {
+    "desc": "Enable or disable buttons (Will use reactions if disabled)",
+    "usage": "buttons <value>",
+    "args": {
+        "value": "enable/disable"
+    }
 }

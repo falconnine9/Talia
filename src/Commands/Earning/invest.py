@@ -77,6 +77,82 @@ async def run(bot, msg, conn):
 `week` - Multiply the amount by x11 after 1 week""")
         return
 
+    if userinfo.settings.reaction_confirm:
+        sent_msg, interaction, result = await _reaction_confirm(bot, msg, split_data, amount, emojis)
+    else:
+        sent_msg, interaction, result = await _button_confirm(bot, msg, split_data, amount, emojis)
+
+    if result is None:
+        return
+
+    if result == "cancel":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    userinfo = user.load_user(msg.author.id, conn)
+
+    if amount > userinfo.coins:
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins for this",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    invest_timer = timer.load_invest_timer(msg.author.id, conn)
+
+    if invest_timer is not None:
+        await message.response_send(sent_msg, interaction, "You already have an investment going",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    new_timer = abc.InvestTimer(msg.author.id, times[split_data[2]], amount, multipliers[split_data[2]])
+
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins - amount, conn, False)
+    timer.new_invest_timer(new_timer, conn)
+
+    await message.response_edit(sent_msg, interaction,
+        f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested",
+        from_reaction=userinfo.settings.reaction_confirm
+    )
+
+
+async def _reaction_confirm(bot, msg, split_data, amount, emojis):
+    sent_msg = await message.send_message(msg,
+        f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
+You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""",
+        title="Investing.."
+    )
+
+    await sent_msg.add_reaction("\u2705")
+    await sent_msg.add_reaction("\u274c")
+
+    def reaction_check(reaction, reaction_user):
+        if reaction_user != msg.author:
+            return False
+
+        if reaction.message != sent_msg:
+            return False
+
+        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+            return False
+
+        return True
+
+    try:
+        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if str(reaction.emoji) == "\u2705":
+        return sent_msg, None, "confirm"
+    else:
+        return sent_msg, None, "cancel"
+
+
+async def _button_confirm(bot, msg, split_data, amount, emojis):
     sent_msg = await message.send_message(msg,
         f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
 You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""",
@@ -99,29 +175,9 @@ You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won
         interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
     except asyncio.TimeoutError:
         await message.timeout_response(sent_msg)
-        return
+        return None, None, None
 
-    if interaction.component.label == "Cancel":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
-        return
-
-    userinfo = user.load_user(msg.author.id, conn)
-
-    if amount > userinfo.coins:
-        await message.response_send(sent_msg, interaction, "You no longer have enough coins for this")
-        return
-
-    invest_timer = timer.load_invest_timer(msg.author.id, conn)
-
-    if invest_timer is not None:
-        await message.response_send(sent_msg, interaction, "You already have an investment going")
-        return
-
-    new_timer = abc.InvestTimer(msg.author.id, times[split_data[2]], amount, multipliers[split_data[2]])
-
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins - amount, conn, False)
-    timer.new_invest_timer(new_timer, conn)
-
-    await message.response_edit(sent_msg, interaction,
-        f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested"
-    )
+    if interaction.component.label == "Confirm":
+        return sent_msg, interaction, "confirm"
+    else:
+        return sent_msg, interaction, "cancel"

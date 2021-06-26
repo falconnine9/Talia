@@ -62,6 +62,7 @@ commands = {
     "shopitem": Commands.Settings.shopitem,
     "notifs": Commands.Settings.notifs,
     "timernotifs": Commands.Settings.timernotifs,
+    "buttons": Commands.Settings.buttons,
 
     # Administration
     "resetinfo": Commands.Administration.resetinfo,

@@ -86,49 +86,45 @@ async def run(bot, msg, conn):
         await message.send_error(msg, f"{str(person)} is already married")
         return
 
-    sent_msg = await message.send_message(msg, f"{str(msg.author)} has proposed to {str(person)}", title="Proposal..",
-        components=[[
-            discord_components.Button(label="Yes", style=discord_components.ButtonStyle.green),
-            discord_components.Button(label="No", style=discord_components.ButtonStyle.red)
-        ]]
-    )
+    if personinfo.settings.reaction_confirm:
+        sent_msg, interaction, result = await _reaction_confirm(bot, msg, person)
+    else:
+        sent_msg, interaction, result = await _button_confirm(bot, msg, person)
 
-    def button_check(interaction):
-        if interaction.author != person:
-            return False
-
-        if interaction.message != sent_msg:
-            return False
-
-        return True
-
-    try:
-        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
-    except asyncio.TimeoutError:
-        await message.timeout_response(sent_msg)
+    if result is None:
         return
 
-    if interaction.component.label == "No":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Declined")
+    if result == "decline":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Declined",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
         return
 
     userinfo = user.load_user(msg.author.id, conn)
     personinfo = user.load_user(person.id, conn)
 
     if userinfo.partner is not None:
-        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is already married")
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is already married",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
         return
 
     if personinfo.partner is not None:
-        await message.response_send(sent_msg, interaction, "You're already married")
+        await message.response_send(sent_msg, interaction, "You're already married",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
         return
 
     if msg.author.id in personinfo.parents:
-        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your parent")
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your parent",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
         return
 
     if msg.author.id in personinfo.children:
-        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your child")
+        await message.response_send(sent_msg, interaction, f"{str(msg.author)} is your child",
+            from_reaction=personinfo.settings.reaction_confirm
+        )
         return
 
     new_children = []
@@ -149,5 +145,65 @@ async def run(bot, msg, conn):
 
     emojis = other.load_emojis(bot)
     await message.response_edit(sent_msg, interaction,
-        f"{emojis.confetti} {str(msg.author)} married {str(person)} {emojis.confetti}", title="Married"
+        f"{emojis.confetti} {str(msg.author)} married {str(person)} {emojis.confetti}", title="Married",
+        from_reaction=personinfo.settings.reaction_confirm
     )
+
+
+async def _reaction_confirm(bot, msg, person):
+    sent_msg = await message.send_message(msg, f"{str(msg.author)} has proposed to {str(person)}", title="Proposal..")
+
+    await sent_msg.add_reaction("\u2705")
+    await sent_msg.add_reaction("\u274c")
+
+    def reaction_check(reaction, reaction_user):
+        if reaction_user != person:
+            return False
+
+        if reaction.message != sent_msg:
+            return False
+
+        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+            return False
+
+        return True
+
+    try:
+        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if str(reaction.emoji) == "\u2705":
+        return sent_msg, None, "accept"
+    else:
+        return sent_msg, None, "decline"
+
+
+async def _button_confirm(bot, msg, person):
+    sent_msg = await message.send_message(msg, f"{str(msg.author)} has proposed to {str(person)}", title="Proposal..",
+        components=[[
+            discord_components.Button(label="Accept", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Decline", style=discord_components.ButtonStyle.red)
+        ]]
+    )
+
+    def button_check(interaction):
+        if interaction.author != person:
+            return False
+
+        if interaction.message != sent_msg:
+            return False
+
+        return True
+
+    try:
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if interaction.component.label == "Accept":
+        return sent_msg, interaction, "accept"
+    else:
+        return sent_msg, interaction, "decline"
