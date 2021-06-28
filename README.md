@@ -4,7 +4,7 @@ Join the discord!
 [![Discord Link](https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/icons/discord%20link.png)](https://discord.gg/7FqgBCVfvY)
 
 ## Setup
-(Note that all `python3` references may need to be changed out for `python` if you're on Windows.)
+(Note that all calls to `python3` may need to be changed to `python` if you're on Windows.)
 
 1. Ensure that Python is installed with `python3 --version`. (If it's not, you can download it [here](https://www.python.org/downloads/))
 2. Install dependencies with `python3 -m pip install -r requirements.txt`.
