@@ -26,12 +26,12 @@ commands = {
     "company": Commands.General.company,
     "showcase": Commands.General.showcase,
     "balance": Commands.General.balance,
+    "level": Commands.General.level,
     "timers": Commands.General.timers,
     "pay": Commands.General.pay,
     "pet": Commands.General.pet,
     "sell": Commands.General.sell,
     "color": Commands.General.color,
-    "level": Commands.General.level,
 
     # Earning
     "job": Commands.Earning.job,
