@@ -34,25 +34,17 @@ level_achievements = {
 async def level(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
-    if userinfo.xp >= userinfo.level * (userinfo.fusion_level * 25):
+    if userinfo.xp >= userinfo.level * 25:
         user.set_user_attr(msg.author.id, "level", userinfo.level + 1, conn, False)
         user.set_user_attr(msg.author.id, "xp", 0, conn, False)
-        user.set_user_attr(msg.author.id, "multiplier", 1 + (userinfo.fusion_level * ((userinfo.level + 1) / 10)), conn)
+        user.set_user_attr(msg.author.id, "multiplier", 1 + (userinfo.level / 10), conn)
 
         emojis = other.load_emojis(bot)
         await message.send_message(msg,
             f"""{emojis.confetti} {str(msg.author)} reached level {userinfo.level + 1} {emojis.confetti}
-Multiplier: x{userinfo.multiplier} -> x{1 + (userinfo.fusion_level * ((userinfo.level + 1) / 10))}""",
+Multiplier: x{userinfo.multiplier} -> x{1 + (userinfo.level / 10)}""",
             title="Level up"
         )
-
-        if userinfo.level + 1 == 40:
-            try:
-                await message.send_message(None, "You've reached level 40, you can fuse with the `fuse` command",
-                    channel=msg.author
-                )
-            except discord.Forbidden:
-                pass
 
 
 async def achievements(bot, msg, conn):

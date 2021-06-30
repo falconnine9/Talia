@@ -19,7 +19,6 @@ commands = {
     "stats": Commands.General.stats,
     "inventory": Commands.General.inventory,
     "shop": Commands.General.shop,
-    "fuse": Commands.General.fuse,
     "school": Commands.General.school,
     "box": Commands.General.box,
     "leaderboard": Commands.General.leaderboard,

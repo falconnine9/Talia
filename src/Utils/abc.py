@@ -59,7 +59,6 @@ class User:
         self.pet = None
         self.achievements = []
         self.inventory = []
-        self.fusion_level = 1
         self.multiplier = 1.0
         self.company = None
         self.showcase = None
@@ -82,7 +81,6 @@ class User:
             "pickaxe": self.pickaxe,
             "achievements": self.achievements,
             "inventory": self.inventory,
-            "fusion_level": self.fusion_level,
             "multiplier_boost": self.multiplier,
             "company": self.company,
             "showcase": self.showcase,

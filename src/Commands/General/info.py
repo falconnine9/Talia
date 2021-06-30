@@ -20,17 +20,6 @@ edu_levels = {
     4: "PhD"
 }
 
-fusion_levels = {
-    1: "Human",
-    2: "Tiger",
-    3: "Minotaur",
-    4: "Gryphon",
-    5: "Elephant",
-    6: "Reaper",
-    7: "Dragon",
-    8: "Hydra"
-}
-
 
 async def run(bot, msg, conn):
     split_data = msg.content.split(" ")
@@ -76,14 +65,14 @@ async def run(bot, msg, conn):
         company_name = "None"
 
     emojis = other.load_emojis(bot)
-    send_str = f"**Level {personinfo.level} {fusion_levels[personinfo.fusion_level]}**"
+    send_str = f"**Level {personinfo.level}**"
 
     if personinfo.showcase is not None:
         send_str += f"\n**| {personinfo.showcase.name} |**"
 
     send_str += f"""\n\n**--General Information--**
 Coins: {personinfo.coins} {emojis.coin}
-XP: {personinfo.xp}/{personinfo.level * (personinfo.fusion_level * 25)} ({round(personinfo.xp / (personinfo.level * (personinfo.fusion_level * 25)) * 100)}%)
+XP: {personinfo.xp}/{personinfo.level * 25}
 Multiplier: x{other.load_multi(personinfo, conn)}
 Education Level: {edu_levels[personinfo.edu_level]}
 Company: {company_name}

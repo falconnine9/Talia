@@ -12,7 +12,6 @@ from Commands.General import (
     stats,
     inventory,
     shop,
-    fuse,
     school,
     box,
     leaderboard,

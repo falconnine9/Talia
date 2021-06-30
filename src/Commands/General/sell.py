@@ -57,7 +57,7 @@ async def run(bot, msg, conn):
 
     await message.response_edit(sent_msg, interaction, f"You sold a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth} {emojis.coin}", title="Sold")
 
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins + userinfo.inventory[item].worth, conn, False)
+    user.set_user_attr(msg.author.id, "coins", userinfo.inventory[item].worth, conn, False)
     userinfo.inventory.pop(item)
     user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
 

@@ -52,7 +52,6 @@ tables = {
         "pet": "MEDIUMTEXT",
         "achievements": "MEDIUMTEXT",
         "inventory": "MEDIUMTEXT",
-        "fusion_level": "INTEGER",
         "multiplier": "REAL",
         "company": "MEDIUMTEXT",
         "showcase": "MEDIUMTEXT",

@@ -5,8 +5,6 @@ user.py (Utils)
 
 Utilities for the management of users within the database
 """
-import asyncio
-import concurrent.futures
 import json
 from Utils import abc
 
@@ -72,11 +70,10 @@ def load_user(user_id, conn):
         item["name"], item["worth"],
         item["type"], item["stats"]
     ) for item in json.loads(userinfo[9])]
-    new_user.fusion_level = userinfo[10]
-    new_user.multiplier = userinfo[11]
-    new_user.company = userinfo[12]
+    new_user.multiplier = userinfo[10]
+    new_user.company = userinfo[11]
 
-    tmp_showcase = json.loads(userinfo[13])
+    tmp_showcase = json.loads(userinfo[12])
     if tmp_showcase["name"] is None:
         new_user.showcase = None
     else:
@@ -87,20 +84,20 @@ def load_user(user_id, conn):
             tmp_showcase["stats"]
         )
 
-    new_user.hourly = userinfo[14]
-    new_user.daily = userinfo[15]
-    new_user.partner = userinfo[16]
-    new_user.parents = json.loads(userinfo[17])
-    new_user.children = json.loads(userinfo[18])
+    new_user.hourly = userinfo[13]
+    new_user.daily = userinfo[14]
+    new_user.partner = userinfo[15]
+    new_user.parents = json.loads(userinfo[16])
+    new_user.children = json.loads(userinfo[17])
 
-    tmp_settings = json.loads(userinfo[19])
+    tmp_settings = json.loads(userinfo[18])
     new_user.settings = abc.Settings(
         tmp_settings["notifs"],
         tmp_settings["timernotifs"],
         tmp_settings["reaction_confirm"]
     )
 
-    new_user.color = json.loads(userinfo[20])
+    new_user.color = json.loads(userinfo[19])
     
     return new_user
 
@@ -135,7 +132,7 @@ def write_user(obj, conn, write=True):
         tmp_showcase = obj.showcase.cvt_dict()
 
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
         obj.id,
         obj.coins,
         obj.xp,
@@ -146,7 +143,6 @@ def write_user(obj, conn, write=True):
         json.dumps(tmp_pet),
         json.dumps(obj.achievements),
         json.dumps([item.cvt_dict() for item in obj.inventory]),
-        obj.fusion_level,
         obj.multiplier,
         obj.company,
         json.dumps(tmp_showcase),
