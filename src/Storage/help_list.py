@@ -104,6 +104,12 @@ balance = {
     "args": {}
 }
 
+level = {
+    "desc": "Get the level, xp and multiplier",
+    "usage": "level",
+    "args": {}
+}
+
 timers = {
     "desc": "Get a list of timers and cooldowns of someone",
     "usage": "timers [user]",
@@ -146,12 +152,6 @@ color = {
         "green": "Green value (0-255)",
         "blue": "Blue value (0-255)"
     }
-}
-
-level = {
-    "desc": "Get the level, xp and multiplier",
-    "usage": "level",
-    "args": {}
 }
 
 
