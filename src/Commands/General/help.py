@@ -27,6 +27,7 @@ help_info = {
         "company": help_list.company,
         "showcase": help_list.showcase,
         "balance": help_list.balance,
+        "level": help_list.level,
         "timers": help_list.timers,
         "pay": help_list.pay,
         "pet": help_list.pet,

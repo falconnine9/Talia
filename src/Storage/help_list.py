@@ -98,6 +98,12 @@ balance = {
     "args": {}
 }
 
+level = {
+    "desc": "Get just your level and XP",
+    "usage": "level",
+    "args": {}
+}
+
 timers = {
     "desc": "Get a list of timers and cooldowns of someone",
     "usage": "timers [user]",

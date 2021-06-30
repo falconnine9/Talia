@@ -18,6 +18,7 @@ from Commands.General import (
     company,
     showcase,
     balance,
+    level,
     timers,
     pay,
     pet,
