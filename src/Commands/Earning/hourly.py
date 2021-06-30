@@ -18,8 +18,7 @@ async def run(bot, msg, conn):
     hourly_timer = timer.load_timer(f"hourly.{msg.author.id}", conn)
 
     if hourly_timer is not None:
-        await message.send_error(msg,
-            f"Wait {timer.load_time(hourly_timer.time)} before collecting your next hourly")
+        await message.send_error(msg, f"Wait {timer.load_time(hourly_timer.time)} before collecting your next hourly")
         return
 
     userinfo = user.load_user(msg.author.id, conn)

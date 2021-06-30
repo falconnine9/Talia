@@ -148,7 +148,7 @@ You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won
     try:
         reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
     except asyncio.TimeoutError:
-        await message.timeout_response(sent_msg)
+        await message.timeout_response(sent_msg, from_reaction=True)
         return None, None, None
 
     if str(reaction.emoji) == "\u2705":
