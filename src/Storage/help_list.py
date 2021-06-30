@@ -148,6 +148,12 @@ color = {
     }
 }
 
+level = {
+    "desc": "Get the level, xp and multiplier",
+    "usage": "level",
+    "args": {}
+}
+
 
 # <--- Earning ---> #
 

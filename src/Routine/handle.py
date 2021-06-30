@@ -31,6 +31,7 @@ commands = {
     "pet": Commands.General.pet,
     "sell": Commands.General.sell,
     "color": Commands.General.color,
+    "level": Commands.General.level,
 
     # Earning
     "job": Commands.Earning.job,

@@ -23,5 +23,6 @@ from Commands.General import (
     pay,
     pet,
     sell,
-    color
+    color,
+    level
 )
