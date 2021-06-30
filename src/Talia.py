@@ -121,9 +121,9 @@ async def on_message(msg):
     conn.commit()
 
     if msg.guild is None:
-        msg.content = msg.content.strip()[2:]
+        msg.content = msg.content[2:].strip()
     else:
-        msg.content = msg.content.strip()[len(guild_prefixes[msg.guild.id]):]
+        msg.content = msg.content[len(guild_prefixes[msg.guild.id]):].strip()
 
     try:
         await handle.command(bot, msg, conn)
