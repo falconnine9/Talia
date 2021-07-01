@@ -98,14 +98,24 @@ async def _load_family_info(bot, personinfo):
     if personinfo.partner is None:
         partner = None
     else:
-        partner = bot.get_user(personinfo.partner)
+        try:
+            partner = await user.load_user_obj(bot, personinfo.partner)
+        except discord.NotFound:
+            partner = "Unknown#0000"
+        except discord.HTTPException:
+            partner = "Unknown#0000"
 
     if len(personinfo.parents) == 0:
         parents = None
     else:
         all_parents = []
         for parent in personinfo.parents:
-            parent_user = bot.get_user(parent)
+            try:
+                parent_user = await user.load_user_obj(bot, parent)
+            except discord.NotFound:
+                parent_user = "Unknown#0000"
+            except discord.HTTPException:
+                parent_user = "Unknown#0000"
             all_parents.append(str(parent_user))
         parents = ", ".join(all_parents)
 
@@ -114,7 +124,12 @@ async def _load_family_info(bot, personinfo):
     else:
         all_children = []
         for child in personinfo.children:
-            child_user = bot.get_user(child)
+            try:
+                child_user = await user.load_user_obj(bot, child)
+            except discord.NotFound:
+                child_user = "Unknown#0000"
+            except discord.HTTPException:
+                child_user = "Unknown#0000"
             all_children.append(str(child_user))
         children = ", ".join(all_children)
 
