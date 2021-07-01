@@ -123,6 +123,8 @@ async def command(bot, msg, conn):
                 if not command_.dm_capable:
                     await message.send_error(msg, "This command can only be run in servers")
                     return
+            else:
+                return
 
     else:
         if split_data[0] in commands:
