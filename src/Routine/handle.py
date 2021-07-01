@@ -75,7 +75,10 @@ command_alias = {
     "latency": Commands.General.ping,
     "i": Commands.General.info,
     "information": Commands.General.info,
+    "inv": Commands.General.inventory,
     "lb": Commands.General.leaderboard,
+    "bal": Commands.General.balance,
+    "lvl": Commands.General.level,
 
     # Earning
     "w": Commands.Earning.work,

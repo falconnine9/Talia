@@ -66,10 +66,6 @@ async def _company_create(msg, conn, split_data):
         await message.send_error(msg, "The company name can't be longer than 64 characters")
         return
 
-    for char in company_name:
-        if ord(char) < 32 or ord(char) > 126:
-            await message.send_error(msg, f"Invalid character: {char}")
-
     existing_company = company.load_company(company_name.lower(), conn)
 
     if existing_company is not None:
@@ -98,7 +94,7 @@ async def _company_leave(msg, conn):
 
     if companyinfo.ceo == msg.author.id:
         await message.send_error(msg,
-            "You're the CEO of the company\nIf you want to leave, you have to disband the party"
+            "You're the CEO of the company\nIf you want to leave, you have to disband the company"
         )
         return
 

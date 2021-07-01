@@ -175,6 +175,12 @@ class Item:
             "stats": self.stats
         }
 
+    def __eq__(self, other):
+        return (
+            self.name == other.name and self.worth == self.worth and
+            self.type == other.type and self.stats == other.stats
+        )
+
 
 class Emojis:
     def __init__(self):

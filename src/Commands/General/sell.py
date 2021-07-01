@@ -36,6 +36,7 @@ async def run(bot, msg, conn):
         return
 
     emojis = other.load_emojis(bot)
+    previous_item = userinfo.inventory[item]
 
     if userinfo.settings.reaction_confirm:
         sent_msg, interaction, result = await _reaction_confirm(bot, msg, userinfo, item, emojis)
@@ -45,17 +46,30 @@ async def run(bot, msg, conn):
     if result is None:
         return
 
-    if interaction.component.label == "Cancel":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
+    if result == "cancel":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if item > len(userinfo.inventory) - 1:
-        await message.response_send(sent_msg, interaction, "There's no item in your inventory with that ID")
+        await message.response_send(sent_msg, interaction, "There's no item in your inventory with that ID",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
-    await message.response_edit(sent_msg, interaction, f"You sold a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth} {emojis.coin}", title="Sold")
+    if previous_item != userinfo.inventory[item]:
+        await message.response_send(sent_msg, interaction, "The item you've chosen to sell has changed",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    await message.response_edit(sent_msg, interaction,
+        f"You sold a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth} {emojis.coin}", title="Sold",
+        from_reaction=userinfo.settings.reaction_confirm
+    )
 
     user.set_user_attr(msg.author.id, "coins", userinfo.inventory[item].worth, conn, False)
     userinfo.inventory.pop(item)
