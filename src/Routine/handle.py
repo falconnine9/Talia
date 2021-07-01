@@ -58,7 +58,6 @@ commands = {
     # Settings
     "prefix": Commands.Settings.prefix,
     "channels": Commands.Settings.channels,
-    "alias": Commands.Settings.alias,
     "shopitem": Commands.Settings.shopitem,
     "notifs": Commands.Settings.notifs,
     "timernotifs": Commands.Settings.timernotifs,
@@ -68,6 +67,26 @@ commands = {
     "resetinfo": Commands.Administration.resetinfo,
     "resettimers": Commands.Administration.resettimers,
     "setuserattr": Commands.Administration.setuserattr
+}
+
+command_alias = {
+    # General
+    "p": Commands.General.ping,
+    "latency": Commands.General.ping,
+    "i": Commands.General.info,
+    "information": Commands.General.info,
+    "lb": Commands.General.leaderboard,
+
+    # Earning
+    "w": Commands.Earning.work,
+    "m": Commands.Earning.mine,
+    "sj": Commands.Earning.sidejob,
+    "h": Commands.Earning.hourly,
+    "d": Commands.Earning.daily,
+
+    # Gambling
+    "cf": Commands.Gambling.coinflip,
+    "bj": Commands.Gambling.blackjack
 }
 
 
@@ -87,22 +106,26 @@ async def command(bot, msg, conn):
 
     if msg.guild is None:
         if split_data[0] in commands:
-            if commands[split_data[0]].dm_capable:
-                command_ = commands[split_data[0]]
-            else:
+            command_ = commands[split_data[0]]
+
+            if not command_.dm_capable:
                 await message.send_error(msg, "This command can only be run in servers")
                 return
+
         else:
-            return
+            if split_data[0] in command_alias:
+                command_ = command_alias[split_data[0]]
+
+                if not command_.dm_capable:
+                    await message.send_error(msg, "This command can only be run in servers")
+                    return
 
     else:
-        if split_data[0] in commands.keys():
+        if split_data[0] in commands:
             command_ = commands[split_data[0]]
         else:
-            guildinfo = guild.load_guild(msg.guild.id, conn)
-
-            if split_data[0] in guildinfo.aliases.keys() and guildinfo.aliases[split_data[0]] in commands.keys():
-                command_ = commands[guildinfo.aliases[split_data[0]]]
+            if split_data[0] in command_alias:
+                command_ = command_alias[split_data[0]]
             else:
                 return
 

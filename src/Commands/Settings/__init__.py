@@ -8,7 +8,6 @@ Initialization file for the Settings command category
 from Commands.Settings import (
     prefix,
     channels,
-    alias,
     shopitem,
     notifs,
     timernotifs,

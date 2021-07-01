@@ -60,7 +60,6 @@ help_info = {
     "settings": {
         "prefix": help_list.prefix,
         "channels": help_list.channels,
-        "alias": help_list.alias,
         "shopitem": help_list.shopitem,
         "notifs": help_list.notifs,
         "timernotifs": help_list.timernotifs,

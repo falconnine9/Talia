@@ -304,14 +304,6 @@ channels = {
     }
 }
 
-alias = {
-    "desc": "Create or remove a command alias",
-    "usage": "alias <operation> [alias] [command]",
-    "args": {
-        "operation": "create/remove/list"
-    }
-}
-
 shopitem = {
     "desc": "Create or remove an item in the server shop",
     "usage": "shopitem <operation> <name/id>",
