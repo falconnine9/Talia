@@ -138,7 +138,7 @@ async def _company_invite(bot, msg, conn, split_data):
         return
     else:
         try:
-            person = await user.load_user_obj(bot, int(split_data[1]))
+            person = await user.load_user_obj(bot, int(split_data[2]))
         except discord.NotFound:
             await message.send_error(msg, "I can't find that person")
             return
