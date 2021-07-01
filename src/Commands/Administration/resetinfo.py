@@ -8,6 +8,11 @@ resetinfo command
 import discord
 from Utils import user, message, other
 
+#   Command Information   #
+name = "resetinfo"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     if msg.author.id not in other.load_config().owners:

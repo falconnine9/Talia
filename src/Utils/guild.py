@@ -71,3 +71,12 @@ def set_guild_attr(guild_id, attr, val, conn, write=True):
     
     if write:
         conn.commit()
+
+
+async def load_guild_obj(bot, guild_id):
+    guild_obj = bot.get_guild(guild_id)
+
+    if guild_obj is None:
+        return await bot.fetch_guild(guild_id)
+    else:
+        return guild_obj

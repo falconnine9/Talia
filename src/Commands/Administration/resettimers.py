@@ -8,6 +8,11 @@ resettimers command
 import discord
 from Utils import message, other
 
+#   Command Information   #
+name = "resettimers"
+dm_capable = True
+# ~~~~~~~~~~~~~~~~~~~~~~~ #
+
 
 async def run(bot, msg, conn):
     if msg.author.id not in other.load_config().owners:

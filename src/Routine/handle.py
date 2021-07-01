@@ -66,7 +66,8 @@ commands = {
     # Administration
     "resetinfo": Commands.Administration.resetinfo,
     "resettimers": Commands.Administration.resettimers,
-    "setuserattr": Commands.Administration.setuserattr
+    "setuserattr": Commands.Administration.setuserattr,
+    "update": Commands.Administration.update
 }
 
 command_alias = {

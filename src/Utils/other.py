@@ -115,3 +115,12 @@ def load_multi(userinfo, conn):
         company_boost = 1.0
 
     return userinfo.multiplier * company_boost
+
+
+async def load_channel_obj(bot, channel_id):
+    channel_obj = bot.get_channel(channel_id)
+
+    if channel_obj is None:
+        return await bot.fetch_channel(channel_id)
+    else:
+        return channel_obj
