@@ -5,7 +5,6 @@ post_checks.py (Routine)
 
 Checks that will occur after every command is run
 """
-import discord
 from Utils import user, message, other
 
 money_achievements = {
@@ -24,10 +23,11 @@ money_achievements = {
 level_achievements = {
     5: "Rookie",
     15: "Silver",
-    40: "Gold",
-    80: "Titanium",
-    200: "Celestial",
-    400: "Titan"
+    30: "Gold",
+    70: "Titanium",
+    150: "Celestial",
+    250: "Titan",
+    500: "wtf"
 }
 
 

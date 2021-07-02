@@ -31,26 +31,62 @@ pickaxes = {
     3: {
         "name": "Laser Pickaxe",
         "cost": 3000,
-        "speed": 3,
+        "speed": 2,
         "multiplier": 1.3
     },
     4: {
         "name": "Mithril Pickaxe",
         "cost": 10000,
-        "speed": 4,
+        "speed": 3,
         "multiplier": 1.5
     },
     5: {
         "name": "Infinity Pickaxe",
         "cost": 40000,
-        "speed": 5,
+        "speed": 3,
         "multiplier": 1.7
     },
     6: {
         "name": "Universal Pickaxe",
         "cost": 100000,
-        "speed": 6,
+        "speed": 4,
         "multiplier": 2
+    },
+    7: {
+        "name": "Silver Drill",
+        "cost": 500000,
+        "speed": 5,
+        "multiplier": 2.3
+    },
+    8: {
+        "name": "Diamond Drill",
+        "cost": 2000000,
+        "speed": 5,
+        "multiplier": 2.6
+    },
+    9: {
+        "name": "TNT",
+        "cost": 5000000,
+        "speed": 6,
+        "multiplier": 2.9
+    },
+    10: {
+        "name": "Nuclear Explosives",
+        "cost": 10000000,
+        "speed": 6,
+        "multiplier": 3.3
+    },
+    11: {
+        "name": "Supernova",
+        "cost": 40000000,
+        "speed": 6,
+        "multiplier": 3.7
+    },
+    12: {
+        "name": "Black Hole",
+        "cost": 100000000,
+        "speed": 7,
+        "multiplier": 4.2
     }
 }
 
