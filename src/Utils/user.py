@@ -98,6 +98,9 @@ def load_user(user_id, conn):
     )
 
     new_user.color = json.loads(userinfo[19])
+
+    tmp_shop_info = json.loads(userinfo[20])
+    new_user.shop_info = abc.ShopInfo(tmp_shop_info["multiplier_cost"])
     
     return new_user
 
@@ -132,7 +135,7 @@ def write_user(obj, conn, write=True):
         tmp_showcase = obj.showcase.cvt_dict()
 
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
         obj.id,
         obj.coins,
         obj.xp,
@@ -152,7 +155,8 @@ def write_user(obj, conn, write=True):
         json.dumps(obj.parents),
         json.dumps(obj.children),
         json.dumps(obj.settings.cvt_dict()),
-        json.dumps(obj.color)
+        json.dumps(obj.color),
+        json.dumps(obj.shop_info.cvt_dict())
     ))
 
     if write:

@@ -52,6 +52,15 @@ shop = {
     }
 }
 
+boostshop = {
+    "desc": "Buy a boost or get a list of boosts that you can buy",
+    "usage": "boostshop <operation> [boost]",
+    "args": {
+        "operation": "buy/list",
+        "boost": "The boost that you want to buy"
+    }
+}
+
 school = {
     "desc": "Get a higher education level",
     "usage": "school",

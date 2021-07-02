@@ -19,6 +19,7 @@ commands = {
     "stats": Commands.General.stats,
     "inventory": Commands.General.inventory,
     "shop": Commands.General.shop,
+    "boostshop": Commands.General.boostshop,
     "school": Commands.General.school,
     "box": Commands.General.box,
     "leaderboard": Commands.General.leaderboard,
@@ -77,6 +78,7 @@ command_alias = {
     "i": Commands.General.info,
     "information": Commands.General.info,
     "inv": Commands.General.inventory,
+    "bs": Commands.General.boostshop,
     "lb": Commands.General.leaderboard,
     "bal": Commands.General.balance,
     "lvl": Commands.General.level,
@@ -90,7 +92,10 @@ command_alias = {
 
     # Gambling
     "cf": Commands.Gambling.coinflip,
-    "bj": Commands.Gambling.blackjack
+    "bj": Commands.Gambling.blackjack,
+
+    # Settings
+    "tn": Commands.Settings.timernotifs
 }
 
 

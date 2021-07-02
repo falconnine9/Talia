@@ -67,6 +67,7 @@ class User:
         self.children = []
         self.settings = Settings(None, None, None).default()
         self.color = [155, 89, 182]
+        self.shop_info = ShopInfo(1000)
 
     def cvt_dict(self):
         return {
@@ -88,7 +89,8 @@ class User:
             "parents": self.parents,
             "children": self.children,
             "settings": self.settings,
-            "color": self.color
+            "color": self.color,
+            "shop_info": self.shop_info
         }
 
 
@@ -277,6 +279,16 @@ class Settings:
         }
         self.reaction_confirm = False
         return self
+
+
+class ShopInfo:
+    def __init__(self, multiplier_cost):
+        self.multiplier_cost = multiplier_cost
+
+    def cvt_dict(self):
+        return {
+            "multiplier_cost": self.multiplier_cost
+        }
 
 
 class BJCard:

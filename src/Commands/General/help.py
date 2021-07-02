@@ -21,6 +21,7 @@ help_info = {
         "stats": help_list.stats,
         "inventory": help_list.inventory,
         "shop": help_list.shop,
+        "boostshop": help_list.boostshop,
         "school": help_list.school,
         "box": help_list.box,
         "leaderboard": help_list.leaderboard,

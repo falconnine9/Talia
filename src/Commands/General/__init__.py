@@ -12,6 +12,7 @@ from Commands.General import (
     stats,
     inventory,
     shop,
+    boostshop,
     school,
     box,
     leaderboard,
