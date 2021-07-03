@@ -61,6 +61,13 @@ async def run(bot, msg, conn):
         all_timers.append(f"Investment: {timer.load_time(invest_timer[0])}")
 
     personinfo = user.load_user(person.id, conn)
-    await message.send_message(msg, "\n".join(all_timers), title=f"{str(person)}'s timers", thumbnail=person.avatar_url,
+    
+    listOfTimers = ""
+    if not all_timers:
+        listOfTimers = "No timers to show!"
+    else:
+        listOfTimers = "\n".join(all_timers)
+    
+    await message.send_message(msg, listOfTimers, title=f"{str(person)}'s timers", thumbnail=person.avatar_url,
         color=personinfo.color
     )
