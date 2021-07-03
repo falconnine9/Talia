@@ -294,6 +294,57 @@ blackjack = {
 }
 
 
+# <--- Actions ---> #
+
+hug = {
+    "desc": "Hug someone",
+    "usage": "hug <user>",
+    "args": {
+        "user": "The person that you want to hug"
+    }
+}
+
+pat = {
+    "desc": "Pat someone",
+    "usage": "pat <user>",
+    "args": {
+        "user": "The person that you want to pat"
+    }
+}
+
+kiss = {
+    "desc": "Kiss someone",
+    "usage": "kiss <user>",
+    "args": {
+        "user": "The person that you want to kiss"
+    }
+}
+
+lick = {
+    "desc": "Lick someone",
+    "usage": "lick <user>",
+    "args": {
+        "user": "The person you want to lick"
+    }
+}
+
+slap = {
+    "desc": "Slap someone",
+    "usage": "slap <user>",
+    "args": {
+        "user": "The person you want to slap"
+    }
+}
+
+kill = {
+    "desc": "Kill someone",
+    "usage": "kill <user>",
+    "args": {
+        "user": "The person you want to kill"
+    }
+}
+
+
 # <--- Settings ---> #
 
 prefix = {

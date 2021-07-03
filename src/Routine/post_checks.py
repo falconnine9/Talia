@@ -64,6 +64,7 @@ async def achievements(bot, msg, conn):
             f"{emojis.confetti} {str(msg.author)} earned the {money_achievements[milestone]} achievement {emojis.confetti}",
             title="Achievement"
         )
+        break
 
     for milestone in level_achievements:
         if milestone > userinfo.level:
@@ -79,5 +80,6 @@ async def achievements(bot, msg, conn):
             f"{emojis.confetti} {str(msg.author)} earned the {level_achievements[milestone]} achievement {emojis.confetti}",
             title="Achievement"
         )
+        break
 
     user.set_user_attr(msg.author.id, "achievements", userinfo.achievements, conn)

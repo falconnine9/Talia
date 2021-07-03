@@ -58,6 +58,14 @@ help_info = {
         "dice": help_list.dice,
         "blackjack": help_list.blackjack
     },
+    "actions": {
+        "hug": help_list.hug,
+        "pat": help_list.pat,
+        "kiss": help_list.kiss,
+        "lick": help_list.lick,
+        "slap": help_list.slap,
+        "kill": help_list.kill
+    },
     "settings": {
         "prefix": help_list.prefix,
         "channels": help_list.channels,
@@ -73,6 +81,7 @@ category_emojis = {
     "earning": "\U0001fa99",
     "family": "\U0001f46a",
     "gambling": "\u2666",
+    "actions": "\U0001f917",
     "settings": "\u2699"
 }
 

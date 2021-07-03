@@ -10,6 +10,7 @@ from Commands import (
     Earning,
     Family,
     Gambling,
+    Actions,
     Settings,
     Administration
 )

@@ -56,6 +56,14 @@ commands = {
     "dice": Commands.Gambling.dice,
     "blackjack": Commands.Gambling.blackjack,
 
+    # Actions
+    "hug": Commands.Actions.hug,
+    "pat": Commands.Actions.pat,
+    "kiss": Commands.Actions.kiss,
+    "lick": Commands.Actions.lick,
+    "slap": Commands.Actions.slap,
+    "kill": Commands.Actions.kill,
+
     # Settings
     "prefix": Commands.Settings.prefix,
     "channels": Commands.Settings.channels,
