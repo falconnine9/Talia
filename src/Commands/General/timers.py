@@ -2,7 +2,6 @@
 Talia Discord Bot
 GNU General Public License v3.0
 timers.py (Commands/General)
-
 timers command
 """
 import discord
@@ -62,12 +61,11 @@ async def run(bot, msg, conn):
 
     personinfo = user.load_user(person.id, conn)
     
-    list_of_timers = ""
     if len(all_timers) == 0:
-        listOfTimers = "No timers to show!"
+        list_of_timers = "No timers to show!"
     else:
-        listOfTimers = "\n".join(all_timers)
+        list_of_timers = "\n".join(all_timers)
     
-    await message.send_message(msg, listOfTimers, title=f"{str(person)}'s timers", thumbnail=person.avatar_url,
+    await message.send_message(msg, list_of_timers, title=f"{str(person)}'s timers", thumbnail=person.avatar_url,
         color=personinfo.color
     )
