@@ -62,8 +62,8 @@ async def run(bot, msg, conn):
 
     personinfo = user.load_user(person.id, conn)
     
-    listOfTimers = ""
-    if not all_timers:
+    list_of_timers = ""
+    if len(all_timers) == 0:
         listOfTimers = "No timers to show!"
     else:
         listOfTimers = "\n".join(all_timers)
