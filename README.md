@@ -9,7 +9,7 @@ Join the discord!
 1. Ensure that Python is installed with `python3 --version`. (If it's not, you can download it [here](https://www.python.org/downloads/))
 2. Install dependencies with `python3 -m pip install -r requirements.txt`.
 3. Setup a MySQL database (If you need to download it, you can find it [here](https://www.mysql.com/downloads/)).
-4. Run `Talia.py` (In `src/`) with `python3 Talia.py`. This will create a configuration (`config.jso`n) file in the same directory.
+4. Run `Talia.py` (In `src/`) with `python3 Talia.py`. This will create a configuration (`config.json`) file in the same directory.
 5. Fill in all the sections. (A guide on that can be found [here](#config).)
 6. Run `python3 Talia.py` again to start the bot, and if everything worked correctly you will see "Ready".
 
