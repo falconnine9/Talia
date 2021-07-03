@@ -37,12 +37,12 @@ async def level(bot, msg, conn):
     if userinfo.xp >= userinfo.level * 25:
         user.set_user_attr(msg.author.id, "level", userinfo.level + 1, conn, False)
         user.set_user_attr(msg.author.id, "xp", 0, conn, False)
-        user.set_user_attr(msg.author.id, "multiplier", 1 + ((userinfo.level + 1) / 10), conn)
+        user.set_user_attr(msg.author.id, "multiplier", round(userinfo.multiplier + 0.1, 1), conn)
 
         emojis = other.load_emojis(bot)
         await message.send_message(msg,
             f"""{emojis.confetti} {str(msg.author)} reached level {userinfo.level + 1} {emojis.confetti}
-Multiplier: x{userinfo.multiplier} -> x{1 + ((userinfo.level + 1) / 10)}""",
+Multiplier: x{userinfo.multiplier} -> x{round(userinfo.multiplier + 0.1, 1)}""",
             title="Level up"
         )
 
