@@ -90,6 +90,7 @@ command_alias = {
     "lb": Commands.General.leaderboard,
     "bal": Commands.General.balance,
     "lvl": Commands.General.level,
+    "t": Commands.General.timers,
 
     # Earning
     "w": Commands.Earning.work,
