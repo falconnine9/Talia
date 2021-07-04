@@ -37,7 +37,6 @@ tables = {
         "id": "BIGINT UNSIGNED NOT NULL",
         "prefix": "MEDIUMTEXT",
         "disabled_channels": "MEDIUMTEXT",
-        "aliases": "MEDIUMTEXT",
         "shop": "MEDIUMTEXT",
         "CONSTRAINT guilds_pk": "PRIMARY KEY (id)"
     },
@@ -182,6 +181,6 @@ def open_main_database(db_info):
                 host=db_info["host"], port=3306,
                 database=db_info["database"]
             )
-            other.log("Complete")
+            other.log("Complete", "success")
 
     return conn
