@@ -6,7 +6,7 @@ resettimers.py (Commands/Administration)
 resettimers command
 """
 import discord
-from Utils import message, other
+from Utils import user, message, other
 
 #   Command Information   #
 name = "resettimers"
@@ -37,7 +37,7 @@ async def run(bot, msg, conn):
         split_data[1] = split_data[1].replace("<@", "").replace("!", "").replace(">", "")
 
         try:
-            person = await bot.fetch_user(int(split_data[1]))
+            person = await user.load_user_obj(bot, int(split_data[1]))
         except ValueError:
             await message.send_error(msg, "Invalid user")
             return
