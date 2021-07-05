@@ -115,7 +115,8 @@ async def run(bot, msg, conn):
         total_chance = 0.0
 
         for artifact in artifacts:
-            if total_chance < chance < total_chance + artifact["chance"]:
+            total_chance += artifact["chance"]
+            if chance < total_chance:
                 item = abc.Item(
                     artifact["name"],
                     random.randint(artifact["worth"][0], artifact["worth"][1]),
