@@ -89,7 +89,9 @@ command_alias = {
     "bs": Commands.General.boostshop,
     "lb": Commands.General.leaderboard,
     "bal": Commands.General.balance,
+    "b": Commands.General.balance,
     "lvl": Commands.General.level,
+    "l": Commands.General.level,
     "t": Commands.General.timers,
 
     # Earning
@@ -108,7 +110,7 @@ command_alias = {
 }
 
 
-async def command(bot, msg, conn):
+async def command(bot, msg, conn, full_logging):
     """
     Ran by the main Talia.py file when a command
      is given
@@ -152,7 +154,7 @@ async def command(bot, msg, conn):
     start_time = time.time()
     await command_.run(bot, msg, conn)
 
-    if other.load_config().full_logging:
+    if full_logging:
         cur = conn.cursor()
         cur.execute("SELECT MAX(id) FROM log")
         max_id = cur.fetchone()

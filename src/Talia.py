@@ -16,7 +16,6 @@ import asyncio
 import discord
 import discord_components
 import traceback
-
 from Routine import init, handle, loop, post_checks
 from Utils import guild, user, message, abc, other
 
@@ -29,6 +28,7 @@ init.db(conn)
 bot = discord.Client(intents=discord.Intents.all(), max_messages=other.load_config().cache_size)
 bot.activity = discord.Game(name="t!help")
 
+full_logging = other.load_config().full_logging
 guild_prefixes = {}
 
 
@@ -126,7 +126,7 @@ async def on_message(msg):
         msg.content = msg.content[len(guild_prefixes[msg.guild.id]):].strip()
 
     try:
-        await handle.command(bot, msg, conn)
+        await handle.command(bot, msg, conn, full_logging)
     except Exception as errmsg:
         excinfo = traceback.format_exc()
         await message.send_error(msg, f"""\u26a0 An unexpected error occurred \u26a0
