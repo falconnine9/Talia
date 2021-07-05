@@ -9,7 +9,7 @@ Infinite loops that will run the entire time that the
 import asyncio
 import discord
 import time
-from Utils import user, message, other
+from Utils import user, message, abc, other
 from Storage import meta
 
 
@@ -77,19 +77,23 @@ async def edu_timer(bot, conn):
 
 
 async def _edu_timer_alert(bot, c_user, conn):
-    c_user_obj = bot.get_user(c_user[0])
+    try:
+        c_user_obj = await user.load_user_obj(bot, c_user[0])
+    except discord.NotFound:
+        return
+    except discord.HTTPException:
+        return
 
-    if c_user_obj is not None:
-        c_userinfo = user.load_user(c_user_obj.id, conn)
+    c_userinfo = user.load_user(c_user_obj.id, conn)
 
-        if c_userinfo is not None:
-            if c_userinfo.settings.notifs["school"]:
-                try:
-                    await message.send_message(None, "Your education level has been upgraded",
-                        title="School notification", channel=c_user_obj
-                    )
-                except discord.Forbidden:
-                    pass
+    if c_userinfo is not None:
+        if c_userinfo.settings.notifs["school"]:
+            try:
+                await message.send_message(None, "Your education level has been upgraded",
+                    title="School notification", channel=c_user_obj
+                )
+            except discord.Forbidden:
+                pass
 
 
 async def invest_timer(bot, conn):
@@ -103,11 +107,15 @@ async def invest_timer(bot, conn):
         completed_users = cur.fetchall()
 
         for c_user in completed_users:
-            c_userinfo = user.load_user(c_user[0], conn)
+            timerinfo = abc.InvestTimer(c_user[0], c_user[1], c_user[2], c_user[3], c_user[4])
+            c_userinfo = user.load_user(timerinfo.id, conn)
 
             if c_userinfo is not None:
-                user.set_user_attr(c_user[0], "coins", c_userinfo.coins + round(c_user[2] * c_user[3]), conn, False)
-                bot.loop.create_task(_invest_timer_alert(bot, c_user, c_userinfo, emojis))
+                if timerinfo.failed:
+                    user.set_user_attr(timerinfo.id, "coins", c_userinfo.coins + round(timerinfo.coins / 4), conn, False)
+                else:
+                    user.set_user_attr(timerinfo.id, "coins", c_userinfo.coins + round(timerinfo.coins * timerinfo.multiplier), conn, False)
+                bot.loop.create_task(_invest_timer_alert(bot, timerinfo, c_userinfo, emojis))
 
         cur.execute("DELETE FROM invest_timers WHERE time <= 0")
         conn.commit()
@@ -120,17 +128,27 @@ async def invest_timer(bot, conn):
             await asyncio.sleep(1 - wait_time)
 
 
-async def _invest_timer_alert(bot, c_user, c_userinfo, emojis):
-    c_user_obj = bot.get_user(c_user[0])
-    if c_user_obj is not None:
-        if c_userinfo.settings.notifs["investment"]:
-            try:
-                await message.send_message(None,
-                    f"You earned {round(c_user[2] * c_user[3])} {emojis.coin} from your investment",
+async def _invest_timer_alert(bot, timerinfo, c_userinfo, emojis):
+    try:
+        c_user_obj = await user.load_user_obj(bot, timerinfo.id)
+    except discord.NotFound:
+        return
+    except discord.HTTPException:
+        return
+
+    if c_userinfo.settings.notifs["investment"]:
+        try:
+            if timerinfo.failed:
+                await message.send_message(None, f"Your investment failed and you lost 75% of your investment",
                     title="Investment notification", channel=c_user_obj
                 )
-            except discord.Forbidden:
-                pass
+            else:
+                await message.send_message(None,
+                    f"You earned {round(timerinfo.coins * timerinfo.multiplier)} {emojis.coin} from your investment",
+                    title="Investment notification", channel=c_user_obj
+                )
+        except discord.Forbidden:
+            pass
 
 
 async def activity_loop(bot):

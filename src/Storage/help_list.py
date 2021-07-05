@@ -184,11 +184,11 @@ heist = {
 }
 
 invest = {
-    "desc": "Invest coins to earn back more than you invested",
+    "desc": "Invest coins to earn back more than you invested (With some risk of losing coins)",
     "usage": "invest <amount> <time>",
     "args": {
         "amount": "The amount you want to invest",
-        "time": "The time you want to invest for (8hour, day, 3day, week)"
+        "time": "How long you want to invest for (short, long)"
     }
 }
 

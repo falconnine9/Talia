@@ -80,8 +80,10 @@ tables = {
     "invest_timers": {
         "id": "BIGINT UNSIGNED NOT NULL",
         "time": "INTEGER",
-        "coins": "INTEGER UNSIGNED",
+        "coins": "BIGINT UNSIGNED",
         "multiplier": "REAL",
+        "failed": "TINYINT",
+        "type": "TINYTEXT",
         "CONSTRAINT invest_timers_pk": "PRIMARY KEY (id)"
     },
     "companies": {

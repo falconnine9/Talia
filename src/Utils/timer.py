@@ -91,7 +91,7 @@ def load_invest_timer(user_id, conn):
     if timerinfo is None:
         return None
 
-    return abc.InvestTimer(timerinfo[0], timerinfo[1], timerinfo[2], timerinfo[3])
+    return abc.InvestTimer(timerinfo[0], timerinfo[1], timerinfo[2], timerinfo[3], timerinfo[4])
 
 
 def new_invest_timer(timer, conn, write=True):
@@ -103,8 +103,8 @@ def new_invest_timer(timer, conn, write=True):
     2. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute("INSERT INTO invest_timers VALUES (%s, %s, %s, %s)", (
-        timer.id, timer.time, timer.coins, timer.multiplier
+    cur.execute("INSERT INTO invest_timers VALUES (%s, %s, %s, %s, %s)", (
+        timer.id, timer.time, timer.coins, timer.multiplier, timer.failed
     ))
 
     if write:

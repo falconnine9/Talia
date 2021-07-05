@@ -7,6 +7,7 @@ invest command
 """
 import asyncio
 import discord_components
+import random
 from Utils import user, timer, message, abc, other
 from Storage import help_list
 
@@ -16,18 +17,19 @@ dm_capable = True
 # ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 times = {
-    "8hour": 28800,
-    "day": 86400,
-    "3day": 259200,
-    "week": 604800
-}
+    "short": [8, 24],
+    "long": [24, 96]
+}  # Random number in between the 2 in the list
 
 multipliers = {
-    "8hour": 1.2,
-    "day": 1.7,
-    "3day": 5,
-    "week": 11
-}
+    "short": [1.8, 2.7],
+    "long": [1.3, 1.9]
+}  # Random number in between the 2 in the list
+
+failed_chances = {
+    "short": [0.6, 0.75],
+    "long": [0.15, 0.4]
+}  # Random number in between the 2 in the list
 
 
 async def run(bot, msg, conn):
@@ -35,13 +37,11 @@ async def run(bot, msg, conn):
 
     if invest_timer is not None:
         emojis = other.load_emojis(bot)
-        await message.send_error(msg,
-            f"""You've already invested some money
+        await message.send_error(msg, f"""You've already invested some coins
 
 Time remaining: {timer.load_time(invest_timer.time)}
 Invested: {invest_timer.coins} {emojis.coin}
-Returning: {round(invest_timer.coins * invest_timer.multiplier)} {emojis.coin}"""
-        )
+Returning: {round(invest_timer.coins * invest_timer.multiplier)} {emojis.coin}""")
         return
 
     split_data = msg.content.split(" ")
@@ -62,8 +62,8 @@ Returning: {round(invest_timer.coins * invest_timer.multiplier)} {emojis.coin}""
 
     emojis = other.load_emojis(bot)
 
-    if amount < 1:
-        await message.send_error(msg, f"You need to invest at least 1 {emojis.coin}")
+    if amount < 100:
+        await message.send_error(msg, f"You need to invest at least 100 {emojis.coin}")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
@@ -75,11 +75,9 @@ Returning: {round(invest_timer.coins * invest_timer.multiplier)} {emojis.coin}""
     split_data[2] = split_data[2].lower()
 
     if split_data[2] not in times:
-        await message.send_error(msg, f"""Unknown amount of time
-`8hour` - Multiply the amount by x1.2 after 8 hours
-`day` - Multiply the amount by x1.7 after 1 day
-`3day` - Multiply the amount by x5 after 3 days
-`week` - Multiply the amount by x11 after 1 week""")
+        await message.send_error(msg, f"""Invalid time
+`short` - Short term, high reward but high risk
+`long` - Long term, small reward and small risk""")
         return
 
     if userinfo.settings.reaction_confirm:
@@ -112,21 +110,27 @@ Returning: {round(invest_timer.coins * invest_timer.multiplier)} {emojis.coin}""
         )
         return
 
-    new_timer = abc.InvestTimer(msg.author.id, times[split_data[2]], amount, multipliers[split_data[2]])
+    random_time = random.randint(times[split_data[2]][0], times[split_data[2]][1]) * 60 * 60
+    random_multi = round(random.uniform(multipliers[split_data[2]][0], multipliers[split_data[2]][1]), 1)
+    failed = random.random() < round(random.uniform(failed_chances[split_data[2]][0], failed_chances[split_data[2]][1]), 1)
+
+    new_timer = abc.InvestTimer(msg.author.id, random_time, amount, random_multi, failed)
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - amount, conn, False)
     timer.new_invest_timer(new_timer, conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You invested {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}", title="Invested",
+        f"""You invested {amount} {emojis.coin} for {timer.load_time(random_time)}
+You can use this command again to see the progress of your investment""", title="Invested",
         from_reaction=userinfo.settings.reaction_confirm
     )
 
 
 async def _reaction_confirm(bot, msg, split_data, amount, emojis):
-    sent_msg = await message.send_message(msg,
-        f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
-You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""",
+    sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin}
+
+It will take in between {times[split_data[2]][0]}h to {times[split_data[2]][1]}h to complete
+And you will earn in between {round(multipliers[split_data[2]][0] * amount)} {emojis.coin} to {round(multipliers[split_data[2]][1] * amount)} {emojis.coin}""",
         title="Investing.."
     )
 
@@ -158,9 +162,10 @@ You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won
 
 
 async def _button_confirm(bot, msg, split_data, amount, emojis):
-    sent_msg = await message.send_message(msg,
-        f"""Are you sure you want to invest {amount} {emojis.coin} for {timer.load_time(times[split_data[2]])}
-You will earn {round(amount * multipliers[split_data[2]])} {emojis.coin} and won't be able to invest anything else while you're waiting""",
+    sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin}
+
+It will take in between {times[split_data[2]][0]}h to {times[split_data[2]][1]}h to complete
+And you will earn in between {round(multipliers[split_data[2]][0] * amount)} {emojis.coin} to {round(multipliers[split_data[2]][1] * amount)} {emojis.coin}""",
         title="Investing..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
