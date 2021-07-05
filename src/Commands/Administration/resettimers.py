@@ -37,7 +37,7 @@ async def run(bot, msg, conn):
         split_data[1] = split_data[1].replace("<@", "").replace("!", "").replace(">", "")
 
         try:
-            person = await user.load(int(split_data[1]))
+            person = await bot.fetch_user(int(split_data[1]))
         except ValueError:
             await message.send_error(msg, "Invalid user")
             return
