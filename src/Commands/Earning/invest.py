@@ -36,12 +36,9 @@ async def run(bot, msg, conn):
     invest_timer = timer.load_invest_timer(msg.author.id, conn)
 
     if invest_timer is not None:
-        emojis = other.load_emojis(bot)
-        await message.send_error(msg, f"""You've already invested some coins
-
-Time remaining: {timer.load_time(invest_timer.time)}
-Invested: {invest_timer.coins} {emojis.coin}
-Returning: {round(invest_timer.coins * invest_timer.multiplier)} {emojis.coin}""")
+        await message.send_error(msg,
+            f"You've already invested some coins, wait {timer.load_time(invest_timer.time)} before investing again"
+        )
         return
 
     split_data = msg.content.split(" ")
