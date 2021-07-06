@@ -37,7 +37,7 @@ async def run(bot, msg, conn):
 
     if invest_timer is not None:
         await message.send_error(msg,
-            f"You've already invested some coins, wait {timer.load_time(invest_timer.time)} before investing again"
+            f"You've already invested some coins, it will be completed in {timer.load_time(invest_timer.time)}"
         )
         return
 
