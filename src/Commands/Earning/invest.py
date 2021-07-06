@@ -117,8 +117,7 @@ async def run(bot, msg, conn):
     timer.new_invest_timer(new_timer, conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"""You invested {amount} {emojis.coin} for {timer.load_time(random_time)}
-You can use this command again to see the progress of your investment""", title="Invested",
+        f"You invested {amount} {emojis.coin} for {timer.load_time(random_time)}", title="Invested",
         from_reaction=userinfo.settings.reaction_confirm
     )
 
