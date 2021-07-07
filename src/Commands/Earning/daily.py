@@ -35,6 +35,6 @@ async def run(bot, msg, conn):
     emojis = other.load_emojis(bot)
 
     await message.send_message(msg, f"""+{earned_coins:,} {emojis.coin}
-+{earned_xp} XP
++{earned_xp:,} XP
 
 **You've collected {userinfo.daily + 1} dailies**""", title="Daily")

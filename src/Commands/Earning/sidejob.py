@@ -49,4 +49,4 @@ async def run(bot, msg, conn):
 
     await message.send_message(msg, f"""{random.choice(job_messages)}
 +{earned_coins:,} {emojis.coin}
-+{earned_xp} XP""", title="Side job")
++{earned_xp:,} XP""", title="Side job")

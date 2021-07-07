@@ -72,7 +72,7 @@ async def run(bot, msg, conn):
 
     send_str += f"""\n\n**--General Information--**
 Coins: {personinfo.coins:,} {emojis.coin}
-XP: {personinfo.xp}/{personinfo.level * 25}
+XP: {personinfo.xp:,}/{(personinfo.level * 25):,}
 Multiplier: x{other.load_multi(personinfo, conn)}
 Education Level: {edu_levels[personinfo.edu_level]}
 Company: {company_name}
@@ -142,7 +142,7 @@ def _load_job_info(job):
     else:
         return f"""Job: {job.name}
 Level: {job.level}
-XP: {job.xp}/{job.level * 25} ({round(job.xp / (job.level * 25) * 100)}%)
+XP: {job.xp:,}/({(job.level * 25):,} ({round(job.xp / (job.level * 25) * 100)}%)
 Job Multiplier: x{round(1 + (job.level / 10) - 0.1, 1)}"""
 
 

@@ -36,6 +36,6 @@ async def run(bot, msg, conn):
 
     await message.send_message(msg,
         f"""+{earned_coins:,} {emojis.coin}
-+{earned_xp} XP
++{earned_xp:,} XP
 
 **You've collected {userinfo.hourly + 1} hourlies**""", title="Hourly")
