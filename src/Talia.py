@@ -15,6 +15,7 @@ On startup
 import asyncio
 import discord
 import discord_components
+import os
 import traceback
 from Routine import init, handle, loop, post_checks
 from Utils import guild, user, message, abc, other
@@ -29,7 +30,6 @@ bot = discord.Client(intents=discord.Intents.all(), max_messages=other.load_conf
 bot.activity = discord.Game(name="t!help")
 
 full_logging = other.load_config().full_logging
-guild_prefixes = {}
 
 
 @bot.event
@@ -97,7 +97,7 @@ async def on_message(msg):
     if bot.user in msg.mentions:
         await handle.ping(bot, msg, conn)
 
-    if not handle.prefix(msg, conn, guild_prefixes):
+    if not handle.prefix(msg, conn):
         return
 
     if msg.guild is not None:
@@ -123,7 +123,7 @@ async def on_message(msg):
     if msg.guild is None:
         msg.content = msg.content[2:].strip()
     else:
-        msg.content = msg.content[len(guild_prefixes[msg.guild.id]):].strip()
+        msg.content = msg.content[len(os.environ[f"TaliaPrefix.{msg.guild.id}"]):].strip()
 
     try:
         await handle.command(bot, msg, conn, full_logging)
@@ -154,9 +154,9 @@ async def cache_loading_loop():
         all_prefixes = cur.fetchall()
 
         for prefix in all_prefixes:
-            guild_prefixes[prefix[0]] = prefix[1]
+            os.environ[f"TaliaPrefix.{prefix[0]}"] = prefix[1]
 
-        await asyncio.sleep(600)
+        await asyncio.sleep(3600)
 
 
 if __name__ == "__main__":

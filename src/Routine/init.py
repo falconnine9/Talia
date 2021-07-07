@@ -83,7 +83,6 @@ tables = {
         "coins": "BIGINT UNSIGNED",
         "multiplier": "REAL",
         "failed": "TINYINT",
-        "type": "TINYTEXT",
         "CONSTRAINT invest_timers_pk": "PRIMARY KEY (id)"
     },
     "companies": {

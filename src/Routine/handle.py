@@ -7,6 +7,7 @@ Handles events (Such as commands sent)
 """
 import datetime
 import discord
+import os
 import time
 import Commands
 from Utils import guild, user, message, abc, other
@@ -235,24 +236,24 @@ My prefix is **{guildinfo.prefix}**
 You can use `{guildinfo.prefix}help` for some help""", title="Hello!"))
 
 
-def prefix(msg, conn, guild_prefixes):
+def prefix(msg, conn):
     if msg.guild is None:
         if not msg.content.startswith("t!"):
             return False
 
     else:
         try:
-            if not msg.content.startswith(guild_prefixes[msg.guild.id]):
+            if not msg.content.startswith(os.environ[f"TaliaPrefix.{msg.guild.id}"]):
                 return False
         except KeyError:
             guildinfo = guild.load_guild(msg.guild.id, conn)
 
             if guildinfo is None:
-                guild_prefixes[msg.guild.id] = "t!"
+                os.environ[f"TaliaPrefix.{msg.guild.id}"] = "t!"
             else:
-                guild_prefixes[msg.guild.id] = guildinfo.prefix
+                os.environ[f"TaliaPrefix.{msg.guild.id}"] = guildinfo.prefix
 
-            if not msg.content.startswith(guild_prefixes[msg.guild.id]):
+            if not msg.content.startswith(os.environ[f"TaliaPrefix.{msg.guild.id}"]):
                 return False
 
     return True

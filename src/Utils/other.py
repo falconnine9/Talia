@@ -6,9 +6,7 @@ other.py (Utils)
 Random utilities
 """
 import datetime
-import discord
 import json
-import random
 import os
 import sys
 
@@ -124,3 +122,13 @@ async def load_channel_obj(bot, channel_id):
         return await bot.fetch_channel(channel_id)
     else:
         return channel_obj
+
+
+def load_all_prefixes():
+    return json.loads(os.environ["PREFIXES"])
+
+
+def set_prefix(guild_id, prefix):
+    prefixes = json.loads(os.environ["PREFIXES"])
+    prefixes["PREFIXES"][guild_id] = prefix
+    os.environ["PREFIXES"] = json.dumps(prefixes)

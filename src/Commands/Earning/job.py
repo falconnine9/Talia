@@ -149,9 +149,7 @@ async def _job_quit(bot, msg, conn):
         )
         return
 
-    user.set_user_attr(msg.author.id, "job", abc.Job(
-        None, 0, 1, [], []
-    ).cvt_dict(), conn)
+    user.set_user_attr(msg.author.id, "job", abc.Job(None, 0, 1, [], []).cvt_dict(), conn)
     await message.response_edit(sent_msg, interaction, "You quit your job", title="Quit Job",
         from_reaction=userinfo.settings.reaction_confirm
     )
