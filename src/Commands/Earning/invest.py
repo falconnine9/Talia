@@ -158,10 +158,10 @@ And you will earn in between {round(multipliers[split_data[2]][0] * amount)} {em
 
 
 async def _button_confirm(bot, msg, split_data, amount, emojis):
-    sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin}
+    sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount:,} {emojis.coin}
 
 It will take in between {times[split_data[2]][0]}h to {times[split_data[2]][1]}h to complete
-And you will earn in between {round(multipliers[split_data[2]][0] * amount)} {emojis.coin} to {round(multipliers[split_data[2]][1] * amount)} {emojis.coin}""",
+And you will earn in between {(round(multipliers[split_data[2]][0] * amount)):,} {emojis.coin} to {(round(multipliers[split_data[2]][1] * amount)):,} {emojis.coin}""",
         title="Investing..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

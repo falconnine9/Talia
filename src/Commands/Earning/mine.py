@@ -106,7 +106,7 @@ async def run(bot, msg, conn):
             timer.new_timer(new_timer, conn)
 
     emojis = other.load_emojis(bot)
-    await message.send_message(msg, f"You did some mining in the caves\n+{earned_coins} {emojis.coin}\n+{earned_xp} XP",
+    await message.send_message(msg, f"You did some mining in the caves\n+{earned_coins:,} {emojis.coin}\n+{earned_xp:,} XP",
         title="Mined"
     )
 

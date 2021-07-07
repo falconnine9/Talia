@@ -49,11 +49,11 @@ async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if bet > userinfo.coins:
-        await message.send_error(msg, f"You don't have enough coins to bet {bet} {emojis.coin}")
+        await message.send_error(msg, f"You don't have enough coins to bet {bet:,} {emojis.coin}")
         return
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - bet, conn)
-    sent_msg = await message.send_message(msg, f"""Flip cost: -{bet} {emojis.coin}
+    sent_msg = await message.send_message(msg, f"""Flip cost: -{bet:,} {emojis.coin}
 You've bet on {split_data[1]}
 
 **Flipping..**""", title="Coinflip..")
@@ -64,13 +64,13 @@ You've bet on {split_data[1]}
 
     if random_side == split_data[1]:
         user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)
-        await message.edit_message(sent_msg, f"""Flip cost: -{bet} {emojis.coin}
+        await message.edit_message(sent_msg, f"""Flip cost: -{bet:,} {emojis.coin}
 You've bet on {split_data[1]}
 
-The coin landed on {random_side}, you earned {bet * 2} {emojis.coin}""", title="You won")
+The coin landed on {random_side}, you earned {(bet * 2):,} {emojis.coin}""", title="You won")
 
     else:
-        await message.edit_message(sent_msg, f"""Flip cost: -{bet} {emojis.coin}
+        await message.edit_message(sent_msg, f"""Flip cost: -{bet:,} {emojis.coin}
 You've bet on {split_data[1]}
 
 The coin landed on {random_side}""", title="You lost")

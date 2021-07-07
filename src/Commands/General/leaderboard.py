@@ -52,9 +52,9 @@ async def lb_coins(bot, msg, conn):
         user_obj = bot.get_user(user[0])
 
         if user_obj is None:
-            user_list.append(f"{i + 1}: Unknown#0000 | {user[1]} {emojis.coin}")
+            user_list.append(f"{i + 1}: Unknown#0000 | {user[1]:,} {emojis.coin}")
         else:
-            user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]} {emojis.coin}")
+            user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]:,} {emojis.coin}")
 
     await message.send_message(msg, "\n".join(user_list), title="Coins Leaderboard")
 

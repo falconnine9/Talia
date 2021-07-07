@@ -45,7 +45,7 @@ async def run(bot, msg, conn):
 
     emojis = other.load_emojis(bot)
     await message.send_message(msg,
-        f"You worked as a {userinfo.job.name}\n+{coins} {emojis.coin}\n+{xp} XP",
+        f"You worked as a {userinfo.job.name}\n+{coins:,} {emojis.coin}\n+{xp:,} XP",
         title="Work")
     await _job_xp_check(msg, conn, userinfo, emojis)
 

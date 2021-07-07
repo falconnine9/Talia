@@ -29,7 +29,7 @@ async def run(bot, msg, conn):
     await message.send_message(msg,
         f"""Used in **{len(bot.guilds)}** servers with a total of **{len(bot.users)}** members
 
-A total of {sum_coins[0]} {emojis.coin} between everyone
+A total of {sum_coins[0]:,} {emojis.coin} between everyone
 {len(all_education)} people in school
 {len(all_investments)} investments running""", title="Talia", thumbnail=bot.user.avatar_url,
         footer=f"Talia version {meta.version}", footer_icon=bot.user.avatar_url

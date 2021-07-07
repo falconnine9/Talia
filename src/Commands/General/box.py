@@ -268,7 +268,7 @@ async def _box_buy(bot, msg, conn, split_data):
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - boxes[box_id]["cost"], conn)
     await message.response_edit(sent_msg, interaction,
-        f"You bought a {boxes[box_id]['name']} for {boxes[box_id]['cost']} {emojis.coin}\n\n**Opening..**",
+        f"You bought a {boxes[box_id]['name']} for {boxes[box_id]['cost']:,} {emojis.coin}\n\n**Opening..**",
         title="Box Bought", from_reaction=userinfo.settings.reaction_confirm
     )
 
@@ -287,7 +287,7 @@ async def _box_list(bot, msg):
     emojis = other.load_emojis(bot)
 
     for box in boxes.keys():
-        fields.append([boxes[box]["name"], f"ID: {box}\nCost: {boxes[box]['cost']} {emojis.coin}"])
+        fields.append([boxes[box]["name"], f"ID: {box}\nCost: {boxes[box]['cost']:,} {emojis.coin}"])
 
     await message.send_message(msg, "You can use `box info` to get detailed information about a box", title="Boxes",
         fields=fields
@@ -296,7 +296,7 @@ async def _box_list(bot, msg):
 
 async def _reaction_confirm(bot, msg, box_id, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {boxes[box_id]['name']} for {boxes[box_id]['cost']} {emojis.coin}",
+        f"Are you sure you want to buy a {boxes[box_id]['name']} for {boxes[box_id]['cost']:,} {emojis.coin}",
         title="Buying.."
     )
 
@@ -329,7 +329,7 @@ async def _reaction_confirm(bot, msg, box_id, emojis):
 
 async def _button_confirm(bot, msg, box_id, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {boxes[box_id]['name']} for {boxes[box_id]['cost']} {emojis.coin}",
+        f"Are you sure you want to buy a {boxes[box_id]['name']} for {boxes[box_id]['cost']:,} {emojis.coin}",
         title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

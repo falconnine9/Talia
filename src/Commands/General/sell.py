@@ -67,7 +67,7 @@ async def run(bot, msg, conn):
         return
 
     await message.response_edit(sent_msg, interaction,
-        f"You sold a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth} {emojis.coin}", title="Sold",
+        f"You sold a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth:,} {emojis.coin}", title="Sold",
         from_reaction=userinfo.settings.reaction_confirm
     )
 
@@ -78,7 +78,7 @@ async def run(bot, msg, conn):
 
 async def _reaction_confirm(bot, msg, userinfo, item, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to sell a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth} {emojis.coin}",
+        f"Are you sure you want to sell a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth:,} {emojis.coin}",
         title="Selling.."
     )
 
@@ -111,7 +111,7 @@ async def _reaction_confirm(bot, msg, userinfo, item, emojis):
 
 async def _button_confirm(bot, msg, userinfo, item, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to sell a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth} {emojis.coin}",
+        f"Are you sure you want to sell a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth:,} {emojis.coin}",
         title="Selling..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

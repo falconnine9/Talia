@@ -28,4 +28,4 @@ async def run(bot, msg, conn):
         await message.send_message(msg, random.choice(no_coins), title="Your balance")
         return
     else:
-        await message.send_message(msg, f"You have {userinfo.coins} {emojis.coin}", title="Your balance")
+        await message.send_message(msg, f"You have {userinfo.coins:,} {emojis.coin}", title="Your balance")

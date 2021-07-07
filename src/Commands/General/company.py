@@ -430,6 +430,6 @@ async def _company_info(bot, msg, conn, split_data):
     emojis = other.load_emojis(bot)
 
     await message.send_message(msg, f"""CEO: {str(ceo)}
-Total Coins: {total_coins} {emojis.coin}
+Total Coins: {total_coins:,} {emojis.coin}
 Members: {len(companyinfo.members)}/50
 Company Multiplier: x{companyinfo.multiplier_boost}""", title=companyinfo.name)
