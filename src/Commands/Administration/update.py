@@ -74,7 +74,7 @@ async def run(bot, msg, conn):
 
     if "fixes" in data.keys():
         changes = "\n".join([f" **[x]** {change}" for change in data["fixes"]])
-        elements.append(f"**Fixes**\n{changes}")
+        elements.append(f"**Fixes/Changes**\n{changes}")
 
     if len(elements) == 0:
         description = "*No changes*"
