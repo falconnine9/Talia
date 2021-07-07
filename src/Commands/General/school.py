@@ -56,7 +56,7 @@ async def run(bot, msg, conn):
     if edu_levels[userinfo.edu_level + 1]["cost"] > userinfo.coins:
         await message.send_error(msg,
             f"""You don't have enough coins to get a {edu_levels[userinfo.edu_level + 1]['name']} education level
-(Costs {edu_levels[userinfo.edu_level + 1]['cost']} {emojis.coin})"""
+(Costs {edu_levels[userinfo.edu_level + 1]['cost']:,} {emojis.coin})"""
         )
         return
 
@@ -106,7 +106,7 @@ Time remaining: {timer.load_time(edu_levels[userinfo.edu_level]['time'])}""", ti
 
 async def _reaction_confirm(bot, msg, userinfo, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to pay {edu_levels[userinfo.edu_level + 1]['cost']} {emojis.coin} for a {edu_levels[userinfo.edu_level + 1]['name']} education level?",
+        f"Are you sure you want to pay {edu_levels[userinfo.edu_level + 1]['cost']:,} {emojis.coin} for a {edu_levels[userinfo.edu_level + 1]['name']} education level?",
         title="Education"
     )
 
@@ -139,7 +139,7 @@ async def _reaction_confirm(bot, msg, userinfo, emojis):
 
 async def _button_confirm(bot, msg, userinfo, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to pay {edu_levels[userinfo.edu_level + 1]['cost']} {emojis.coin} for a {edu_levels[userinfo.edu_level + 1]['name']} education level?",
+        f"Are you sure you want to pay {edu_levels[userinfo.edu_level + 1]['cost']:,} {emojis.coin} for a {edu_levels[userinfo.edu_level + 1]['name']} education level?",
         title="Education", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

@@ -73,7 +73,7 @@ async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if amount > userinfo.coins:
-        await message.send_error(msg, f"You don't have {amount} {emojis.coin}")
+        await message.send_error(msg, f"You don't have {amount:,} {emojis.coin}")
         return
 
     personinfo = user.load_user(person.id, conn)
@@ -81,10 +81,10 @@ async def run(bot, msg, conn):
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - amount, conn, False)
     user.set_user_attr(person.id, "coins", personinfo.coins + amount, conn)
 
-    await message.send_message(msg, f"You paid {str(person)} {amount} {emojis.coin}", title="Paid")
+    await message.send_message(msg, f"You paid {str(person)} {amount:,} {emojis.coin}", title="Paid")
 
     if personinfo.settings.notifs["paid"]:
         try:
-            await message.send_message(None, f"{str(msg.author)} paid you {amount} {emojis.coin}", channel=person)
+            await message.send_message(None, f"{str(msg.author)} paid you {amount:,} {emojis.coin}", channel=person)
         except discord.Forbidden:
             pass

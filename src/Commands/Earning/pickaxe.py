@@ -244,7 +244,7 @@ Mining Multiplier: x{pickaxes[pickaxe]['multiplier']}"""])
 
 async def _pickaxe_buy_reaction_confirm(bot, msg, pickaxe_id, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}",
+        f"Are you sure you want to buy a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']:,} {emojis.coin}",
         title="Buying.."
     )
 

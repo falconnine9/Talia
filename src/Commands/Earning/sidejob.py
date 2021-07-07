@@ -48,5 +48,5 @@ async def run(bot, msg, conn):
     emojis = other.load_emojis(bot)
 
     await message.send_message(msg, f"""{random.choice(job_messages)}
-+{earned_coins} {emojis.coin}
++{earned_coins:,} {emojis.coin}
 +{earned_xp} XP""", title="Side job")
