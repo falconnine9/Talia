@@ -68,7 +68,7 @@ async def run(bot, msg, conn):
     send_str = f"**Level {personinfo.level}**"
 
     if personinfo.showcase is not None:
-        send_str += f"\n**| {personinfo.showcase.name} |**"
+        send_str += f"\n**{personinfo.showcase.name}**"
 
     send_str += f"""\n\n**--General Information--**
 Coins: {personinfo.coins:,} {emojis.coin}
