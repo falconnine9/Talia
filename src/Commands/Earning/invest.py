@@ -109,7 +109,9 @@ async def run(bot, msg, conn):
 
     random_time = random.randint(times[split_data[2]][0], times[split_data[2]][1]) * 60 * 60
     random_multi = round(random.uniform(multipliers[split_data[2]][0], multipliers[split_data[2]][1]), 1)
-    failed = random.random() < round(random.uniform(failed_chances[split_data[2]][0], failed_chances[split_data[2]][1]), 1)
+    failed = random.random() < round(
+        random.uniform(failed_chances[split_data[2]][0], failed_chances[split_data[2]][1]), 1
+    )
 
     new_timer = abc.InvestTimer(msg.author.id, random_time, amount, random_multi, failed)
 

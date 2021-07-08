@@ -77,7 +77,8 @@ commands = {
     "resetinfo": Commands.Administration.resetinfo,
     "resettimers": Commands.Administration.resettimers,
     "setuserattr": Commands.Administration.setuserattr,
-    "update": Commands.Administration.update
+    "update": Commands.Administration.update,
+    "proc": Commands.Administration.proc
 }
 
 command_alias = {
