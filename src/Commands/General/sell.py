@@ -71,7 +71,7 @@ async def run(bot, msg, conn):
         from_reaction=userinfo.settings.reaction_confirm
     )
 
-    user.set_user_attr(msg.author.id, "coins", userinfo.inventory[item].worth, conn, False)
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins + userinfo.inventory[item].worth, conn, False)
     userinfo.inventory.pop(item)
     user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
 
