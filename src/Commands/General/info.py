@@ -142,7 +142,7 @@ def _load_job_info(job):
     else:
         return f"""Job: {job.name}
 Level: {job.level}
-XP: {job.xp:,}/({(job.level * 25):,} ({round(job.xp / (job.level * 25) * 100)}%)
+XP: {job.xp:,}/{(job.level * 25):,} ({round(job.xp / (job.level * 25) * 100)}%)
 Job Multiplier: x{round(1 + (job.level / 10) - 0.1, 1)}"""
 
 
