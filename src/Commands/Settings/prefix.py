@@ -9,10 +9,8 @@ import os
 from Utils import guild, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "prefix"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

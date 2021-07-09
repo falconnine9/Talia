@@ -8,10 +8,8 @@ stats command
 from Utils import message, other
 from Storage import meta
 
-#   Command Information   #
 name = "stats"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

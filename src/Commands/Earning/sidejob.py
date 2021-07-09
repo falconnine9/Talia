@@ -8,12 +8,10 @@ sidejob command
 import random
 from Utils import user, timer, message, abc, other
 
-#   Command Information   #
 name = "sidejob"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-job_messages = [
+_job_messages = [
     "You do some box moving at your local warehouse",
     "You give some rich guy a lap dance",
     "You break open your child's piggy bank",
@@ -47,6 +45,6 @@ async def run(bot, msg, conn):
 
     emojis = other.load_emojis(bot)
 
-    await message.send_message(msg, f"""{random.choice(job_messages)}
+    await message.send_message(msg, f"""{random.choice(_job_messages)}
 +{earned_coins:,} {emojis.coin}
 +{earned_xp:,} XP""", title="Side job")

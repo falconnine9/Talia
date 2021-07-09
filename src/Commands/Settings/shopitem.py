@@ -9,10 +9,8 @@ import asyncio
 from Utils import guild, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "shopitem"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):
@@ -84,6 +82,8 @@ Cost: None
     except asyncio.TimeoutError:
         await message.edit_message(sent_msg, sent_msg.embeds[0].description, title="Timed out")
         return
+
+    user_msg.content = user_msg.content.replace(",", "")
 
     try:
         cost = int(user_msg.content)

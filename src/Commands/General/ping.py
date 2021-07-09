@@ -8,10 +8,8 @@ ping command
 import time
 from Utils import message
 
-#   Command Information   #
 name = "ping"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

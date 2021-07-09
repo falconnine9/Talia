@@ -11,12 +11,10 @@ import random
 from Utils import user, message, abc, other
 from Storage import help_list
 
-#   Command Information   #
 name = "box"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-boxes = {
+_boxes = {
     1: {
         "name": "Carboard Box",
         "cost": 100,
@@ -222,14 +220,14 @@ async def _box_buy(bot, msg, conn, split_data):
         await message.send_error(msg, "Invalid box ID")
         return
 
-    if box_id not in boxes:
+    if box_id not in _boxes:
         await message.send_error(msg, "There's no box with that ID")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
-    if boxes[box_id]["cost"] > userinfo.coins:
-        await message.send_error(msg, f"You don't have enough coins to buy a {boxes[box_id]['name']}")
+    if _boxes[box_id]["cost"] > userinfo.coins:
+        await message.send_error(msg, f"You don't have enough coins to buy a {_boxes[box_id]['name']}")
         return
 
     if len(userinfo.inventory) >= 40:
@@ -254,7 +252,7 @@ async def _box_buy(bot, msg, conn, split_data):
 
     userinfo = user.load_user(msg.author.id, conn)
 
-    if boxes[box_id]["cost"] > userinfo.coins:
+    if _boxes[box_id]["cost"] > userinfo.coins:
         await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this box",
             from_reaction=userinfo.settings.reaction_confirm
         )
@@ -266,28 +264,28 @@ async def _box_buy(bot, msg, conn, split_data):
         )
         return
 
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins - boxes[box_id]["cost"], conn)
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins - _boxes[box_id]["cost"], conn)
     await message.response_edit(sent_msg, interaction,
-        f"You bought a {boxes[box_id]['name']} for {boxes[box_id]['cost']:,} {emojis.coin}\n\n**Opening..**",
+        f"You bought a {_boxes[box_id]['name']} for {_boxes[box_id]['cost']:,} {emojis.coin}\n\n**Opening..**",
         title="Box Bought", from_reaction=userinfo.settings.reaction_confirm
     )
 
     await asyncio.sleep(random.randint(2, 3))
 
     userinfo = user.load_user(msg.author.id, conn)
-    item = random.choice(boxes[box_id]["items"])
+    item = random.choice(_boxes[box_id]["items"])
 
     userinfo.inventory.append(abc.Item(item["name"], item["worth"], "box_item", {}))
     user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
-    await message.edit_message(sent_msg, f"You found a {item['name']} in the {boxes[box_id]['name']}", title="Opened")
+    await message.edit_message(sent_msg, f"You found a {item['name']} in the {_boxes[box_id]['name']}", title="Opened")
 
 
 async def _box_list(bot, msg):
     fields = []
     emojis = other.load_emojis(bot)
 
-    for box in boxes.keys():
-        fields.append([boxes[box]["name"], f"ID: {box}\nCost: {boxes[box]['cost']:,} {emojis.coin}"])
+    for box in _boxes.keys():
+        fields.append([_boxes[box]["name"], f"ID: {box}\nCost: {_boxes[box]['cost']:,} {emojis.coin}"])
 
     await message.send_message(msg, "You can use `box info` to get detailed information about a box", title="Boxes",
         fields=fields
@@ -296,7 +294,7 @@ async def _box_list(bot, msg):
 
 async def _reaction_confirm(bot, msg, box_id, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {boxes[box_id]['name']} for {boxes[box_id]['cost']:,} {emojis.coin}",
+        f"Are you sure you want to buy a {_boxes[box_id]['name']} for {_boxes[box_id]['cost']:,} {emojis.coin}",
         title="Buying.."
     )
 
@@ -329,7 +327,7 @@ async def _reaction_confirm(bot, msg, box_id, emojis):
 
 async def _button_confirm(bot, msg, box_id, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {boxes[box_id]['name']} for {boxes[box_id]['cost']:,} {emojis.coin}",
+        f"Are you sure you want to buy a {_boxes[box_id]['name']} for {_boxes[box_id]['cost']:,} {emojis.coin}",
         title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

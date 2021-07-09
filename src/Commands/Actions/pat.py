@@ -10,19 +10,15 @@ import random
 from Utils import user, message
 from Storage import help_list
 
-#   Command Information   #
 name = "pat"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-gif_url = "https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/actiongifs/pat"
-
-self_pat = [
+_gif_url = "https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/actiongifs/pat"
+_self_pat = [
     "You can't pat yourself",
     "You should get someone else to pat you"
 ]
-
-suffix = [
+_suffix = [
     " :)",
     ", aww",
     ", cute"
@@ -45,7 +41,7 @@ async def run(bot, msg, conn):
         return
 
     if person_id == msg.author.id:
-        await message.send_error(msg, random.choice(self_pat))
+        await message.send_error(msg, random.choice(_self_pat))
         return
     else:
         try:
@@ -57,7 +53,7 @@ async def run(bot, msg, conn):
             await message.send_error(msg, "An error occurred and the command couldn't be run")
             return
 
-    random_image = f"{gif_url}/pat{random.randint(1, 18)}.gif"
-    await message.send_message(msg, title=f"{str(msg.author)} patted {str(person)}{random.choice(suffix)}",
+    random_image = f"{_gif_url}/pat{random.randint(1, 18)}.gif"
+    await message.send_message(msg, title=f"{str(msg.author)} patted {str(person)}{random.choice(_suffix)}",
         img=random_image
     )

@@ -12,10 +12,8 @@ import discord_components
 from Utils import user, company, message, abc, other
 from Storage import help_list
 
-#   Command Information   #
 name = "company"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

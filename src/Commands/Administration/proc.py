@@ -9,10 +9,8 @@ import psutil
 import os
 from Utils import user, message, other
 
-#   Command Information   #
 name = "proc"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

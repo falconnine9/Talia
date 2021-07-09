@@ -9,10 +9,8 @@ import discord
 from Utils import user, message
 from Storage import help_list
 
-#   Command Information   #
 name = "disown"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

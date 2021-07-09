@@ -12,18 +12,15 @@ import random
 from Utils import user, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "adopt"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-partner_adopt = [
+_partner_adopt = [
     "{user} is your partner",
     "You can't adopt your partner",
     "I don't think you're allowed to adopt your partner"
 ]
-
-parent_adopt = [
+_parent_adopt = [
     "{user} is your parent",
     "Um.. {user} is your parent",
     "You can't adopt your parent"
@@ -69,11 +66,11 @@ async def run(bot, msg, conn):
         return
 
     if person.id == userinfo.partner:
-        await message.send_error(msg, random.choice(partner_adopt).replace("{user}", str(person)))
+        await message.send_error(msg, random.choice(_partner_adopt).replace("{user}", str(person)))
         return
 
     if person.id in userinfo.parents:
-        await message.send_error(msg, random.choice(parent_adopt).replace("{user}", str(person)))
+        await message.send_error(msg, random.choice(_parent_adopt).replace("{user}", str(person)))
         return
 
     if person.id in userinfo.children:

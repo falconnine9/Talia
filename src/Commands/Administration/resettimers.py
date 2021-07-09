@@ -8,10 +8,8 @@ resettimers command
 import discord
 from Utils import user, message, other
 
-#   Command Information   #
 name = "resettimers"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

@@ -10,12 +10,10 @@ import discord_components
 from Utils import user, message, abc, other
 from Storage import help_list
 
-#   Command Information   #
 name = "job"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-jobs = {
+_jobs = {
     "janitor": {
         "showcase": "Janitor",
         "level": 1,
@@ -59,8 +57,7 @@ jobs = {
         "cooldown": [100, 210]
     }
 }
-
-edu_levels = {
+_edu_levels = {
     1: "Elementary",
     2: "Highschool",
     3: "College",
@@ -103,21 +100,21 @@ async def _job_join(bot, msg, conn, split_data):
 
     split_data[2] = split_data[2].lower()
 
-    if split_data[2] not in jobs:
+    if split_data[2] not in _jobs:
         await message.send_error(msg, "There's no job with that name")
         return
 
-    if jobs[split_data[2]]["level"] > userinfo.edu_level:
+    if _jobs[split_data[2]]["level"] > userinfo.edu_level:
         await message.send_error(msg, """You don't have enough education level to get this job
 (Get a higher education level with the `school` command)""")
         return
 
     user.set_user_attr(msg.author.id, "job", abc.Job(
-        jobs[split_data[2]]["showcase"], 0, 1,
-        jobs[split_data[2]]["salary"],
-        jobs[split_data[2]]["cooldown"]
+        _jobs[split_data[2]]["showcase"], 0, 1,
+        _jobs[split_data[2]]["salary"],
+        _jobs[split_data[2]]["cooldown"]
     ).cvt_dict(), conn)
-    await message.send_message(msg, f"You joined the {jobs[split_data[2]]['showcase']} job", title="Joined Job")
+    await message.send_message(msg, f"You joined the {_jobs[split_data[2]]['showcase']} job", title="Joined Job")
 
 
 async def _job_quit(bot, msg, conn):
@@ -159,10 +156,10 @@ async def _job_list(bot, msg):
     fields = []
     emojis = other.load_emojis(bot)
 
-    for job in jobs.keys():
-        fields.append([jobs[job]['showcase'], f"""Education Level: {edu_levels[jobs[job]['level']]}
-Salary: {jobs[job]['salary'][0]}-{jobs[job]['salary'][1]} {emojis.coin}
-Cooldown: {jobs[job]['cooldown'][0]}-{jobs[job]['cooldown'][1]} mins"""])
+    for job in _jobs.keys():
+        fields.append([_jobs[job]['showcase'], f"""Education Level: {_edu_levels[_jobs[job]['level']]}
+Salary: {_jobs[job]['salary'][0]:,}-{_jobs[job]['salary'][1]:,} {emojis.coin}
+Cooldown: {_jobs[job]['cooldown'][0]}-{_jobs[job]['cooldown'][1]} mins"""])
 
     await message.send_message(msg, title="Jobs", fields=fields)
 

@@ -8,12 +8,10 @@ info command
 import discord
 from Utils import user, company, message, other
 
-#   Command Information   #
 name = "info"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-edu_levels = {
+_edu_levels = {
     1: "Elementary",
     2: "Highschool",
     3: "College",
@@ -74,7 +72,7 @@ async def run(bot, msg, conn):
 Coins: {personinfo.coins:,} {emojis.coin}
 XP: {personinfo.xp:,}/{(personinfo.level * 25):,}
 Multiplier: x{other.load_multi(personinfo, conn)}
-Education Level: {edu_levels[personinfo.edu_level]}
+Education Level: {_edu_levels[personinfo.edu_level]}
 Company: {company_name}
 
 **--Family--**

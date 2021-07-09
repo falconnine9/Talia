@@ -10,10 +10,8 @@ import random
 from Utils import user, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "dice"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):
@@ -38,6 +36,8 @@ async def run(bot, msg, conn):
     if side < 1 or side > 6:
         await message.send_error(msg, f"Unknown side: {split_data[1]}\n(Must be a number between 1-6)")
         return
+
+    split_data[2] = split_data[2].replace(",", "")
 
     try:
         bet = int(split_data[2])
