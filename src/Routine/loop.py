@@ -107,14 +107,18 @@ async def invest_timer(bot, conn):
         completed_users = cur.fetchall()
 
         for c_user in completed_users:
-            timerinfo = abc.InvestTimer(c_user[0], c_user[1], c_user[2], c_user[3], c_user[4])
+            timerinfo = abc.InvestTimer(c_user[0], c_user[1], c_user[2], c_user[3], c_user[4], c_user[5])
             c_userinfo = user.load_user(timerinfo.id, conn)
 
             if c_userinfo is not None:
                 if timerinfo.failed:
-                    user.set_user_attr(timerinfo.id, "coins", c_userinfo.coins + round(timerinfo.coins / 4), conn, False)
+                    user.set_user_attr(timerinfo.id, "coins",
+                        c_userinfo.coins + (c_userinfo.coins - round(c_userinfo.coins * timerinfo.loss)), conn, False
+                    )
                 else:
-                    user.set_user_attr(timerinfo.id, "coins", c_userinfo.coins + round(timerinfo.coins * timerinfo.multiplier), conn, False)
+                    user.set_user_attr(timerinfo.id, "coins",
+                        c_userinfo.coins + round(timerinfo.coins * timerinfo.multiplier), conn, False
+                    )
                 bot.loop.create_task(_invest_timer_alert(bot, timerinfo, c_userinfo, emojis))
 
         cur.execute("DELETE FROM invest_timers WHERE time <= 0")
@@ -139,7 +143,8 @@ async def _invest_timer_alert(bot, timerinfo, c_userinfo, emojis):
     if c_userinfo.settings.notifs["investment"]:
         try:
             if timerinfo.failed:
-                await message.send_message(None, f"Your investment failed and you lost 75% of your investment",
+                await message.send_message(None,
+                    f"Your investment failed and you lost {round(timerinfo.loss * 100)}% of your investment",
                     title="Investment notification", channel=c_user_obj
                 )
             else:

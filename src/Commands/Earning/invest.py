@@ -26,6 +26,10 @@ _failed_chances = {
     "short": [0.6, 0.75],
     "long": [0.15, 0.4]
 }  # Random number in between the 2 in the list
+_loss_amounts = {
+    "short": [0.5, 0.75],
+    "long": [0.25, 0.5]
+}  # Random number in between the 2 in the list
 
 
 async def run(bot, msg, conn):
@@ -111,22 +115,27 @@ async def run(bot, msg, conn):
         random.uniform(_failed_chances[split_data[2]][0], _failed_chances[split_data[2]][1]), 1
     )
 
-    new_timer = abc.InvestTimer(msg.author.id, random_time, amount, random_multi, failed)
+    if failed:
+        loss = round(random.uniform(_loss_amounts[split_data[2]][0], _loss_amounts[split_data[2]][1]), 2)
+    else:
+        loss = None
+
+    new_timer = abc.InvestTimer(msg.author.id, random_time, amount, random_multi, failed, loss)
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - amount, conn, False)
     timer.new_invest_timer(new_timer, conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You invested {amount} {emojis.coin} for {timer.load_time(random_time)}", title="Invested",
+        f"You invested {amount:,} {emojis.coin} for {timer.load_time(random_time)}", title="Invested",
         from_reaction=userinfo.settings.reaction_confirm
     )
 
 
 async def _reaction_confirm(bot, msg, split_data, amount, emojis):
-    sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount} {emojis.coin}
+    sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount:,} {emojis.coin}
 
 It will take in between {_times[split_data[2]][0]}h to {_times[split_data[2]][1]}h to complete
-And you will earn in between {round(_multipliers[split_data[2]][0] * amount)} {emojis.coin} to {round(_multipliers[split_data[2]][1] * amount)} {emojis.coin}""",
+And you will earn in between {round(_multipliers[split_data[2]][0] * amount):,} {emojis.coin} to {round(_multipliers[split_data[2]][1] * amount):,} {emojis.coin}""",
         title="Investing.."
     )
 

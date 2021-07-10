@@ -147,12 +147,13 @@ class EduTimer:
 
 
 class InvestTimer:
-    def __init__(self, user_id, time, coins, multiplier, failed):
+    def __init__(self, user_id, time, coins, multiplier, failed, loss):
         self.id = user_id
         self.time = time
         self.coins = coins
         self.multiplier = multiplier
         self.failed = failed
+        self.loss = loss
 
     def cvt_dict(self):
         return {
@@ -160,7 +161,8 @@ class InvestTimer:
             "time": self.time,
             "coins": self.coins,
             "multiplier": self.multiplier,
-            "failed": self.failed
+            "failed": self.failed,
+            "loss": self.loss
         }
 
 
