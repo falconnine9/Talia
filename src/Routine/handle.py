@@ -213,30 +213,6 @@ async def mentioned_users(bot, msg, conn):
             user.write_user(new_user, conn, False)
 
 
-async def ping(bot, msg, conn):
-    emojis = other.load_emojis(bot)
-
-    if msg.guild is None:
-        await message.send_message(msg, await message.send_message(msg, f"""I see that you pinged me {emojis.ping}
-
-My prefix is **t!**
-You can use `t!help` for some help""", title="Hello!"))
-
-    else:
-        guildinfo = guild.load_guild(msg.guild.id, conn)
-
-        if guildinfo is None:
-            return
-
-        if msg.channel.id in guildinfo.disabled_channels:
-            return
-
-        await message.send_message(msg, await message.send_message(msg, f"""I see that you pinged me {emojis.ping}
-
-My prefix is **{guildinfo.prefix}**
-You can use `{guildinfo.prefix}help` for some help""", title="Hello!"))
-
-
 def prefix(msg, conn):
     if msg.guild is None:
         if not msg.content.startswith("t!"):

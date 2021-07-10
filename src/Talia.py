@@ -4,13 +4,6 @@ GNU General Public License v3.0
 Talia.py
 
 Main file for the discord bot
-
-On startup
-1. Initializes the configuration file
-2. Creates an ssh tunnel to the server hosting the db
- and makes a connection to the database
-3. Initializes the database and makes a new bot object
-4. Starts the async event loop
 """
 import asyncio
 import discord
@@ -19,20 +12,24 @@ import os
 import traceback
 from Routine import init, handle, loop, post_checks
 from Utils import guild, user, message, abc, other
+from Service import ping_service
 
-with open("header.txt") as header:
-    print(header.read() + "\n")
+with open("header.txt") as header_f:
+    print(header_f.read() + "\n")  # This will open and print the header text
 
 other.log("Preparing")
+other.log("Initializing configuration file")
 init.config()
+other.log("Complete", "success")
 
 conn = init.open_main_database(other.load_config().db)
-init.db(conn)
-
 bot = discord.Client(intents=discord.Intents.all(), max_messages=other.load_config().cache_size)
 bot.activity = discord.Game(name="t!help")
-
 full_logging = other.load_config().full_logging
+
+other.log("Initializing the database")
+init.db(conn)
+other.log("Complete", "success")
 
 
 @bot.event
@@ -98,7 +95,7 @@ async def on_message(msg):
         return
 
     if bot.user in msg.mentions:
-        await handle.ping(bot, msg, conn)
+        await ping_service.run(bot, msg, conn)
 
     if not handle.prefix(msg, conn):
         return
