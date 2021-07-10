@@ -5,7 +5,7 @@ meta.py (Storage)
 
 Constant global variables
 """
-version = "1.1.8"  # major.minor.[build]
+version = "1.1.9"  # major.minor.[build]
 author = "falconnine9"  # github username of owner
 url = "https://github.com/Talia-Team/Talia"  # url to github
 creator_discord_id = 367044615221542914  # discord ID of the creator
