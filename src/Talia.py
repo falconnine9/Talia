@@ -17,9 +17,11 @@ import discord
 import discord_components
 import os
 import traceback
-import time
 from Routine import init, handle, loop, post_checks
 from Utils import guild, user, message, abc, other
+
+with open("header.txt") as header:
+    print(header.read() + "\n")
 
 other.log("Preparing")
 init.config()
