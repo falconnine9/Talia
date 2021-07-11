@@ -12,7 +12,7 @@ import os
 import traceback
 from Routine import init, handle, loop, post_checks
 from Utils import guild, user, message, abc, other
-from Service import ping_service
+from Service import poll
 
 with open("header.txt") as header_f:
     print(header_f.read() + "\n")  # This will open and print the header text
@@ -91,20 +91,20 @@ async def on_message(msg):
     3. Handle some database stuff
     4. Send the message to the command handler
     """
+    poll.message_services(bot, msg, conn)
+
     if msg.author.bot:
         return
-
-    if bot.user in msg.mentions:
-        await ping_service.run(bot, msg, conn)
 
     if not handle.prefix(msg, conn):
         return
 
-    if msg.guild is not None:
-        guildinfo = guild.load_guild(msg.guild.id, conn)
-        if guildinfo is None:
-            guildinfo = abc.Guild(msg.guild.id)
-            guild.write_guild(guildinfo, conn, False)
+    if msg.guild is None:
+        guild_changed = False
+        msg.content = msg.content[2:].strip()
+    else:
+        guild_changed, guildinfo = handle.verify_guild(msg, conn)
+        msg.content = msg.content[len(os.environ[f"TaliaPrefix.{msg.guild.id}"]):].strip()
 
         if not msg.channel.permissions_for(msg.guild.me).send_messages:
             return
@@ -112,26 +112,21 @@ async def on_message(msg):
         if msg.channel.id in guildinfo.disabled_channels:
             return
 
-    userinfo = user.load_user(msg.author.id, conn)
-    if userinfo is None:
-        userinfo = abc.User(msg.author.id)
-        user.write_user(userinfo, conn, False)
+    user_changed = handle.verify_user(msg, conn)
+    mentioned_changed = await handle.mentioned_users(bot, msg, conn)
 
-    await handle.mentioned_users(bot, msg, conn)
-    conn.commit()
-
-    if msg.guild is None:
-        msg.content = msg.content[2:].strip()
-    else:
-        msg.content = msg.content[len(os.environ[f"TaliaPrefix.{msg.guild.id}"]):].strip()
+    if guild_changed or user_changed or mentioned_changed:
+        conn.commit()
 
     try:
         await handle.command(bot, msg, conn, full_logging)
+
     except Exception as errmsg:
-        excinfo = traceback.format_exc()
-        await message.send_error(msg, f"""\u26a0 An unexpected error occurred \u26a0
-Error type: {type(errmsg).__name__}""")
-        other.log(f"Error occurred, traceback below\n{excinfo}", "critical")
+        exc_info = traceback.format_exc()
+        await message.send_error(msg,
+            f"\u26a0 An unexpected error occurred \u26a0\nError type: {type(errmsg).__name__}"
+        )
+        other.log(f"Error occurred, traceback below\n{exc_info}", "critical")
         return
 
     await post_checks.level(bot, msg, conn)
@@ -155,6 +150,11 @@ async def cache_loading_loop():
 
         for prefix in all_prefixes:
             os.environ[f"TaliaPrefix.{prefix[0]}"] = prefix[1]
+
+        config = other.load_config()
+
+        global full_logging
+        full_logging = config.full_logging
 
         await asyncio.sleep(3600)
 
