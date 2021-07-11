@@ -7,9 +7,9 @@ Initialization file for the General command category
 """
 from Commands.General import (
     help,
+    about,
     ping,
     info,
-    stats,
     inventory,
     shop,
     boostshop,

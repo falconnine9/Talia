@@ -14,9 +14,9 @@ dm_capable = True
 _help_info = {
     "general": {
         "help": help_list.help_,
+        "about": help_list.about,
         "ping": help_list.ping,
         "info": help_list.info,
-        "stats": help_list.stats,
         "inventory": help_list.inventory,
         "shop": help_list.shop,
         "boostshop": help_list.boostshop,

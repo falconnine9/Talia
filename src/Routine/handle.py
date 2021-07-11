@@ -15,9 +15,9 @@ from Utils import guild, user, message, abc, other
 commands = {
     # General
     "help": Commands.General.help,
+    "about": Commands.General.about,
     "ping": Commands.General.ping,
     "info": Commands.General.info,
-    "stats": Commands.General.stats,
     "inventory": Commands.General.inventory,
     "shop": Commands.General.shop,
     "boostshop": Commands.General.boostshop,

@@ -1,9 +1,9 @@
 """
 Talia Discord Bot
 GNU General Public License v3.0
-bal.py (Commands/General)
+balance.py (Commands/General)
 
-bal command
+balance command
 """
 import random
 from Utils import user, message, other

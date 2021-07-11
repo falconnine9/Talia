@@ -44,7 +44,10 @@ async def send_message(msg, desc=None, channel=None, title=None, img=None, thumb
 
     if fields is not None:
         for field in fields:
-            embed.add_field(name=field[0], value=field[1])
+            if len(field) == 2:
+                embed.add_field(name=field[0], value=field[1])
+            else:
+                embed.add_field(name=field[0], value=field[1], inline=field[2])
     
     if channel is not None:
         if components is None:

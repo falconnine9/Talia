@@ -63,33 +63,34 @@ async def run(bot, msg, conn):
         company_name = "None"
 
     emojis = other.load_emojis(bot)
-    send_str = f"**Level {personinfo.level}**"
 
-    if personinfo.showcase is not None:
-        send_str += f"\n**{personinfo.showcase.name}**"
+    if personinfo.showcase is None:
+        send_str = f"**Level {personinfo.level}**"
+    else:
+        send_str = f"**Level {personinfo.level}**\n**{personinfo.showcase.name}**"
 
-    send_str += f"""\n\n**--General Information--**
-Coins: {personinfo.coins:,} {emojis.coin}
-XP: {personinfo.xp:,}/{(personinfo.level * 25):,}
-Multiplier: x{other.load_multi(personinfo, conn)}
-Education Level: {_edu_levels[personinfo.edu_level]}
-Company: {company_name}
-
-**--Family--**
-Partner: {partner}
+    fields = [
+        ["General", f"""Coins: {personinfo.coins:,} {emojis.coin}
+XP: {personinfo.xp:,}/{personinfo.level * 25:,}
+Education level: {_edu_levels[personinfo.edu_level]}
+Company: {company_name}""", False],
+        ["Family", f"""Partner: {partner}
 Parents: {parents}
-Children: {children}
+Children: {children}""", False],
+    ]
 
-**--Job--**
-{jobinfo}
+    if jobinfo is not None:
+        fields.append(["Job", jobinfo])
 
-**--Pickaxe--**
-{pickaxeinfo}
+    if pickaxeinfo is not None:
+        fields.append(["Pickaxe", pickaxeinfo])
 
-**--Pet--**
-{petinfo}"""
+    if petinfo is not None:
+        fields.append(["Pet", petinfo])
 
-    await message.send_message(msg, send_str, title=str(person), thumbnail=person.avatar_url, color=personinfo.color)
+    await message.send_message(msg, send_str, title=str(person), thumbnail=person.avatar_url, color=personinfo.color,
+        fields=fields
+    )
 
 
 async def _load_family_info(bot, personinfo):
@@ -136,17 +137,16 @@ async def _load_family_info(bot, personinfo):
 
 def _load_job_info(job):
     if job is None:
-        return "No job"
+        return None
     else:
         return f"""Job: {job.name}
 Level: {job.level}
-XP: {job.xp:,}/{(job.level * 25):,} ({round(job.xp / (job.level * 25) * 100)}%)
-Job Multiplier: x{round(1 + (job.level / 10) - 0.1, 1)}"""
+XP: {job.xp:,}/{(job.level * 25):,} ({round(job.xp / (job.level * 25) * 100)}%)"""
 
 
 def _load_pickaxe_info(pickaxe):
     if pickaxe is None:
-        return "No Pickaxe"
+        return None
     else:
         return f"""Pickaxe: {pickaxe.name}
 Mining Speed: {pickaxe.speed}
@@ -155,7 +155,7 @@ Mining Multiplier: x{pickaxe.multiplier}"""
 
 def _load_pet_info(pet):
     if pet is None:
-        return "No pet"
+        return None
     else:
         return f"""Name: {pet.name}
 Breed: {pet.breed} ({pet.type})"""
