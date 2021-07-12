@@ -112,7 +112,7 @@ def load_multi(userinfo, conn):
     else:
         company_boost = 1.0
 
-    return userinfo.multiplier * company_boost
+    return round(userinfo.multiplier * company_boost, 1)
 
 
 async def load_channel_obj(bot, channel_id):
