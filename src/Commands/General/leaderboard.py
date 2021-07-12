@@ -37,7 +37,7 @@ async def run(bot, msg, conn):
         await lb_fortune(bot, msg, conn)
 
     else:
-        await message.send_error(msg, f"Unknown leaderboard\n`coins`, `fortune`, `hourly`, `level`, `multiplier`")
+        await message.send_error(msg, f"Unknown leaderboard\n`coins`, `level`, `multiplier`, `hourly`, `fortune`")
 
 
 async def lb_coins(bot, msg, conn):
@@ -61,56 +61,6 @@ async def lb_coins(bot, msg, conn):
             user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]:,} {emojis.coin}")
 
     await message.send_message(msg, "\n".join(user_list), title="Coins Leaderboard")
-
-
-async def lb_fortune(bot, msg, conn):
-    cur = conn.cursor()
-    query = """SELECT u.id, i.coins+u.coins
-            FROM users u, invest_timers i
-            WHERE u.id = i.id
-            order by i.coins+u.coins 
-            DESC LIMIT 10"""
-    cur.execute(query)
-    top_users = cur.fetchall()
-
-    if len(top_users) == 0:
-        await message.send_message(msg, "Nothing in here :(", title="Fortune Leaderboard")
-        return
-
-    user_list = []
-    emojis = other.load_emojis(bot)
-
-    for i, user in enumerate(top_users):
-        user_obj = bot.get_user(user[0])
-
-        if user_obj is None:
-            user_list.append(f"{i + 1}: Unknown#0000 | {user[1]:,} {emojis.coin}")
-        else:
-            user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]:,} {emojis.coin}")
-
-    await message.send_message(msg, "\n".join(user_list), title="Fortune Leaderboard")
-
-
-async def lb_hourly(bot, msg, conn):
-    cur = conn.cursor()
-    cur.execute("SELECT id, hourly FROM users ORDER BY hourly DESC LIMIT 10")
-    top_users = cur.fetchall()
-
-    if len(top_users) == 0:
-        await message.send_message(msg, "Nothing in here :(", title="Hourly Leaderboard")
-        return
-
-    user_list = []
-
-    for i, user in enumerate(top_users):
-        user_obj = bot.get_user(user[0])
-
-        if user_obj is None:
-            user_list.append(f"{i + 1}: Unknown#0000 | {user[1]} hourlies")
-        else:
-            user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]} hourlies")
-
-    await message.send_message(msg, "\n".join(user_list), title="Hourly Leaderboard")
 
 
 async def lb_level(bot, msg, conn):
@@ -155,3 +105,52 @@ async def lb_multiplier(bot, msg, conn):
             user_list.append(f"{i + 1}. {str(user_obj)} | x{user[1]}")
 
     await message.send_message(msg, "\n".join(user_list), title="Multiplier Leaderboard")
+
+    
+async def lb_hourly(bot, msg, conn):
+    cur = conn.cursor()
+    cur.execute("SELECT id, hourly FROM users ORDER BY hourly DESC LIMIT 10")
+    top_users = cur.fetchall()
+
+    if len(top_users) == 0:
+        await message.send_message(msg, "Nothing in here :(", title="Hourly Leaderboard")
+        return
+
+    user_list = []
+
+    for i, user in enumerate(top_users):
+        user_obj = bot.get_user(user[0])
+
+        if user_obj is None:
+            user_list.append(f"{i + 1}: Unknown#0000 | {user[1]} hourlies")
+        else:
+            user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]} hourlies")
+
+    await message.send_message(msg, "\n".join(user_list), title="Hourly Leaderboard")
+
+
+async def lb_fortune(bot, msg, conn):
+    cur = conn.cursor()
+    cur.execute("""SELECT u.id, i.coins+u.coins
+            FROM users u, invest_timers i
+            WHERE u.id = i.id
+            order by i.coins+u.coins
+            DESC LIMIT 10""")
+    top_users = cur.fetchall()
+
+    if len(top_users) == 0:
+        await message.send_message(msg, "Nothing in here :(", title="Fortune Leaderboard")
+        return
+
+    user_list = []
+    emojis = other.load_emojis(bot)
+
+    for i, user in enumerate(top_users):
+        user_obj = bot.get_user(user[0])
+
+        if user_obj is None:
+            user_list.append(f"{i + 1}: Unknown#0000 | {user[1]:,} {emojis.coin}")
+        else:
+            user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]:,} {emojis.coin}")
+
+    await message.send_message(msg, "\n".join(user_list), title="Fortune Leaderboard")
