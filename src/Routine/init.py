@@ -94,6 +94,7 @@ tables = {
         "invites": "MEDIUMTEXT",
         "date_created": "TIMESTAMP",
         "multiplier": "REAL",
+        "level": "INTEGER",
         "CONSTRAINT companies_pk": "PRIMARY KEY (discrim)"
     },
     "log": {

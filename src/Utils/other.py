@@ -17,7 +17,6 @@ except ImportError:
     colorama = None
 
 from Utils import company, abc
-from Storage import meta
 
 
 def log(info, level="info"):
@@ -105,10 +104,11 @@ def load_multi(userinfo, conn):
     Loads the overall multiplier of a user
 
     1. Adds the company boost
-    2. Returns the user multiplier multiplied by the company multiplier
+    2. Returns the user multiplier multiplied by the
+     company multiplier
     """
     if userinfo.company is not None:
-        company_boost = company.load_company(userinfo.company, conn).multiplier_boost
+        company_boost = company.load_company(userinfo.company, conn).multiplier
     else:
         company_boost = 1.0
 
@@ -122,13 +122,3 @@ async def load_channel_obj(bot, channel_id):
         return await bot.fetch_channel(channel_id)
     else:
         return channel_obj
-
-
-def load_all_prefixes():
-    return json.loads(os.environ["PREFIXES"])
-
-
-def set_prefix(guild_id, prefix):
-    prefixes = json.loads(os.environ["PREFIXES"])
-    prefixes["PREFIXES"][guild_id] = prefix
-    os.environ["PREFIXES"] = json.dumps(prefixes)

@@ -80,7 +80,7 @@ class User:
             "pickaxe": self.pickaxe,
             "achievements": self.achievements,
             "inventory": self.inventory,
-            "multiplier_boost": self.multiplier,
+            "multiplier": self.multiplier,
             "company": self.company,
             "showcase": self.showcase,
             "hourly": self.hourly,
@@ -102,7 +102,8 @@ class Company:
         self.members = {}
         self.invites = []
         self.date_created = ""
-        self.multiplier_boost = 1.0
+        self.multiplier = 1.0
+        self.level = 1
 
     def cvt_dict(self):
         return {
@@ -112,7 +113,8 @@ class Company:
             "members": self.members,
             "invites": self.invites,
             "date_created": self.date_created,
-            "multiplier_boost": self.multiplier_boost
+            "multiplier": self.multiplier,
+            "level": self.level
         }
 
 

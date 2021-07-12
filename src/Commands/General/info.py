@@ -70,23 +70,24 @@ async def run(bot, msg, conn):
         send_str = f"**Level {personinfo.level}**\n**{personinfo.showcase.name}**"
 
     fields = [
-        ["General", f"""Coins: {personinfo.coins:,} {emojis.coin}
+        ["**General**", f"""Coins: {personinfo.coins:,} {emojis.coin}
 XP: {personinfo.xp:,}/{personinfo.level * 25:,}
+Multiplier: x{other.load_multi(personinfo, conn)}
 Education level: {_edu_levels[personinfo.edu_level]}
 Company: {company_name}""", False],
-        ["Family", f"""Partner: {partner}
+        ["**Family**", f"""Partner: {partner}
 Parents: {parents}
 Children: {children}""", False],
     ]
 
     if jobinfo is not None:
-        fields.append(["Job", jobinfo])
+        fields.append(["**Job**", jobinfo])
 
     if pickaxeinfo is not None:
-        fields.append(["Pickaxe", pickaxeinfo])
+        fields.append(["**Pickaxe**", pickaxeinfo])
 
     if petinfo is not None:
-        fields.append(["Pet", petinfo])
+        fields.append(["**Pet**", petinfo])
 
     await message.send_message(msg, send_str, title=str(person), thumbnail=person.avatar_url, color=personinfo.color,
         fields=fields

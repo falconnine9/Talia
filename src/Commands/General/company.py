@@ -43,6 +43,9 @@ async def run(bot, msg, conn):
     elif split_data[1] == "info":
         await _company_info(bot, msg, conn, split_data)
 
+    elif split_data[1] == "upgrade":
+        await _company_upgrade(bot, msg, conn)
+
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 
@@ -356,36 +359,26 @@ async def _company_disband(bot, msg, conn):
         await message.send_error(msg, "You're not the CEO")
         return
 
-    sent_msg = await message.send_message(msg, f"Are you sure you want to disband {companyinfo.name}",
-        title="Disbanding..", components=[[
-            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
-            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
-        ]]
-    )
+    if userinfo.settings.reaction_confirm:
+        sent_msg, interaction, result = await _company_disband_reaction_confirm(bot, msg, companyinfo)
+    else:
+        sent_msg, interaction, result = await _company_disband_button_confirm(bot, msg, companyinfo)
 
-    def button_check(interaction):
-        if interaction.author != msg.author:
-            return False
-
-        if interaction.message != sent_msg:
-            return False
-
-        return True
-
-    try:
-        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
-    except asyncio.TimeoutError:
-        await message.timeout_response(sent_msg)
+    if result is None:
         return
 
-    if interaction.component.label == "Cancel":
-        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled")
+    if result == "cancel":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
     companyinfo = company.load_company(companyinfo.discrim, conn)
 
     if companyinfo is None:
-        await message.response_send(sent_msg, interaction, "The company no longer exists")
+        await message.response_send(sent_msg, interaction, "The company no longer exists",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
         return
 
     cur = conn.cursor()
@@ -393,7 +386,9 @@ async def _company_disband(bot, msg, conn):
     cur.execute("UPDATE users SET company = NULL WHERE company = %s", (companyinfo.discrim,))
     conn.commit()
 
-    await message.response_edit(sent_msg, interaction, "Company disbanded", title="Disbanded")
+    await message.response_edit(sent_msg, interaction, "Company disbanded", title="Disbanded",
+        from_reaction=userinfo.settings.reaction_confirm
+    )
 
 
 async def _company_info(bot, msg, conn, split_data):
@@ -427,7 +422,230 @@ async def _company_info(bot, msg, conn, split_data):
 
     emojis = other.load_emojis(bot)
 
-    await message.send_message(msg, f"""CEO: {str(ceo)}
+    await message.send_message(msg, f"""**Level {companyinfo.level}**
+
+CEO: {str(ceo)}
 Total Coins: {total_coins:,} {emojis.coin}
 Members: {len(companyinfo.members)}/50
-Company Multiplier: x{companyinfo.multiplier_boost}""", title=companyinfo.name)
+Company Multiplier: x{companyinfo.multiplier}""", title=companyinfo.name)
+
+
+async def _company_upgrade(bot, msg, conn):
+    userinfo = user.load_user(msg.author.id, conn)
+
+    if userinfo.company is None:
+        await message.send_error(msg, "You're not in a company")
+        return
+
+    companyinfo = company.load_company(userinfo.company, conn)
+
+    if companyinfo.ceo != msg.author.id:
+        await message.send_error(msg, "You're not the CEO")
+        return
+
+    if companyinfo.level == 1:
+        cost = 40000
+        members = 4
+    elif companyinfo.level == 2:
+        cost = 300000
+        members = 10
+    elif companyinfo.level == 3:
+        cost = 1000000
+        members = 20
+    elif companyinfo.level == 4:
+        cost = 10000000
+        members = 40
+    else:
+        await message.send_error(msg, f"The company has already reached level 5")
+        return
+
+    if members > len(companyinfo.members.keys()):
+        await message.send_error(msg, f"The company doesn't have enough members to upgrade\nNeeds {members} members")
+        return
+
+    if cost > userinfo.coins:
+        await message.send_error(msg, "You don't have enough coins to upgrade the company")
+        return
+
+    emojis = other.load_emojis(bot)
+    original_level = companyinfo.level
+
+    if userinfo.settings.reaction_confirm:
+        sent_msg, interaction, result = await _company_upgrade_reaction_confirm(bot, msg, cost, emojis, companyinfo)
+    else:
+        sent_msg, interaction, result = await _company_upgrade_button_confirm(bot, msg, cost, emojis, companyinfo)
+
+    if result is None:
+        return
+
+    if result == "cancel":
+        await message.response_edit(sent_msg, interaction, sent_msg.embeds[0].description, title="Cancelled",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    userinfo = user.load_user(msg.author.id, conn)
+
+    if userinfo.company is None:
+        await message.response_send(sent_msg, interaction, "You're no longer in a company",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    if cost > userinfo.coins:
+        await message.response_send(sent_msg, interaction, "You no longer have enough coins to upgrade the company",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    companyinfo = company.load_company(userinfo.company, conn)
+
+    if companyinfo.ceo != msg.author.id:
+        await message.response_send(sent_msg, interaction, "You're no longer the CEO",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    if original_level != companyinfo.level:
+        await message.response_send(sent_msg, interaction, "The company level has changed",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    if members > len(companyinfo.members.keys()):
+        await message.response_send(sent_msg, interaction, "The company no longer has enough members to upgrade",
+            from_reaction=userinfo.settings.reaction_confirm
+        )
+        return
+
+    company.set_company_attr(companyinfo.discrim, "multiplier", round(companyinfo.multiplier + 0.1, 1), conn, False)
+    company.set_company_attr(companyinfo.discrim, "level", companyinfo.level + 1, conn, False)
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins - cost, conn)
+
+    await message.response_edit(sent_msg, interaction, f"You upgraded the company to level {companyinfo.level + 1}",
+        title="Upgraded", from_reaction=userinfo.settings.reaction_confirm
+    )
+
+
+async def _company_disband_reaction_confirm(bot, msg, companyinfo):
+    sent_msg = await message.send_message(msg, f"Are you sure you want to disband {companyinfo.name}",
+        title="Disbanding.."
+    )
+
+    await sent_msg.add_reaction("\u2705")
+    await sent_msg.add_reaction("\u274c")
+
+    def reaction_check(reaction, reaction_user):
+        if reaction_user != msg.author:
+            return False
+
+        if reaction.message != sent_msg:
+            return False
+
+        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+            return False
+
+        return True
+
+    try:
+        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg, from_reaction=True)
+        return None, None, None
+
+    if str(reaction.emoji) == "\u2705":
+        return sent_msg, None, "confirm"
+    else:
+        return sent_msg, None, "cancel"
+
+
+async def _company_disband_button_confirm(bot, msg, companyinfo):
+    sent_msg = await message.send_message(msg, f"Are you sure you want to disband {companyinfo.name}",
+        title="Disbanding..", components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
+
+    def button_check(interaction):
+        if interaction.author != msg.author:
+            return False
+
+        if interaction.message != sent_msg:
+            return False
+
+        return True
+
+    try:
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if interaction.component.label == "Confirm":
+        return sent_msg, interaction, "confirm"
+    else:
+        return sent_msg, interaction, "cancel"
+
+
+async def _company_upgrade_reaction_confirm(bot, msg, cost, emojis, companyinfo):
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to spend {cost:,} {emojis.coin} to upgrade {companyinfo.name} to level {companyinfo.level + 1}",
+        title="Upgrading.."
+    )
+
+    await sent_msg.add_reaction("\u2705")
+    await sent_msg.add_reaction("\u274c")
+
+    def reaction_check(reaction, reaction_user):
+        if reaction_user != msg.author:
+            return False
+
+        if reaction.message != sent_msg:
+            return False
+
+        if str(reaction.emoji) != "\u2705" and str(reaction.emoji) != "\u274c":
+            return False
+
+        return True
+
+    try:
+        reaction, reaction_user = await bot.wait_for("reaction_add", timeout=120, check=reaction_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg, from_reaction=True)
+        return None, None, None
+
+    if str(reaction.emoji) == "\u2705":
+        return sent_msg, None, "confirm"
+    else:
+        return sent_msg, None, "cancel"
+
+
+async def _company_upgrade_button_confirm(bot, msg, cost, emojis, companyinfo):
+    sent_msg = await message.send_message(msg,
+        f"Are you sure you want to spend {cost:,} {emojis.coin} to upgrade {companyinfo.name} to level {companyinfo.level + 1}",
+        title="Upgrading..", components=[[
+            discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
+            discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
+        ]]
+    )
+
+    def button_check(interaction):
+        if interaction.author != msg.author:
+            return False
+
+        if interaction.message != sent_msg:
+            return False
+
+        return True
+
+    try:
+        interaction = await bot.wait_for("button_click", timeout=120, check=button_check)
+    except asyncio.TimeoutError:
+        await message.timeout_response(sent_msg)
+        return None, None, None
+
+    if interaction.component.label == "Confirm":
+        return sent_msg, interaction, "confirm"
+    else:
+        return sent_msg, interaction, "cancel"
