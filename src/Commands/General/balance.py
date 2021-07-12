@@ -1,19 +1,17 @@
 """
 Talia Discord Bot
 GNU General Public License v3.0
-bal.py (Commands/General)
+balance.py (Commands/General)
 
-bal command
+balance command
 """
 import random
 from Utils import user, message, other
 
-#   Command Information   #
 name = "balance"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-no_coins = [
+_no_coins = [
     "You have no coins :(",
     "You don't have any coins",
     "No coins lol poor"
@@ -25,7 +23,7 @@ async def run(bot, msg, conn):
     emojis = other.load_emojis(bot)
 
     if userinfo.coins == 0:
-        await message.send_message(msg, random.choice(no_coins), title="Your balance")
+        await message.send_message(msg, random.choice(_no_coins), title="Your balance")
         return
     else:
         await message.send_message(msg, f"You have {userinfo.coins:,} {emojis.coin}", title="Your balance")

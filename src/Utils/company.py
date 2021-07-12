@@ -30,7 +30,8 @@ def load_company(discrim, conn):
     new_company.members = json.loads(companyinfo[3])
     new_company.invites = json.loads(companyinfo[4])
     new_company.date_created = companyinfo[5]
-    new_company.multiplier_boost = companyinfo[6]
+    new_company.multiplier = companyinfo[6]
+    new_company.level = companyinfo[7]
 
     return new_company
 
@@ -43,14 +44,15 @@ def write_company(obj, conn, write=True):
     2. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO companies VALUES (%s, %s, %s, %s, %s, %s, %s)", (
+    cur.execute(f"INSERT INTO companies VALUES (%s, %s, %s, %s, %s, %s, %s, %s)", (
         obj.discrim,
         obj.name,
         obj.ceo,
         json.dumps(obj.members),
         json.dumps(obj.invites),
         obj.date_created,
-        obj.multiplier_boost
+        obj.multiplier,
+        obj.level
     ))
 
     if write:

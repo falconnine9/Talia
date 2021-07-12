@@ -9,12 +9,10 @@ import discord
 import json
 from Utils import message, other
 
-#   Command Information   #
 name = "update"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-required = [
+_required = [
     "version",
     "date"
 ]
@@ -43,7 +41,7 @@ async def run(bot, msg, conn):
 
     data = json.loads((await msg.attachments[0].read()).decode())
 
-    for element in required:
+    for element in _required:
         if element not in data.keys():
             await message.send_error(msg, f"Required element \"{element}\" not found in json file")
             return
@@ -74,7 +72,7 @@ async def run(bot, msg, conn):
 
     if "fixes" in data.keys():
         changes = "\n".join([f" **[x]** {change}" for change in data["fixes"]])
-        elements.append(f"**Fixes**\n{changes}")
+        elements.append(f"**Fixes/Changes**\n{changes}")
 
     if len(elements) == 0:
         description = "*No changes*"

@@ -1,136 +1,93 @@
 # Contributing
-All contributions should take place on the [GitHub repository](https://github.com/Talia-Team/Talia).
-This guide ensures that all of Talia's code follows the same pattern.
-Below, you will find sections for each piece of code and what pattern to follow
+This guide provides direction on how to keep Talia's code and git repository clean and consistent.
+Following this guide is important when contributing to Talia, as well as using common sense and good judgement.
 
-As well as the guides below, all code styling should follow [PEP 8](https://www.python.org/dev/peps/pep-0008/)
 
-If you don't find something here for formatting, looking for examples in the source files can help
+## Submitting issues
+[Github issues](https://guides.github.com/features/issues/) are the way that new features and bugs are reported and
+tracked. They are managed by repository administrators and can be commented on or added to by anyone.
 
-## Making a new file
-Add the start of each file, there should be a doc string with file information in it.
-Below is an example
+When submitting an issue, whether it be a bug report or new feature, there are a few things to keep in mind
+ - **Use a simple but descriptive title**. Something like "New feature" won't work because that's all people see.
+   Whereas something like "Add X feature to Y command" is a lot more eye catching and has a higher chance
+   of being seen by repository administrators.
+ - **Have an informative description**. Describe the bug or feature. If it was a bug, explain what you were doing when
+   you found it, or where it is in the code. Or if it's a feature, explain the feature exactly. Remember that you can
+   have markdown styling in the description.
+ - **Don't duplicate issues or features**. Make sure that there isn't already an issue for your feature/bug. If you
+   are suggesting a feature, make sure that it doesn't already exist
+
+
+## Submitting code
+Make sure that all the code you submit follows the [PEP 8](https://www.python.org/dev/peps/pep-0008/) styling guide. As
+well as some extensions to styling that can be found below.
+
+### Pull Requests
+Code contributions can be submitted in the form of a
+[pull requests](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests).
+All pull requests need to follow certain parameters. Pull requests that do not give enough information will be denied.
+ - **Provide a descriptive title**. In a short sentence, describe what is being added in the PR.
+ - **Describe the changes made in the code**. In the description, explain what you've you added, removed, or changed.
+ - **Follow code styling**. Make sure all the code that you've submitted follows PEP 8 styling and any extra styling
+   guides found here. You can also look in the source code to see examples.
+
+### Commit messages
+All commit messages need to have the following features
+ - **A title with the proper prefix and information**. Look at the table below for what prefixes are for what situations.
+   Titles should also have what has been changed
+ - (Not required, but it's nice) **A short description on the changes**
+
+| Name  | Usage                         |
+|:----- |:----------------------------- |
+| feat  | A new feature added           |
+| fix   | A fix has been applied        |
+| meta  | Should only be used by admins |
+| refac | Refactoring code              |
+
+Commit messages should have (but don't need) a scope. For example `feat(command)`. All the scopes can be found in the
+table below
+
+| Name         | Usage                            |
+|:------------ |:-------------------------------- |
+| command      | A new command or command changes |
+| docs         | An update to the docs            |
+| dependencies | Dependency changes               |
+| service      | Service changes                  |
+
+A full commit message would be: `fix(docs): Spelling errors in README.md`
+
+
+
+## Code styling
+There are a certain few styling rules (outside PEP 8) that NEED to be followed. Below is a list of situations and what
+style to follow for them.
+
+### New files
+Each file should have a block comment header. An example
 ```python
 """
 Talia Discord Bot
 GNU General Public License v3.0
-handle.py (Routine)
-
-Handles events (Such as commands sent)
+loop.py (Routine)
 """
 ```
-Switch out "handle.py" for what the file name is and "(Routine)" with what folder it's in.
-Also add a short description of the file's purpose
 
-## Imports
-Imports should be under the doc string at the start of the file with no whitespace in between
-
-Imports should be sorted in alphabetical order
-
-External imports should be on top, and Talia imports should be below (`from Storage` should always be **after** `from Utils`)
-
-Module imports should have their own import statement on each line, and "from" imports should have each thing it's importing split with commas.
-An example is below
+All imports should be in alphabetical order, with local imports being at the bottoms. An example
 ```python
 import asyncio
 import discord
-import random
-from Utils import user, message, other
+import os
+from Utils import guild, user
 from Storage import help_list
 ```
 
-Imports from Utils should be in the following order:
-- **guild**
-- **user**
-- **company**
-- **timer**
-- **message**
-- **abc**
-- **other**
-
-## Strings
-Very short strings should use newline characters (`\n`) to add line breaks
-
-Long strings should use doc strings to add newline characters
-
-If a string includes variables in the string, the string should be an f-string using f-string components. 
-If the string has no variables, it should use a regular string. Multiple examples are below
+If you're making a new command file, it needs to include 3 global variables. All other variables should be private
+(Prefixed with an underscore). These 3 global variables are shown in the example below
 ```python
-# Short string with no variables
-"Lorem ipsum\ndolor sit amet"
-
-# Long string with no variables
-"""Lorem ipsum dolor sit amet, 
-consectetur adipiscing elit. 
-Mauris eget pharetra nibh. Fusce congue placerat augue ac fermentum. 
-Phasellus vel sem quis lacus malesuada condimentum."""
-
-# Short string with variables
-f"Lorem ipsum dolor {variable1} sit amet"
-
-# Long string with variables
-"""Lorem ipsum dolor sit amet, 
-consectetur adipiscing elit. {variable1}
-Mauris eget pharetra nibh. Fusce congue placerat augue ac fermentum. 
-Phasellus vel sem {variable2} quis lacus malesuada condimentum."""
-```
-
-## Creating a command
-Each command must include the following
-- A file in the correct category with the command name (ex. info.py)
-- Command information in the file
-- A run method that takes 3 parameters: **bot**, **msg**, **conn**
-- A spot in the \_\_init\_\_.py file within that command category
-- A variable with the command name in the help list
-- A spot in the command list
-
-### Command File
-As said [above](#making-a-new-file), the start of the file must include a doc string with the correct information
-
-The file must also include command information which is surrounded by a comment.
-An example is below
-```python
-#   Command Information   #
-name = "command"
+name = "info"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
-```
-The name should be the name of the command, and dm_capable will decide if it can be run in DMs or not
 
-Any variables for the command should be 1 line away from the bottom comment.
-An example is below
-```python
-#   Command Information   #
-name = "command"
-dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-variable1 = ""
-
-variable2 = [
-    "stuff",
-    "other stuff",
-    "more stuff"
-]
-```
-
-The file must also include a run method (It won't work if it doesn't have this).
-The command needs to take 3 parameters: **bot**, **msg**, **conn**.
-An example is below
-```python
 async def run(bot, msg, conn):
+    pass
 ```
-- The bot parameter is the discord client object (discord.Client)
-- The msg parameter is the message that the user sent (discord.Message)
-- The conn parameter is a connection to the MySQL database (mysql.connector.MySQLConnection)
-
-
-## Certain variable names
-There are a few variable names which should always be used
-
-- **person**: The return value from `bot.get_user` or `bot.fetch_user`
-- **userinfo**: When you load a user with `user.load_user` (From msg.author.id)
-- **personinfo**: When you load a user with `user.load_user` (From person.id)
-- **guildinfo**: When you load a user with `guild.load_guild`
-- **companyinfo**: When you load a company with `company.load_company`
-- **split_data**: When you make the message content into arguments with `msg.content.split`

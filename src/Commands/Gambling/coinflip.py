@@ -10,12 +10,10 @@ import random
 from Utils import user, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "coinflip"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-sides = ["heads", "tails"]
+_sides = ["heads", "tails"]
 
 
 async def run(bot, msg, conn):
@@ -31,9 +29,11 @@ async def run(bot, msg, conn):
 
     split_data[1] = split_data[1].lower()
 
-    if split_data[1] not in sides:
+    if split_data[1] not in _sides:
         await message.send_error(msg, f"Unknown side: {split_data[1]}\n(`heads` or `tails`)")
         return
+
+    split_data[2] = split_data[2].replace(",", "")
 
     try:
         bet = int(split_data[2])
@@ -60,7 +60,7 @@ You've bet on {split_data[1]}
     await asyncio.sleep(random.randint(2, 3))
 
     userinfo = user.load_user(msg.author.id, conn)
-    random_side = random.choice(sides)
+    random_side = random.choice(_sides)
 
     if random_side == split_data[1]:
         user.set_user_attr(msg.author.id, "coins", userinfo.coins + (bet * 2), conn)

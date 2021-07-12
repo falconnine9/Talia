@@ -10,12 +10,10 @@ import discord_components
 from Utils import user, message, abc, other
 from Storage import help_list
 
-#   Command Information   #
 name = "pickaxe"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-pickaxes = {
+_pickaxes = {
     1: {
         "name": "Bronze Pickaxe",
         "cost": 150,
@@ -132,11 +130,11 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         await message.send_error(msg, "Invalid pickaxe ID")
         return
 
-    if pickaxe_id not in pickaxes:
+    if pickaxe_id not in _pickaxes:
         await message.send_message(msg, "There's no pickaxe with that ID")
         return
 
-    if pickaxes[pickaxe_id]["cost"] > userinfo.coins:
+    if _pickaxes[pickaxe_id]["cost"] > userinfo.coins:
         await message.send_error(msg, "You don't have enough coins for this pickaxe")
         return
 
@@ -164,22 +162,22 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         )
         return
 
-    if pickaxes[pickaxe_id]["cost"] > userinfo.coins:
+    if _pickaxes[pickaxe_id]["cost"] > userinfo.coins:
         await message.response_send(sent_msg, interaction, "You no longer have enough coins",
             from_reaction=userinfo.settings.reaction_confirm
         )
         return
 
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins - pickaxes[pickaxe_id]["cost"], conn, False)
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins - _pickaxes[pickaxe_id]["cost"], conn, False)
     user.set_user_attr(msg.author.id, "pickaxe", abc.Pickaxe(
-        pickaxes[pickaxe_id]["name"],
-        pickaxes[pickaxe_id]["cost"],
-        pickaxes[pickaxe_id]["speed"],
-        pickaxes[pickaxe_id]["multiplier"]
+        _pickaxes[pickaxe_id]["name"],
+        _pickaxes[pickaxe_id]["cost"],
+        _pickaxes[pickaxe_id]["speed"],
+        _pickaxes[pickaxe_id]["multiplier"]
     ).cvt_dict(), conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You bought a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Bought",
+        f"You bought a {_pickaxes[pickaxe_id]['name']} for {_pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Bought",
         from_reaction=userinfo.settings.reaction_confirm
     )
 
@@ -233,18 +231,18 @@ async def _pickaxe_list(bot, msg):
     fields = []
     emojis = other.load_emojis(bot)
 
-    for pickaxe in pickaxes.keys():
-        fields.append([pickaxes[pickaxe]["name"], f"""ID: {pickaxe}
-Cost: {pickaxes[pickaxe]['cost']} {emojis.coin}
-Mining Speed: {pickaxes[pickaxe]['speed']}
-Mining Multiplier: x{pickaxes[pickaxe]['multiplier']}"""])
+    for pickaxe in _pickaxes.keys():
+        fields.append([_pickaxes[pickaxe]["name"], f"""ID: {pickaxe}
+Cost: {_pickaxes[pickaxe]['cost']:,} {emojis.coin}
+Mining Speed: {_pickaxes[pickaxe]['speed']}
+Mining Multiplier: x{_pickaxes[pickaxe]['multiplier']}"""])
 
     await message.send_message(msg, title="Pickaxes", fields=fields)
 
 
 async def _pickaxe_buy_reaction_confirm(bot, msg, pickaxe_id, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']:,} {emojis.coin}",
+        f"Are you sure you want to buy a {_pickaxes[pickaxe_id]['name']} for {_pickaxes[pickaxe_id]['cost']:,} {emojis.coin}",
         title="Buying.."
     )
 
@@ -277,7 +275,7 @@ async def _pickaxe_buy_reaction_confirm(bot, msg, pickaxe_id, emojis):
 
 async def _pickaxe_buy_button_confirm(bot, msg, pickaxe_id, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {pickaxes[pickaxe_id]['name']} for {pickaxes[pickaxe_id]['cost']} {emojis.coin}",
+        f"Are you sure you want to buy a {_pickaxes[pickaxe_id]['name']} for {_pickaxes[pickaxe_id]['cost']:,} {emojis.coin}",
         title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
@@ -307,7 +305,7 @@ async def _pickaxe_buy_button_confirm(bot, msg, pickaxe_id, emojis):
 
 async def _pickaxe_sell_reaction_confirm(bot, msg, userinfo, sell_amount, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to sell your {userinfo.pickaxe.name} for {sell_amount} {emojis.coin}",
+        f"Are you sure you want to sell your {userinfo.pickaxe.name} for {sell_amount:,} {emojis.coin}",
         title="Selling.."
     )
 
@@ -340,7 +338,7 @@ async def _pickaxe_sell_reaction_confirm(bot, msg, userinfo, sell_amount, emojis
 
 async def _pickaxe_sell_button_confirm(bot, msg, userinfo, sell_amount, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to sell your {userinfo.pickaxe.name} for {sell_amount} {emojis.coin}",
+        f"Are you sure you want to sell your {userinfo.pickaxe.name} for {sell_amount:,} {emojis.coin}",
         title="Selling..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

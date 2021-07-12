@@ -11,12 +11,10 @@ import random
 from Utils import user, message, abc, other
 from Storage import help_list
 
-#   Command Information   #
 name = "pet"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-pets = {
+_pets = {
     "dog": {
         "cost": 500,
         "breeds": [
@@ -78,8 +76,7 @@ pets = {
         ]
     }
 }
-
-default_names = [
+_default_names = [
     "Abel",
     "Bella",
     "Charlie",
@@ -129,11 +126,11 @@ async def _pet_buy(bot, msg, conn, split_data):
         await message.send_error(msg, "You already have a pet\nSell it to buy a new one")
         return
 
-    if split_data[2] not in pets:
+    if split_data[2] not in _pets:
         await message.send_error(msg, "No pet found")
         return
 
-    if pets[split_data[2]]["cost"] > userinfo.coins:
+    if _pets[split_data[2]]["cost"] > userinfo.coins:
         await message.send_error(msg, "You don't have enough coins to buy this pet")
         return
 
@@ -161,19 +158,19 @@ async def _pet_buy(bot, msg, conn, split_data):
         )
         return
 
-    if pets[split_data[2]]["cost"] > userinfo.coins:
+    if _pets[split_data[2]]["cost"] > userinfo.coins:
         await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this pet",
             from_reaction=userinfo.settings.reaction_confirm
         )
         return
 
-    def_name = random.choice(default_names)
-    breed = random.choice(pets[split_data[2]]["breeds"])
+    def_name = random.choice(_default_names)
+    breed = random.choice(_pets[split_data[2]]["breeds"])
 
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins - pets[split_data[2]]["cost"], conn, False)
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins - _pets[split_data[2]]["cost"], conn, False)
     user.set_user_attr(msg.author.id, "pet", abc.Pet(
         def_name,
-        pets[split_data[2]]["cost"],
+        _pets[split_data[2]]["cost"],
         f"{split_data[2][0].upper()}{split_data[2][1:]}",
         breed
     ).cvt_dict(), conn)
@@ -230,8 +227,8 @@ async def _pet_list(bot, msg):
     fields = []
     emojis = other.load_emojis(bot)
 
-    for pet in pets.keys():
-        fields.append([f"{pet[0].upper()}{pet[1:]}", f"Cost: {pets[pet]['cost']} {emojis.coin}"])
+    for pet in _pets.keys():
+        fields.append([f"{pet[0].upper()}{pet[1:]}", f"Cost: {_pets[pet]['cost']} {emojis.coin}"])
 
     await message.send_message(msg, title="Pets", fields=fields, footer="(Pets are still in beta phase)")
 
@@ -265,7 +262,7 @@ async def _pet_name(msg, conn, split_data):
 
 async def _pet_buy_reaction_confirm(bot, msg, split_data, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {pets[split_data[2]]['cost']} {emojis.coin}",
+        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {_pets[split_data[2]]['cost']} {emojis.coin}",
         title="Buying.."
     )
 
@@ -298,7 +295,7 @@ async def _pet_buy_reaction_confirm(bot, msg, split_data, emojis):
 
 async def _pet_buy_button_confirm(bot, msg, split_data, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {pets[split_data[2]]['cost']} {emojis.coin}",
+        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {_pets[split_data[2]]['cost']} {emojis.coin}",
         title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

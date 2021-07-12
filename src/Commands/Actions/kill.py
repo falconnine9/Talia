@@ -10,21 +10,17 @@ import random
 from Utils import user, message
 from Storage import help_list
 
-#   Command Information   #
 name = "kill"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-gif_url = "https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/actiongifs/kill"
-
-self_kill = [
+_gif_url = "https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/actiongifs/kill"
+_self_kill = [
     "Suicide is never the option",
     "Why do you want to kill yourself :(",
     "You can't kill yourself",
     "You're not allowed to kill yourself"
 ]
-
-suffix = [
+_suffix = [
     ", rip",
     ", F",
     ""
@@ -47,7 +43,7 @@ async def run(bot, msg, conn):
         return
 
     if person_id == msg.author.id:
-        await message.send_error(msg, random.choice(self_kill))
+        await message.send_error(msg, random.choice(_self_kill))
         return
     else:
         try:
@@ -59,7 +55,7 @@ async def run(bot, msg, conn):
             await message.send_error(msg, "An error occurred and the command couldn't be run")
             return
 
-    random_image = f"{gif_url}/kill{random.randint(1, 7)}.gif"
-    await message.send_message(msg, title=f"{str(msg.author)} killed {str(person)}{random.choice(suffix)}",
+    random_image = f"{_gif_url}/kill{random.randint(1, 7)}.gif"
+    await message.send_message(msg, title=f"{str(msg.author)} killed {str(person)}{random.choice(_suffix)}",
         img=random_image
     )

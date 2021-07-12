@@ -4,32 +4,32 @@ GNU General Public License v3.0
 Talia.py
 
 Main file for the discord bot
-
-On startup
-1. Initializes the configuration file
-2. Creates an ssh tunnel to the server hosting the db
- and makes a connection to the database
-3. Initializes the database and makes a new bot object
-4. Starts the async event loop
 """
 import asyncio
 import discord
 import discord_components
+import os
 import traceback
 from Routine import init, handle, loop, post_checks
 from Utils import guild, user, message, abc, other
+from Service import poll
+
+with open("header.txt") as header_f:
+    print(header_f.read() + "\n")  # This will open and print the header text
 
 other.log("Preparing")
+other.log("Initializing configuration file")
 init.config()
+other.log("Complete", "success")
 
 conn = init.open_main_database(other.load_config().db)
-init.db(conn)
-
 bot = discord.Client(intents=discord.Intents.all(), max_messages=other.load_config().cache_size)
 bot.activity = discord.Game(name="t!help")
-
 full_logging = other.load_config().full_logging
-guild_prefixes = {}
+
+other.log("Initializing the database")
+init.db(conn)
+other.log("Complete", "success")
 
 
 @bot.event
@@ -91,20 +91,20 @@ async def on_message(msg):
     3. Handle some database stuff
     4. Send the message to the command handler
     """
+    poll.message_services(bot, msg, conn)
+
     if msg.author.bot:
         return
 
-    if bot.user in msg.mentions:
-        await handle.ping(bot, msg, conn)
-
-    if not handle.prefix(msg, conn, guild_prefixes):
+    if not handle.prefix(msg, conn):
         return
 
-    if msg.guild is not None:
-        guildinfo = guild.load_guild(msg.guild.id, conn)
-        if guildinfo is None:
-            guildinfo = abc.Guild(msg.guild.id)
-            guild.write_guild(guildinfo, conn, False)
+    if msg.guild is None:
+        guild_changed = False
+        msg.content = msg.content[2:].strip()
+    else:
+        guild_changed, guildinfo = handle.verify_guild(msg, conn)
+        msg.content = msg.content[len(os.environ[f"TaliaPrefix.{msg.guild.id}"]):].strip()
 
         if not msg.channel.permissions_for(msg.guild.me).send_messages:
             return
@@ -112,26 +112,21 @@ async def on_message(msg):
         if msg.channel.id in guildinfo.disabled_channels:
             return
 
-    userinfo = user.load_user(msg.author.id, conn)
-    if userinfo is None:
-        userinfo = abc.User(msg.author.id)
-        user.write_user(userinfo, conn, False)
+    user_changed = handle.verify_user(msg, conn)
+    mentioned_changed = await handle.mentioned_users(bot, msg, conn)
 
-    await handle.mentioned_users(bot, msg, conn)
-    conn.commit()
-
-    if msg.guild is None:
-        msg.content = msg.content[2:].strip()
-    else:
-        msg.content = msg.content[len(guild_prefixes[msg.guild.id]):].strip()
+    if guild_changed or user_changed or mentioned_changed:
+        conn.commit()
 
     try:
         await handle.command(bot, msg, conn, full_logging)
+
     except Exception as errmsg:
-        excinfo = traceback.format_exc()
-        await message.send_error(msg, f"""\u26a0 An unexpected error occurred \u26a0
-Error type: {type(errmsg).__name__}""")
-        other.log(f"Error occurred, traceback below\n{excinfo}", "critical")
+        exc_info = traceback.format_exc()
+        await message.send_error(msg,
+            f"\u26a0 An unexpected error occurred \u26a0\nError type: {type(errmsg).__name__}"
+        )
+        other.log(f"Error occurred, traceback below\n{exc_info}", "critical")
         return
 
     await post_checks.level(bot, msg, conn)
@@ -154,9 +149,14 @@ async def cache_loading_loop():
         all_prefixes = cur.fetchall()
 
         for prefix in all_prefixes:
-            guild_prefixes[prefix[0]] = prefix[1]
+            os.environ[f"TaliaPrefix.{prefix[0]}"] = prefix[1]
 
-        await asyncio.sleep(600)
+        config = other.load_config()
+
+        global full_logging
+        full_logging = config.full_logging
+
+        await asyncio.sleep(3600)
 
 
 if __name__ == "__main__":

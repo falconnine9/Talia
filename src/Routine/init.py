@@ -83,7 +83,7 @@ tables = {
         "coins": "BIGINT UNSIGNED",
         "multiplier": "REAL",
         "failed": "TINYINT",
-        "type": "TINYTEXT",
+        "loss": "REAL",
         "CONSTRAINT invest_timers_pk": "PRIMARY KEY (id)"
     },
     "companies": {
@@ -94,6 +94,7 @@ tables = {
         "invites": "MEDIUMTEXT",
         "date_created": "TIMESTAMP",
         "multiplier": "REAL",
+        "level": "INTEGER",
         "CONSTRAINT companies_pk": "PRIMARY KEY (discrim)"
     },
     "log": {

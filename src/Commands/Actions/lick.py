@@ -10,19 +10,15 @@ import random
 from Utils import user, message
 from Storage import help_list
 
-#   Command Information   #
 name = "lick"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-gif_url = "https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/actiongifs/lick"
-
-self_lick = [
+_gif_url = "https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/actiongifs/lick"
+_self_lick = [
     "You wanna lick yourself? Kinda weird",
     "You can't lick yourself",
 ]
-
-suffix = [
+_suffix = [
     ", kinky",
     ", uwu",
 ]
@@ -44,7 +40,7 @@ async def run(bot, msg, conn):
         return
 
     if person_id == msg.author.id:
-        await message.send_error(msg, random.choice(self_lick))
+        await message.send_error(msg, random.choice(_self_lick))
         return
     else:
         try:
@@ -56,7 +52,7 @@ async def run(bot, msg, conn):
             await message.send_error(msg, "An error occurred and the command couldn't be run")
             return
 
-    random_image = f"{gif_url}/lick{random.randint(1, 20)}.gif"
-    await message.send_message(msg, title=f"{str(msg.author)} licked {str(person)}{random.choice(suffix)}",
+    random_image = f"{_gif_url}/lick{random.randint(1, 20)}.gif"
+    await message.send_message(msg, title=f"{str(msg.author)} licked {str(person)}{random.choice(_suffix)}",
         img=random_image
     )

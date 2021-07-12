@@ -10,10 +10,8 @@ import discord_components
 from Utils import guild, user, message, abc, other
 from Storage import help_list
 
-#   Command Information   #
 name = "shop"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

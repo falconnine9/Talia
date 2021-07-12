@@ -10,12 +10,10 @@ import discord_components
 from Utils import user, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "boostshop"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-boosts = {
+_boosts = {
     "multiplier": {
         "name": "Multiplier",
         "desc": "Add +0.1 onto your multiplier"
@@ -49,7 +47,7 @@ async def _boostshop_buy(bot, msg, conn, split_data):
 
     split_data[2] = split_data[2].lower()
 
-    if split_data[2] not in boosts.keys():
+    if split_data[2] not in _boosts.keys():
         await message.send_error(msg, f"There's no boost in the shop named \"{split_data[2]}\"")
         return
 
@@ -61,7 +59,7 @@ async def _boostshop_buy(bot, msg, conn, split_data):
         cost = 0
 
     if cost > userinfo.coins:
-        await message.send_error(msg, f"You don't have enough coins to buy a {boosts[split_data[2]]['name']} boost")
+        await message.send_error(msg, f"You don't have enough coins to buy a {_boosts[split_data[2]]['name']} boost")
         return
 
     emojis = other.load_emojis(bot)
@@ -101,7 +99,7 @@ async def _boostshop_buy(bot, msg, conn, split_data):
     user.set_user_attr(msg.author.id, "shop_info", userinfo.shop_info.cvt_dict(), conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You bought a {boosts[split_data[2]]['name']} boost for {cost:,} {emojis.coin}", title="Bought",
+        f"You bought a {_boosts[split_data[2]]['name']} boost for {cost:,} {emojis.coin}", title="Bought",
         from_reaction=userinfo.settings.reaction_confirm
     )
 
@@ -111,19 +109,19 @@ async def _boostshop_list(bot, msg, conn):
     fields = []
     emojis = other.load_emojis(bot)
 
-    for boost in boosts:
+    for boost in _boosts:
         if boost == "multiplier":
             cost = userinfo.shop_info.multiplier_cost
         else:
             cost = 0
-        fields.append([boosts[boost]["name"], f"{boosts[boost]['desc']}\nCost: {cost:,} {emojis.coin}"])
+        fields.append([_boosts[boost]["name"], f"{_boosts[boost]['desc']}\nCost: {cost:,} {emojis.coin}"])
 
     await message.send_message(msg, title="Boost shop", footer="Costs may only be applicable to you", fields=fields)
 
 
 async def _reaction_confirm(bot, msg, boost, cost, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {boosts[boost]['name']} boost for {cost:,} {emojis.coin}", title="Buying.."
+        f"Are you sure you want to buy a {_boosts[boost]['name']} boost for {cost:,} {emojis.coin}", title="Buying.."
     )
 
     await sent_msg.add_reaction("\u2705")
@@ -155,7 +153,7 @@ async def _reaction_confirm(bot, msg, boost, cost, emojis):
 
 async def _button_confirm(bot, msg, boost, cost, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {boosts[boost]['name']} boost for {cost:,} {emojis.coin}", title="Buying..",
+        f"Are you sure you want to buy a {_boosts[boost]['name']} boost for {cost:,} {emojis.coin}", title="Buying..",
         components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

@@ -12,23 +12,19 @@ import random
 from Utils import user, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "marry"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-already_married = [
+_already_married = [
     "But you're already married",
     "You're already married"
 ]
-
-parent_marry = [
+_parent_marry = [
     "{user} is your parent",
     "You can't marry your parent..",
     "Why do you want to marry {user}? They're your parent"
 ]
-
-children_marry = [
+_children_marry = [
     "{user} is your child",
     "You can't marry your child!"
 ]
@@ -38,7 +34,7 @@ async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.partner is not None:
-        await message.send_error(msg, random.choice(already_married))
+        await message.send_error(msg, random.choice(_already_married))
         return
 
     split_data = msg.content.split(" ")
@@ -73,11 +69,11 @@ async def run(bot, msg, conn):
         return
 
     if person.id in userinfo.parents:
-        await message.send_error(msg, random.choice(parent_marry).replace("{user}", str(person)))
+        await message.send_error(msg, random.choice(_parent_marry).replace("{user}", str(person)))
         return
 
     if person.id in userinfo.children:
-        await message.send_error(msg, random.choice(children_marry).replace("{user}", str(person)))
+        await message.send_error(msg, random.choice(_children_marry).replace("{user}", str(person)))
         return
 
     personinfo = user.load_user(msg.author.id, conn)

@@ -10,12 +10,10 @@ import random
 from Utils import user, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "pay"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-self_pay = [
+_self_pay = [
     "You can't pay yourself",
     "Um, you can't pay yourself",
     "Sorry, you can't pay yourself"
@@ -42,7 +40,7 @@ async def run(bot, msg, conn):
         return
 
     if person_id == msg.author.id:
-        await message.send_error(msg, random.choice(self_pay))
+        await message.send_error(msg, random.choice(_self_pay))
         return
     else:
         try:
@@ -57,6 +55,8 @@ async def run(bot, msg, conn):
     if person.bot:
         await message.send_error(msg, "You can't pay a bot")
         return
+
+    split_data[2] = split_data[2].replace(",", "")
 
     try:
         amount = int(split_data[2])

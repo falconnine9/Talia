@@ -8,12 +8,10 @@ mine command
 import random
 from Utils import user, timer, message, abc, other
 
-#   Command Information   #
 name = "mine"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-artifacts = [
+_artifacts = [
     {
         "name": "Copper Artifact",
         "worth": [100, 200],
@@ -114,7 +112,7 @@ async def run(bot, msg, conn):
         chance = random.random()
         total_chance = 0.0
 
-        for artifact in artifacts:
+        for artifact in _artifacts:
             total_chance += artifact["chance"]
             if chance < total_chance:
                 item = abc.Item(

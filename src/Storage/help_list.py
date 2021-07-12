@@ -15,6 +15,12 @@ help_ = {
     }
 }
 
+about = {
+    "desc": "Get some information about me",
+    "usage": "about",
+    "args": {}
+}
+
 ping = {
     "desc": "Get the latency of Talia",
     "usage": "ping",
@@ -27,12 +33,6 @@ info = {
     "args": {
         "user": "The person you want to get information of (Can be empty to get your own)"
     }
-}
-
-stats = {
-    "desc": "Get some cool stats about Talia",
-    "usage": "stats",
-    "args": {}
 }
 
 inventory = {

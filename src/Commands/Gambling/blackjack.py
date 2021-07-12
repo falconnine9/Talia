@@ -11,13 +11,11 @@ import random
 from Utils import user, message, abc, other
 from Storage import help_list
 
-#   Command Information   #
 name = "blackjack"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-suits = ["\u2660", "\u2663", "\u2665", "\u2666"]
-values = {
+_suits = ["\u2660", "\u2663", "\u2665", "\u2666"]
+_values = {
     "A": 11,
     "2": 2,
     "3": 3,
@@ -38,39 +36,36 @@ async def run(bot, msg, conn):
     split_data = msg.content.split(" ")
 
     if len(split_data) < 2:
-        await message.invalid_use(msg,
-            help_list.blackjack,
-            "No bet given")
+        await message.invalid_use(msg, help_list.blackjack, "No bet given")
         return
+
+    split_data[1] = split_data[1].replace(",", "")
 
     try:
         bet = int(split_data[1])
     except ValueError:
-        await message.send_error(msg,
-            "Invalid bet")
+        await message.send_error(msg, "Invalid bet")
         return
 
     emojis = other.load_emojis(bot)
 
     if bet < 1:
-        await message.send_error(msg,
-            f"You need to bet at least 1 {emojis.coin}")
+        await message.send_error(msg, f"You need to bet at least 1 {emojis.coin}")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
     if bet > userinfo.coins:
-        await message.send_error(msg,
-            f"You don't have enough coins to bet {bet} {emojis.coin}")
+        await message.send_error(msg, f"You don't have enough coins to bet {bet} {emojis.coin}")
         return
 
     userinfo.coins -= bet
     user.set_user_attr(msg.author.id, "coins", userinfo.coins, conn)
 
     deck = []
-    for suit in suits:
-        for value in values:
-            deck.append(abc.BJCard(value, suit, values[value]))
+    for suit in _suits:
+        for value in _values:
+            deck.append(abc.BJCard(value, suit, _values[value]))
 
     dealer_cards = []
     user_cards = []
@@ -90,8 +85,7 @@ async def run(bot, msg, conn):
         deck.remove(random_card)
 
         if _card_amount(dealer_cards) > 21:
-            await message.send_message(msg,
-                f"""Blackjack cost: -{bet:,} {emojis.coin}
+            await message.send_message(msg, f"""Blackjack cost: -{bet:,} {emojis.coin}
 
 Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
@@ -103,8 +97,7 @@ You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
 
     if _card_amount(user_cards) == 21:
         if _card_amount(user_cards) == _card_amount(dealer_cards):
-            await message.send_message(msg,
-                f"""Blackjack cost: -{bet:,} {emojis.coin}
+            await message.send_message(msg, f"""Blackjack cost: -{bet:,} {emojis.coin}
 
 Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
@@ -113,8 +106,7 @@ You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
                 title="Tie")
             user.set_user_attr(msg.author.id, "coins", userinfo.coins + bet, conn)
         else:
-            await message.send_message(msg,
-                f"""Blackjack cost: -{bet:,} {emojis.coin}
+            await message.send_message(msg, f"""Blackjack cost: -{bet:,} {emojis.coin}
 
 Dealer: {_show_all_cards(dealer_cards)} ({_card_amount(dealer_cards)})
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
@@ -124,8 +116,7 @@ You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})
             user.set_user_attr(msg.author.id, "coins", userinfo.coins + round(bet * 2 + (bet * 0.5)), conn)
         return
 
-    sent_msg = await message.send_message(msg,
-        f"""Blackjack cost: -{bet:,} {emojis.coin}
+    sent_msg = await message.send_message(msg, f"""Blackjack cost: -{bet:,} {emojis.coin}
 
 Dealer: {_show_hidden_cards(dealer_cards)}
 You: {_show_all_cards(user_cards)} ({_card_amount(user_cards)})""",

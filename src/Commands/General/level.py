@@ -7,10 +7,8 @@ level command
 """
 from Utils import user, message
 
-#   Command Information   #
 name = "level"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):

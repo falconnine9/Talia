@@ -8,17 +8,15 @@ help command
 from Utils import message, other
 from Storage import meta, help_list
 
-#   Command Information   #
 name = "help"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-help_info = {
+_help_info = {
     "general": {
         "help": help_list.help_,
+        "about": help_list.about,
         "ping": help_list.ping,
         "info": help_list.info,
-        "stats": help_list.stats,
         "inventory": help_list.inventory,
         "shop": help_list.shop,
         "boostshop": help_list.boostshop,
@@ -75,8 +73,7 @@ help_info = {
         "buttons": help_list.buttons
     }
 }
-
-category_emojis = {
+_category_emojis = {
     "general": "\U0001f4d6",
     "earning": "\U0001fa99",
     "family": "\U0001f46a",
@@ -95,12 +92,12 @@ async def run(bot, msg, conn):
     else:
         choice = " ".join(split_data[1:]).lower()
 
-        if choice in help_info.keys():
+        if choice in _help_info.keys():
             await _command_list(bot, msg, choice)
             return
 
-        for category in help_info.keys():
-            if choice in help_info[category]:
+        for category in _help_info.keys():
+            if choice in _help_info[category]:
                 await _command_details(bot, msg, category, choice)
                 return
 
@@ -108,7 +105,7 @@ async def run(bot, msg, conn):
 
 
 async def _category_list(bot, msg):
-    cat_list = "\n".join([f"**{category[0].upper()}{category[1:]}** {category_emojis[category]}" for category in help_info.keys()])
+    cat_list = "\n".join([f"**{category[0].upper()}{category[1:]}** {_category_emojis[category]}" for category in _help_info.keys()])
     links = other.load_config().links
 
     if len(links) == 0:
@@ -126,7 +123,7 @@ async def _category_list(bot, msg):
 
 
 async def _command_list(bot, msg, choice):
-    comm_list = ", ".join([f"`{command}`" for command in help_info[choice].keys()])
+    comm_list = ", ".join([f"`{command}`" for command in _help_info[choice].keys()])
     await message.send_message(msg, f"You can use `help <command>` for details of that command\n\n{comm_list}",
         title=f"{choice[0].upper()}{choice[1:]}", footer=f"Talia version {meta.version}",
         footer_icon=bot.user.avatar_url
@@ -134,7 +131,7 @@ async def _command_list(bot, msg, choice):
 
 
 async def _command_details(bot, msg, category, choice):
-    command_info = help_info[category][choice]
+    command_info = _help_info[category][choice]
 
     if len(command_info["args"]) == 0:
         await message.send_message(msg,

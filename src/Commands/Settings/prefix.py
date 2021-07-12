@@ -5,13 +5,12 @@ prefix.py (Commands/Settings)
 
 prefix command
 """
+import os
 from Utils import guild, message, other
 from Storage import help_list
 
-#   Command Information   #
 name = "prefix"
 dm_capable = False
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):
@@ -43,5 +42,6 @@ async def run(bot, msg, conn):
         return
 
     guild.set_guild_attr(msg.guild.id, "prefix", new_prefix, conn)
-    await message.send_message(msg, f"""Prefix set to: {new_prefix}
-Note: It may take up to 10 minutes for the changes to take effect""", title="New prefix")
+    os.environ[f"TaliaPrefix.{msg.guild.id}"] = new_prefix
+
+    await message.send_message(msg, f"Prefix set to: {new_prefix}", title="New prefix")

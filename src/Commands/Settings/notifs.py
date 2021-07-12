@@ -10,12 +10,10 @@ import discord
 import discord_components
 from Utils import user, message
 
-#   Command Information   #
 name = "notifs"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
-notif_names = {
+_notif_names = {
     "paid": "Paid",
     "company_invites": "Company Invites",
     "divorced": "Divorced",
@@ -40,11 +38,11 @@ Buttons can be enabled with the `button` command""")
     for notif in userinfo.settings.notifs.keys():
         if userinfo.settings.notifs[notif]:
             tmp.append(discord_components.Button(
-                label=notif_names[notif], style=discord_components.ButtonStyle.green, id=notif
+                label=_notif_names[notif], style=discord_components.ButtonStyle.green, id=notif
             ))
         else:
             tmp.append(discord_components.Button(
-                label=notif_names[notif], style=discord_components.ButtonStyle.red, id=notif
+                label=_notif_names[notif], style=discord_components.ButtonStyle.red, id=notif
             ))
 
         if i == 2:
@@ -96,11 +94,11 @@ Red: Disabled
         for notif in userinfo.settings.notifs.keys():
             if userinfo.settings.notifs[notif]:
                 tmp.append(discord_components.Button(
-                    label=notif_names[notif], style=discord_components.ButtonStyle.green, id=notif
+                    label=_notif_names[notif], style=discord_components.ButtonStyle.green, id=notif
                 ))
             else:
                 tmp.append(discord_components.Button(
-                    label=notif_names[notif], style=discord_components.ButtonStyle.red, id=notif
+                    label=_notif_names[notif], style=discord_components.ButtonStyle.red, id=notif
                 ))
 
             if i == 2:

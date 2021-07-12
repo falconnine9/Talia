@@ -6,9 +6,7 @@ other.py (Utils)
 Random utilities
 """
 import datetime
-import discord
 import json
-import random
 import os
 import sys
 
@@ -19,7 +17,6 @@ except ImportError:
     colorama = None
 
 from Utils import company, abc
-from Storage import meta
 
 
 def log(info, level="info"):
@@ -107,14 +104,15 @@ def load_multi(userinfo, conn):
     Loads the overall multiplier of a user
 
     1. Adds the company boost
-    2. Returns the user multiplier multiplied by the company multiplier
+    2. Returns the user multiplier multiplied by the
+     company multiplier
     """
     if userinfo.company is not None:
-        company_boost = company.load_company(userinfo.company, conn).multiplier_boost
+        company_boost = company.load_company(userinfo.company, conn).multiplier
     else:
         company_boost = 1.0
 
-    return userinfo.multiplier * company_boost
+    return round(userinfo.multiplier * company_boost, 1)
 
 
 async def load_channel_obj(bot, channel_id):

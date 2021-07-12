@@ -7,10 +7,8 @@ heist command
 """
 from Utils import message
 
-#   Command Information   #
 name = "heist"
 dm_capable = True
-# ~~~~~~~~~~~~~~~~~~~~~~~ #
 
 
 async def run(bot, msg, conn):
