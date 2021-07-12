@@ -161,8 +161,6 @@ async def _company_invite(bot, msg, conn, split_data):
         await message.send_error(msg, f"{str(person)} has already been invited to the company")
         return
 
-    await message.send_message(msg, f"{str(person)} has been invited to join {companyinfo.name}")
-
     try:
         sent_msg = await message.send_message(None, f"You've been invited to join {companyinfo.name}", title="Invite",
             channel=person, components=[[
@@ -173,6 +171,8 @@ async def _company_invite(bot, msg, conn, split_data):
     except discord.Forbidden:
         await message.send_error(msg, f"{str(person)} can't receive DMs from me")
         return
+
+    await message.send_message(msg, f"{str(person)} has been invited to join {companyinfo.name}")
 
     companyinfo.invites.append(person.id)
     company.set_company_attr(userinfo.company, "invites", companyinfo.invites, conn)
