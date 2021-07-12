@@ -68,7 +68,7 @@ async def lb_fortune(bot, msg, conn):
     query = """SELECT u.id, i.coins+u.coins
             FROM users u, invest_timers i
             WHERE u.id = i.id
-            order by  i.coins+u.coins 
+            order by i.coins+u.coins 
             DESC LIMIT 10"""
     cur.execute(query)
     top_users = cur.fetchall()
