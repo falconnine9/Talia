@@ -32,6 +32,12 @@ async def run(bot, msg, conn):
     elif split_data[1] == "multiplier":
         await lb_multiplier(bot, msg, conn)
 
+    elif split_data[1] == "hourly":
+        await lb_hourly(bot, msg, conn)
+    
+    elif split_data[1] == "fortune":
+        await lb_fortune(bot, msg, conn)
+
     else:
         await message.send_error(msg, f"Unknown leaderboard\n`coins`, `level`, `multiplier`")
 
@@ -101,3 +107,36 @@ async def lb_multiplier(bot, msg, conn):
             user_list.append(f"{i + 1}. {str(user_obj)} | x{user[1]}")
 
     await message.send_message(msg, "\n".join(user_list), title="Multiplier Leaderboard")
+
+async def lb_hourly(bot, msg, conn):
+    cur = conn.cursor()
+    cur.execute("SELECT id, hourly FROM users ORDER BY hourly DESC LIMIT 10")
+    top_users = cur.fetchall()
+
+    if len(top_users) == 0:
+        await message.send_message(msg, "Nothing in here :(", title="Hourly Leaderboard")
+        return
+
+    user_list = []
+
+    for i, user in enumerate(top_users):
+        user_obj = bot.get_user(user[0])
+
+        if user_obj is None:
+            user_list.append(f"{i + 1}: Unknown#0000 | {user[1]} hourlies")
+        else:
+            user_list.append(f"{i + 1}. {str(user_obj)} | {user[1]} hourlies")
+
+    await message.send_message(msg, "\n".join(user_list), title="Hourly Leaderboard")
+
+async def lb_fortune(bot, msg, conn):
+    cur = conn.cursor()
+    cur.execute("SELECT id, coins FROM invest_timers ORDER BY id")
+    investments = cur.fetchall()
+
+    
+    cur.execute("SELECT id, coins FROM users ORDER BY id")
+    for (id, coins) in cur:
+        print(f"id {id} has invested {coins}")
+    cur.close()
+   # await message.send_message()
