@@ -37,7 +37,7 @@ async def run(bot, msg, conn):
         await lb_fortune(bot, msg, conn)
 
     else:
-        await message.send_error(msg, f"Unknown leaderboard\n`coins`, `fortune`, `hourly`, `level`, `multiplier`,")
+        await message.send_error(msg, f"Unknown leaderboard\n`coins`, `fortune`, `hourly`, `level`, `multiplier`")
 
 
 async def lb_coins(bot, msg, conn):
