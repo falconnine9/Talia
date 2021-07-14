@@ -13,62 +13,76 @@ lc_config
  that will be ignored if they are found
 """
 import json
-import os
-
-config = {}
-if os.path.exists("lc_config.json"):
-    with open("lc_config.json") as json_f:
-        config = json.load(json_f)
+import sys
+from pathlib import Path
 
 
-def handle_dir(path):
-    if not os.path.exists(path):
+def handle_directory(path: Path, config=None, verbose=True):
+    if not path.is_dir():
         return 0
 
-    if not os.path.isdir(path):
-        return 0
+    if config is None:
+        config = {}
 
-    if "ignored_folders" in config:
-        path_split = path.split("/")
-        if path_split[len(path_split) - 1] in config["ignored_folders"]:
-            return 0
+    if path.name in config.get("ignored_folders", ()):
+        return 0
 
     local_count = 0
 
-    for file in os.listdir(path):
-        if os.path.isdir(f"{path}/{file}"):
-            local_count += handle_dir(f"{path}/{file}")
-        else:
-            local_count += handle_file(f"{path}/{file}")
+    for f in path.glob("*"):
+        if f.is_dir():
+            local_count += handle_directory(f, config)
+        elif f.is_file():
+            local_count += handle_file(f, config)
+
+    if verbose:
+        print(f"{local_count}\t\t{path}")
 
     return local_count
 
 
-def handle_file(path):
-    if not os.path.exists(path):
+def handle_file(path: Path, config=None, verbose=True):
+    if not path.is_file():
         return 0
 
-    if os.path.isdir(path):
-        return 0
+    if config is None:
+        config = {}
 
-    if "ignored_files" in config:
-        path_split = path.split("/")
-        if path_split[len(path_split) - 1] in config["ignored_files"]:
-            return 0
+    if path.name in config.get("ignored_files", ()):
+        return 0
 
     with open(path) as f:
-        return len(f.readlines())
+        count = sum(1 for _ in f)
+
+    if verbose:
+        print(f"{count}\t\t{path}")
+
+    return count
 
 
 if __name__ == "__main__":
-    print("Counting..")
+    argc = len(sys.argv)
+    argv = sys.argv
+
+    path = "."
+    lc_config = "lc_config.json"
+
+    if argc >= 2:
+        path = argv[1]
+    if argc >= 3:
+        lc_config = argv[2]
+
+    path = Path(path)
+    lc_config = Path(lc_config)
+
+    if lc_config.is_file():
+        config = json.loads(lc_config.read_text())
+    else:
+        config = None
 
     count = 0
 
-    for folder in os.listdir():
-        if os.path.isdir(folder):
-            count += handle_dir(folder)
-        else:
-            count += handle_file(folder)
-
-    print(f"{count} lines counted")
+    if path.is_file():
+        count += handle_file(path, config)
+    elif path.is_dir():
+        count += handle_directory(path, config)
