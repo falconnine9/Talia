@@ -36,7 +36,7 @@ def remove_directory(path: Path, *, dry_run=False, verbose=True, verify=True):
         if not dry_run:
             path.unlink(missing_ok=True)
         if verbose:
-            print(f"removed '{enclose(path)}'")
+            print(f"removed {enclose(path)}")
         return
 
     # Traverse directory content
