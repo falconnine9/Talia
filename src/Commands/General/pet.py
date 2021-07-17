@@ -251,9 +251,7 @@ async def _pet_name(msg, conn, split_data):
         await message.send_error(msg, "That's already your pet's name")
         return
 
-    userinfo.pet.name = pet_name
-    user.set_user_attr(msg.author.id, "pet", userinfo.pet.cvt_dict(), conn)
-
+    subtable.set_pet_attr(msg.author.id, "name", pet_name, conn)
     await message.send_message(msg, f"You changed your pet's name to **{pet_name}**", title="Renamed")
 
 

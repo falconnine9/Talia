@@ -93,6 +93,17 @@ def remove_pet(user_id, conn, write=True):
         conn.commit()
 
 
+def set_pet_attr(user_id, attr, val, conn, write=True):
+    if type(val) == list or type(val) == dict:
+        val = json.dumps(val)
+
+    cur = conn.cursor()
+    cur.execute(f"UPDATE pet_info SET {attr} = %s WHERE id = %s", (val, user_id))
+
+    if write:
+        conn.commit()
+
+
 def new_item(user_id, item, conn, write=True):
     cur = conn.cursor()
     cur.execute("INSERT INTO items (owner, name, worth, type, stats) VALUES (%s, %s, %s, %s, %s)", (
