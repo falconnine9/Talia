@@ -77,13 +77,10 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "join":
         await _job_join(msg, conn, split_data)
-
     elif split_data[1] == "quit":
         await _job_quit(bot, msg, conn)
-
     elif split_data[1] == "list":
         await _job_list(bot, msg)
-
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 

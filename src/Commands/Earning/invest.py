@@ -68,7 +68,7 @@ async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if amount > userinfo.coins:
-        await message.send_error(msg, f"You don't have enough coins to invest {amount} {emojis.coin}")
+        await message.send_error(msg, f"You don't have enough coins to invest {amount:,} {emojis.coin}")
         return
 
     split_data[2] = split_data[2].lower()

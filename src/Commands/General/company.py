@@ -27,25 +27,18 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "create":
         await _company_create(msg, conn, split_data)
-
     elif split_data[1] == "leave":
         await _company_leave(msg, conn)
-
     elif split_data[1] == "invite":
         await _company_invite(bot, msg, conn, split_data)
-
     elif split_data[1] == "kick":
         await _company_kick(bot, msg, conn, split_data)
-
     elif split_data[1] == "disband":
         await _company_disband(bot, msg, conn)
-
     elif split_data[1] == "info":
         await _company_info(bot, msg, conn, split_data)
-
     elif split_data[1] == "upgrade":
         await _company_upgrade(bot, msg, conn)
-
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 

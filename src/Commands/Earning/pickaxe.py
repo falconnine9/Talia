@@ -100,13 +100,10 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "buy":
         await _pickaxe_buy(bot, msg, conn, split_data)
-
     elif split_data[1] == "sell":
         await _pickaxe_sell(bot, msg, conn)
-
     elif split_data[1] == "list":
         await _pickaxe_list(bot, msg)
-
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 
@@ -173,7 +170,7 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
     ), conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You bought a {_pickaxes[pickaxe_id]['name']} for {_pickaxes[pickaxe_id]['cost']} {emojis.coin}",
+        f"You bought a {_pickaxes[pickaxe_id]['name']} for {_pickaxes[pickaxe_id]['cost']:,} {emojis.coin}",
         title="Bought", from_reaction=userinfo.settings.reaction_confirm
     )
 
@@ -216,7 +213,7 @@ async def _pickaxe_sell(bot, msg, conn):
     subtable.remove_pickaxe(msg.author.id, conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You sold your {userinfo.pickaxe.name} for {sell_amount} {emojis.coin}", title="Sold",
+        f"You sold your {userinfo.pickaxe.name} for {sell_amount:,} {emojis.coin}", title="Sold",
         from_reaction=userinfo.settings.reaction_confirm
     )
 

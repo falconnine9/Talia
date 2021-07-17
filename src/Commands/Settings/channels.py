@@ -31,10 +31,8 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "enable":
         await _channels_enable(msg, conn, split_data)
-
     elif split_data[1] == "disable":
         await _channels_disable(msg, conn, split_data)
-
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 

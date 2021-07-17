@@ -32,10 +32,8 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "buy":
         await _boostshop_buy(bot, msg, conn, split_data)
-
     elif split_data[1] == "list":
         await _boostshop_list(bot, msg, conn)
-
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 

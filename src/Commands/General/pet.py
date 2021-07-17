@@ -100,16 +100,12 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "buy":
         await _pet_buy(bot, msg, conn, split_data)
-
     elif split_data[1] == "sell":
         await _pet_sell(bot, msg, conn)
-
     elif split_data[1] == "list":
         await _pet_list(bot, msg)
-
     elif split_data[1] == "name":
         await _pet_name(msg, conn, split_data)
-
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 
@@ -215,7 +211,7 @@ async def _pet_sell(bot, msg, conn):
     user.set_user_attr(msg.author.id, "coins", userinfo.coins + userinfo.pet.worth, conn, False)
     subtable.remove_pet(msg.author.id, conn)
 
-    await message.response_edit(sent_msg, interaction, f"You sold your pet for {userinfo.pet.worth} {emojis.coin}",
+    await message.response_edit(sent_msg, interaction, f"You sold your pet for {userinfo.pet.worth:,} {emojis.coin}",
         title="Sold", from_reaction=userinfo.settings.reaction_confirm
     )
 
@@ -225,7 +221,7 @@ async def _pet_list(bot, msg):
     emojis = other.load_emojis(bot)
 
     for pet in _pets.keys():
-        fields.append([f"{pet[0].upper()}{pet[1:]}", f"Cost: {_pets[pet]['cost']} {emojis.coin}"])
+        fields.append([f"{pet[0].upper()}{pet[1:]}", f"Cost: {_pets[pet]['cost']:,} {emojis.coin}"])
 
     await message.send_message(msg, title="Pets", fields=fields, footer="(Pets are still in beta phase)")
 
@@ -257,7 +253,7 @@ async def _pet_name(msg, conn, split_data):
 
 async def _pet_buy_reaction_confirm(bot, msg, split_data, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {_pets[split_data[2]]['cost']} {emojis.coin}",
+        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {_pets[split_data[2]]['cost']:,} {emojis.coin}",
         title="Buying.."
     )
 
@@ -290,7 +286,7 @@ async def _pet_buy_reaction_confirm(bot, msg, split_data, emojis):
 
 async def _pet_buy_button_confirm(bot, msg, split_data, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {_pets[split_data[2]]['cost']} {emojis.coin}",
+        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {_pets[split_data[2]]['cost']:,} {emojis.coin}",
         title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
@@ -320,7 +316,7 @@ async def _pet_buy_button_confirm(bot, msg, split_data, emojis):
 
 async def _pet_sell_reaction_confirm(bot, msg, userinfo, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to sell your pet for {userinfo.pet.worth} {emojis.coin}", title="Selling.."
+        f"Are you sure you want to sell your pet for {userinfo.pet.worth:,} {emojis.coin}", title="Selling.."
     )
 
     await sent_msg.add_reaction("\u2705")
@@ -352,7 +348,7 @@ async def _pet_sell_reaction_confirm(bot, msg, userinfo, emojis):
 
 async def _pet_sell_button_confirm(bot, msg, userinfo, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to sell your pet for {userinfo.pet.worth} {emojis.coin}", title="Selling..",
+        f"Are you sure you want to sell your pet for {userinfo.pet.worth:,} {emojis.coin}", title="Selling..",
         components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

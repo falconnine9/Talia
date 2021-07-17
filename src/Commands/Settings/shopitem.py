@@ -32,10 +32,8 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "create":
         await _shopitem_create(bot, msg, conn, split_data)
-
     elif split_data[1] == "remove":
         await _shopitem_remove(msg, conn, split_data)
-
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 
@@ -110,7 +108,7 @@ Cost: None
 
     emojis = other.load_emojis(bot)
     await message.edit_message(sent_msg, f"""Item name: {item_name}
-Cost: {cost} {emojis.coin}""", title="Item created")
+Cost: {cost:,} {emojis.coin}""", title="Item created")
 
 
 async def _shopitem_remove(msg, conn, split_data):

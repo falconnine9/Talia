@@ -149,7 +149,7 @@ async def _invest_timer_alert(bot, timerinfo, c_userinfo, emojis):
                 )
             else:
                 await message.send_message(None,
-                    f"You earned {round(timerinfo.coins * timerinfo.multiplier)} {emojis.coin} from your investment",
+                    f"You earned {round(timerinfo.coins * timerinfo.multiplier):,} {emojis.coin} from your investment",
                     title="Investment notification", channel=c_user_obj
                 )
         except discord.Forbidden:

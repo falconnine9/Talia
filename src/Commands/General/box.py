@@ -201,10 +201,8 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "buy":
         await _box_buy(bot, msg, conn, split_data)
-
     elif split_data[1] == "list":
         await _box_list(bot, msg)
-
     else:
         await message.send_error(msg, "Unknown operation")
 

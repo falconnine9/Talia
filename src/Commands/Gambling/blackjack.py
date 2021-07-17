@@ -56,7 +56,7 @@ async def run(bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if bet > userinfo.coins:
-        await message.send_error(msg, f"You don't have enough coins to bet {bet} {emojis.coin}")
+        await message.send_error(msg, f"You don't have enough coins to bet {bet:,} {emojis.coin}")
         return
 
     userinfo.coins -= bet

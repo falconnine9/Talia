@@ -25,10 +25,8 @@ async def run(bot, msg, conn):
 
     if split_data[1] == "buy":
         await _shop_buy(bot, msg, conn, split_data)
-
     elif split_data[1] == "list":
         await _shop_list(bot, msg, conn)
-
     else:
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 
@@ -91,7 +89,7 @@ async def _shop_buy(bot, msg, conn, split_data):
     ), conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin}",
+        f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']:,} {emojis.coin}",
         title="Bought", from_reaction=userinfo.settings.reaction_confirm
     )
 
@@ -109,14 +107,14 @@ async def _shop_list(bot, msg, conn):
     emojis = other.load_emojis(bot)
 
     for i, item in enumerate(guildinfo.shop):
-        fields.append([item["name"], f"ID: {i + 1}\nCost: {item['cost']} {emojis.coin}"])
+        fields.append([item["name"], f"ID: {i + 1}\nCost: {item['cost']:,} {emojis.coin}"])
 
     await message.send_message(msg, title="Server shop", thumbnail=msg.guild.icon_url, fields=fields)
 
 
 async def _reaction_confirm(bot, msg, guildinfo, item, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin} from {msg.guild.name}",
+        f"Are you sure you want to buy a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']:,} {emojis.coin} from {msg.guild.name}",
         title="Buying.."
     )
 
@@ -149,7 +147,7 @@ async def _reaction_confirm(bot, msg, guildinfo, item, emojis):
 
 async def _button_confirm(bot, msg, guildinfo, item, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin} from {msg.guild.name}",
+        f"Are you sure you want to buy a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']:,} {emojis.coin} from {msg.guild.name}",
         title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)
