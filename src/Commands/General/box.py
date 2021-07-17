@@ -8,7 +8,7 @@ box command
 import asyncio
 import discord_components
 import random
-from Utils import user, message, abc, other
+from Utils import user, subtable, message, abc, other
 from Storage import help_list
 
 name = "box"
@@ -272,11 +272,11 @@ async def _box_buy(bot, msg, conn, split_data):
 
     await asyncio.sleep(random.randint(2, 3))
 
-    userinfo = user.load_user(msg.author.id, conn)
     item = random.choice(_boxes[box_id]["items"])
+    subtable.new_item(msg.author.id, abc.Item(
+        item["name"], item["worth"], "box_item", {}, None
+    ), conn)
 
-    userinfo.inventory.append(abc.Item(item["name"], item["worth"], "box_item", {}))
-    user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
     await message.edit_message(sent_msg, f"You found a {item['name']} in the {_boxes[box_id]['name']}", title="Opened")
 
 
@@ -287,9 +287,7 @@ async def _box_list(bot, msg):
     for box in _boxes.keys():
         fields.append([_boxes[box]["name"], f"ID: {box}\nCost: {_boxes[box]['cost']:,} {emojis.coin}"])
 
-    await message.send_message(msg, "You can use `box info` to get detailed information about a box", title="Boxes",
-        fields=fields
-    )
+    await message.send_message(msg, title="Boxes", fields=fields)
 
 
 async def _reaction_confirm(bot, msg, box_id, emojis):

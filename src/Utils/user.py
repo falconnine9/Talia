@@ -30,77 +30,79 @@ def load_user(user_id, conn):
     new_user.xp = userinfo[2]
     new_user.level = userinfo[3]
     new_user.edu_level = userinfo[4]
+    new_user.achievements = json.loads(userinfo[5])
+    new_user.multiplier = userinfo[6]
+    new_user.company = userinfo[7]
+    new_user.hourly = userinfo[8]
+    new_user.daily = userinfo[9]
+    new_user.partner = userinfo[10]
+    new_user.parents = json.loads(userinfo[11])
+    new_user.children = json.loads(userinfo[12])
 
-    tmp_job = json.loads(userinfo[5])
-    if tmp_job["name"] is None:
-        new_user.job = None
-    else:
-        new_user.job = abc.Job(
-            tmp_job["name"],
-            tmp_job["xp"],
-            tmp_job["level"],
-            tmp_job["salary"],
-            tmp_job["cooldown"]
-        )
-
-    tmp_pickaxe = json.loads(userinfo[6])
-    if tmp_pickaxe["name"] is None:
-        new_user.pickaxe = None
-    else:
-        new_user.pickaxe = abc.Pickaxe(
-            tmp_pickaxe["name"],
-            tmp_pickaxe["worth"],
-            tmp_pickaxe["speed"],
-            tmp_pickaxe["multiplier"]
-        )
-
-    tmp_pet = json.loads(userinfo[7])
-    if tmp_pet["name"] is None:
-        new_user.pet = None
-    else:
-        new_user.pet = abc.Pet(
-            tmp_pet["name"],
-            tmp_pet["worth"],
-            tmp_pet["type"],
-            tmp_pet["breed"]
-        )
-
-    new_user.achievements = json.loads(userinfo[8])
-    new_user.inventory = [abc.Item(
-        item["name"], item["worth"],
-        item["type"], item["stats"]
-    ) for item in json.loads(userinfo[9])]
-    new_user.multiplier = userinfo[10]
-    new_user.company = userinfo[11]
-
-    tmp_showcase = json.loads(userinfo[12])
-    if tmp_showcase["name"] is None:
-        new_user.showcase = None
-    else:
-        new_user.showcase = abc.Item(
-            tmp_showcase["name"],
-            tmp_showcase["worth"],
-            tmp_showcase["type"],
-            tmp_showcase["stats"]
-        )
-
-    new_user.hourly = userinfo[13]
-    new_user.daily = userinfo[14]
-    new_user.partner = userinfo[15]
-    new_user.parents = json.loads(userinfo[16])
-    new_user.children = json.loads(userinfo[17])
-
-    tmp_settings = json.loads(userinfo[18])
+    tmp_settings = json.loads(userinfo[13])
     new_user.settings = abc.Settings(
         tmp_settings["notifs"],
         tmp_settings["timernotifs"],
         tmp_settings["reaction_confirm"]
     )
 
-    new_user.color = json.loads(userinfo[19])
-
-    tmp_shop_info = json.loads(userinfo[20])
+    new_user.color = json.loads(userinfo[14])
+    tmp_shop_info = json.loads(userinfo[15])
     new_user.shop_info = abc.ShopInfo(tmp_shop_info["multiplier_cost"])
+
+    cur.execute("SELECT * FROM job_info WHERE id = %s", (user_id,))
+    job_info = cur.fetchone()
+
+    if job_info is None:
+        new_user.job = None
+    else:
+        new_user.job = abc.Job(
+            job_info[1], job_info[2], job_info[3],
+            json.loads(job_info[4]),
+            json.loads(job_info[5])
+        )
+
+    cur.execute("SELECT * FROM pickaxe_info WHERE id = %s", (user_id,))
+    pickaxe_info = cur.fetchone()
+
+    if pickaxe_info is None:
+        new_user.pickaxe = None
+    else:
+        new_user.pickaxe = abc.Pickaxe(
+            pickaxe_info[1], pickaxe_info[2],
+            pickaxe_info[3], pickaxe_info[4]
+        )
+
+    cur.execute("SELECT * FROM pet_info WHERE id = %s", (user_id,))
+    pet_info = cur.fetchone()
+
+    if pet_info is None:
+        new_user.pet = None
+    else:
+        new_user.pet = abc.Pet(
+            pet_info[1], pet_info[2],
+            pet_info[3], pet_info[4]
+        )
+
+    cur.execute("SELECT * FROM items WHERE owner = %s", (user_id,))
+    all_items = cur.fetchall()
+    new_user.inventory = [
+        abc.Item(
+            item[2], item[3], item[4],
+            json.loads(item[5]), item[0]
+        ) for item in all_items
+    ]
+
+    cur.execute("SELECT * FROM showcase_info WHERE id = %s", (user_id,))
+    showcase_info = cur.fetchone()
+
+    if showcase_info is None:
+        new_user.showcase = None
+    else:
+        new_user.showcase = abc.Item(
+            showcase_info[1], showcase_info[2], showcase_info[3],
+            json.loads(showcase_info[4]), None
+        )
     
     return new_user
 
@@ -114,41 +116,16 @@ def write_user(obj, conn, write=True):
     2. Creates a new cursor and inserts the user into the database
     3. Commits if the write parameter is true
     """
-    if obj.job is None:
-        tmp_job = {"name": None, "xp": 0, "level": 1, "salary": [], "cooldown": []}
-    else:
-        tmp_job = obj.job.cvt_dict()
-
-    if obj.pickaxe is None:
-        tmp_pickaxe = {"name": None, "worth": 0, "speed": 1, "multiplier": 1.0}
-    else:
-        tmp_pickaxe = obj.pickaxe.cvt_dict()
-
-    if obj.pet is None:
-        tmp_pet = {"name": None, "worth": 0, "type": None, "breed": None}
-    else:
-        tmp_pet = obj.pet.cvt_dict()
-
-    if obj.showcase is None:
-        tmp_showcase = {"name": None, "worth": 0, "type": "box_item", "stats": {}}
-    else:
-        tmp_showcase = obj.showcase.cvt_dict()
-
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
         obj.id,
         obj.coins,
         obj.xp,
         obj.level,
         obj.edu_level,
-        json.dumps(tmp_job),
-        json.dumps(tmp_pickaxe),
-        json.dumps(tmp_pet),
         json.dumps(obj.achievements),
-        json.dumps([item.cvt_dict() for item in obj.inventory]),
         obj.multiplier,
         obj.company,
-        json.dumps(tmp_showcase),
         obj.hourly,
         obj.daily,
         obj.partner,
@@ -172,13 +149,8 @@ def set_user_attr(user_id, attr, val, conn, write=True):
     3. Creates a new cursor and sets the value
     4. Commits if the write parameter is true
     """
-    if attr == "inventory":
-        val = json.dumps([item.cvt_dict() for item in val])
-    else:
-        if type(val) == bool:
-            val = str(val)
-        elif type(val) == list or type(val) == dict:
-            val = json.dumps(val)
+    if type(val) == list or type(val) == dict:
+        val = json.dumps(val)
 
     cur = conn.cursor()
     cur.execute(f"UPDATE users SET {attr} = %s WHERE id = %s", (val, user_id))

@@ -8,7 +8,7 @@ pet command
 import asyncio
 import discord_components
 import random
-from Utils import user, message, abc, other
+from Utils import user, subtable, message, abc, other
 from Storage import help_list
 
 name = "pet"
@@ -168,15 +168,14 @@ async def _pet_buy(bot, msg, conn, split_data):
     breed = random.choice(_pets[split_data[2]]["breeds"])
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - _pets[split_data[2]]["cost"], conn, False)
-    user.set_user_attr(msg.author.id, "pet", abc.Pet(
-        def_name,
-        _pets[split_data[2]]["cost"],
-        f"{split_data[2][0].upper()}{split_data[2][1:]}",
+    subtable.new_pet(msg.author.id, abc.Pet(
+        def_name, _pets[split_data[2]]["cost"],
+        f"{split_data[2][0].upper()}{split_data[2][1:].lower()}",
         breed
-    ).cvt_dict(), conn)
+    ), conn)
 
     await message.response_edit(sent_msg, interaction, f"""You bought a pet!
-Your pet is a {breed} ({split_data[2][0].upper()}{split_data[2][1:]})
+Your pet is a {breed} ({split_data[2][0].upper()}{split_data[2][1:].lower()})
 By default is has the name **{def_name}**. But that can be changed with `pet name`""", title="Bought",
         from_reaction=userinfo.settings.reaction_confirm
     )
@@ -214,9 +213,7 @@ async def _pet_sell(bot, msg, conn):
         return
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins + userinfo.pet.worth, conn, False)
-    user.set_user_attr(msg.author.id, "pet", abc.Pet(
-        None, 0, None, None
-    ).cvt_dict(), conn)
+    subtable.remove_pet(msg.author.id, conn)
 
     await message.response_edit(sent_msg, interaction, f"You sold your pet for {userinfo.pet.worth} {emojis.coin}",
         title="Sold", from_reaction=userinfo.settings.reaction_confirm

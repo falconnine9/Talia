@@ -33,6 +33,7 @@ config_file = {
 }
 
 tables = {
+    # Main tables
     "guilds": {
         "id": "BIGINT UNSIGNED NOT NULL",
         "prefix": "MEDIUMTEXT",
@@ -46,14 +47,9 @@ tables = {
         "xp": "INTEGER",
         "level": "INTEGER",
         "edu_level": "INTEGER",
-        "job": "MEDIUMTEXT",
-        "pickaxe": "MEDIUMTEXT",
-        "pet": "MEDIUMTEXT",
         "achievements": "MEDIUMTEXT",
-        "inventory": "MEDIUMTEXT",
         "multiplier": "REAL",
         "company": "MEDIUMTEXT",
-        "showcase": "MEDIUMTEXT",
         "hourly": "INTEGER",
         "daily": "INTEGER",
         "partner": "BIGINT UNSIGNED",
@@ -99,12 +95,56 @@ tables = {
     },
     "log": {
         "id": "BIGINT UNSIGNED NOT NULL",
-        "command": "MEDIUMTEXT",
+        "command": "TINYTEXT",
         "user": "BIGINT UNSIGNED",
         "guild": "BIGINT UNSIGNED",
         "date": "TIMESTAMP",
         "exc_time": "INTEGER UNSIGNED",
         "CONSTRAINT log_pk": "PRIMARY KEY (id)"
+    },
+
+    # Sub tables
+    "job_info": {
+        "id": "BIGINT UNSIGNED NOT NULL",
+        "name": "TINYTEXT",
+        "xp": "INTEGER",
+        "level": "INTEGER",
+        "salary": "MEDIUMTEXT",
+        "cooldown": "MEDIUMTEXT",
+        "CONSTRAINT job_info_pk": "PRIMARY KEY (id)"
+    },
+    "pickaxe_info": {
+        "id": "BIGINT UNSIGNED NOT NULL",
+        "name": "TINYTEXT",
+        "worth": "BIGINT UNSIGNED",
+        "speed": "INTEGER",
+        "multiplier": "REAL",
+        "CONSTRAINT pickaxe_info_pk": "PRIMARY KEY (id)"
+    },
+    "pet_info": {
+        "id": "BIGINT UNSIGNED NOT NULL",
+        "name": "MEDIUMTEXT",
+        "worth": "BIGINT UNSIGNED",
+        "type": "TINYTEXT",
+        "breed": "TINYTEXT",
+        "CONSTRAINT pet_info_pk": "PRIMARY KEY (id)"
+    },
+    "showcase_info": {
+        "id": "BIGINT UNSIGNED NOT NULL",
+        "name": "MEDIUMTEXT",
+        "worth": "BIGINT UNSIGNED",
+        "type": "TINYTEXT",
+        "stats": "MEDIUMTEXT",
+        "CONSTRAINT showcase_info_pk": "PRIMARY KEY (id)"
+    },
+    "items": {
+        "id": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT",
+        "owner": "BIGINT UNSIGNED NOT NULL",
+        "name": "TINYTEXT",
+        "worth": "BIGINT UNSIGNED",
+        "type": "TINYTEXT",
+        "stats": "MEDIUMTEXT",
+        "CONSTRAINT items_pk": "PRIMARY KEY (id)"
     }
 }
 

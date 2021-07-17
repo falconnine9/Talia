@@ -7,7 +7,7 @@ sell command
 """
 import asyncio
 import discord_components
-from Utils import user, message, other
+from Utils import user, subtable, message, other
 from Storage import help_list
 
 name = "sell"
@@ -64,14 +64,13 @@ async def run(bot, msg, conn):
         )
         return
 
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins + userinfo.inventory[item].worth, conn, False)
+    subtable.remove_item(userinfo.inventory[item].id, conn)
+
     await message.response_edit(sent_msg, interaction,
         f"You sold a {userinfo.inventory[item].name} for {userinfo.inventory[item].worth:,} {emojis.coin}", title="Sold",
         from_reaction=userinfo.settings.reaction_confirm
     )
-
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins + userinfo.inventory[item].worth, conn, False)
-    userinfo.inventory.pop(item)
-    user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
 
 
 async def _reaction_confirm(bot, msg, userinfo, item, emojis):

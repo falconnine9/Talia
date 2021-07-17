@@ -6,7 +6,7 @@ mine.py (Commands/Earning)
 mine command
 """
 import random
-from Utils import user, timer, message, abc, other
+from Utils import user, timer, subtable, message, abc, other
 
 name = "mine"
 dm_capable = True
@@ -98,10 +98,7 @@ async def run(bot, msg, conn):
 
     if cooldown_time > 0:
         new_timer = abc.Timer(f"mine.{msg.author.id}", cooldown_time, msg.author.id, None)
-        if artifact_chance == 1:
-            timer.new_timer(new_timer, conn, False)
-        else:
-            timer.new_timer(new_timer, conn)
+        timer.new_timer(new_timer, conn, False)
 
     emojis = other.load_emojis(bot)
     await message.send_message(msg, f"You did some mining in the caves\n+{earned_coins:,} {emojis.coin}\n+{earned_xp:,} XP",
@@ -118,14 +115,10 @@ async def run(bot, msg, conn):
                 item = abc.Item(
                     artifact["name"],
                     random.randint(artifact["worth"][0], artifact["worth"][1]),
-                    "artifact", {}
+                    "artifact", {}, None
                 )
-
-                userinfo.inventory.append(item)
-                user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn, False)
-
+                subtable.new_item(msg.author.id, item, conn, False)
                 await message.send_message(msg, f"You found a {artifact['name']}!")
                 break
 
-    if artifact_chance == 1:
-        conn.commit()
+    conn.commit()

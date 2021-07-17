@@ -113,7 +113,7 @@ async def invest_timer(bot, conn):
             if c_userinfo is not None:
                 if timerinfo.failed:
                     user.set_user_attr(timerinfo.id, "coins",
-                        c_userinfo.coins + (round(timerinfo.coins * (1 - timerinfo.loss))), conn, False
+                        c_userinfo.coins + round(timerinfo.coins * (1 - timerinfo.loss)), conn, False
                     )
                 else:
                     user.set_user_attr(timerinfo.id, "coins",

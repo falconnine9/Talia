@@ -7,7 +7,8 @@ job command
 """
 import asyncio
 import discord_components
-from Utils import user, message, abc, other
+import json
+from Utils import user, subtable, message, abc, other
 from Storage import help_list
 
 name = "job"
@@ -75,7 +76,7 @@ async def run(bot, msg, conn):
     split_data[1] = split_data[1].lower()
 
     if split_data[1] == "join":
-        await _job_join(bot, msg, conn, split_data)
+        await _job_join(msg, conn, split_data)
 
     elif split_data[1] == "quit":
         await _job_quit(bot, msg, conn)
@@ -87,7 +88,7 @@ async def run(bot, msg, conn):
         await message.send_error(msg, f"Unknown operation: {split_data[1]}")
 
 
-async def _job_join(bot, msg, conn, split_data):
+async def _job_join(msg, conn, split_data):
     if len(split_data) < 3:
         await message.invalid_use(msg, help_list.job, "No job given")
         return
@@ -109,11 +110,12 @@ async def _job_join(bot, msg, conn, split_data):
 (Get a higher education level with the `school` command)""")
         return
 
-    user.set_user_attr(msg.author.id, "job", abc.Job(
+    subtable.new_job(msg.author.id, abc.Job(
         _jobs[split_data[2]]["showcase"], 0, 1,
         _jobs[split_data[2]]["salary"],
         _jobs[split_data[2]]["cooldown"]
-    ).cvt_dict(), conn)
+    ), conn)
+
     await message.send_message(msg, f"You joined the {_jobs[split_data[2]]['showcase']} job", title="Joined Job")
 
 
@@ -146,7 +148,7 @@ async def _job_quit(bot, msg, conn):
         )
         return
 
-    user.set_user_attr(msg.author.id, "job", abc.Job(None, 0, 1, [], []).cvt_dict(), conn)
+    subtable.remove_job(msg.author.id, conn)
     await message.response_edit(sent_msg, interaction, "You quit your job", title="Quit Job",
         from_reaction=userinfo.settings.reaction_confirm
     )

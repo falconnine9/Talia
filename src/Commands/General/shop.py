@@ -7,7 +7,7 @@ shop command
 """
 import asyncio
 import discord_components
-from Utils import guild, user, message, abc, other
+from Utils import guild, user, subtable, message, abc, other
 from Storage import help_list
 
 name = "shop"
@@ -84,14 +84,11 @@ async def _shop_buy(bot, msg, conn, split_data):
         )
         return
 
-    userinfo.inventory.append(abc.Item(
-        guildinfo.shop[item]["name"],
-        guildinfo.shop[item]["cost"],
-        "guild_item", {"from": msg.guild.id}
-    ))
-
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - guildinfo.shop[item]["cost"], conn, False)
-    user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)
+    subtable.new_item(msg.author.id, abc.Item(
+        guildinfo.shop[item]["name"], guildinfo.shop[item]["cost"],
+        "guild_item", {"from": msg.guild.id}, None
+    ), conn)
 
     await message.response_edit(sent_msg, interaction,
         f"You bought a {guildinfo.shop[item]['name']} for {guildinfo.shop[item]['cost']} {emojis.coin}",

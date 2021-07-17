@@ -5,7 +5,7 @@ showcase.py (Commands/General)
 
 showcase command
 """
-from Utils import user, message, abc
+from Utils import user, subtable, message, abc
 from Storage import help_list
 
 name = "showcase"
@@ -26,11 +26,8 @@ async def run(bot, msg, conn):
             await message.send_error(msg, "You don't have an item in your showcase")
             return
 
-        userinfo.inventory.append(userinfo.showcase)
-        user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn, False)
-        user.set_user_attr(msg.author.id, "showcase", abc.Item(
-            None, 0, "box_item", {}
-        ).cvt_dict(), conn)
+        subtable.remove_showcase(msg.author.id, conn, False)
+        subtable.new_item(msg.author.id, userinfo.showcase, conn)
 
         await message.send_message(msg, "You removed the item from your showcase", title="Removed")
         return
@@ -48,10 +45,9 @@ async def run(bot, msg, conn):
         return
 
     if userinfo.showcase is not None:
-        userinfo.inventory.append(userinfo.showcase)
+        subtable.new_item(msg.author.id, userinfo.showcase, conn, False)
+
+    subtable.new_showcase(msg.author.id, userinfo.inventory[item], conn, False)
+    subtable.remove_item(userinfo.inventory[item].id, conn)
 
     await message.send_message(msg, f"You put a {userinfo.inventory[item].name} in your showcase", title="Added")
-
-    user.set_user_attr(msg.author.id, "showcase", userinfo.inventory[item].cvt_dict(), conn, False)
-    userinfo.inventory.pop(item)
-    user.set_user_attr(msg.author.id, "inventory", userinfo.inventory, conn)

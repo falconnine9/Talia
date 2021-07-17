@@ -169,25 +169,24 @@ class InvestTimer:
 
 
 class Item:
-    def __init__(self, name, worth, item_type, stats):
+    def __init__(self, name, worth, item_type, stats, id_):
         self.name = name
         self.worth = worth
         self.type = item_type
         self.stats = stats
+        self.id = id_
 
     def cvt_dict(self):
         return {
             "name": self.name,
             "worth": self.worth,
             "type": self.type,
-            "stats": self.stats
+            "stats": self.stats,
+            "id": self.id
         }
 
     def __eq__(self, other):
-        return (
-            self.name == other.name and self.worth == self.worth and
-            self.type == other.type and self.stats == other.stats
-        )
+        return self.id == other.id
 
 
 class Emojis:

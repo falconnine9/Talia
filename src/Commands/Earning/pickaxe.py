@@ -7,7 +7,7 @@ pickaxe command
 """
 import asyncio
 import discord_components
-from Utils import user, message, abc, other
+from Utils import user, subtable, message, abc, other
 from Storage import help_list
 
 name = "pickaxe"
@@ -93,9 +93,7 @@ async def run(bot, msg, conn):
     split_data = msg.content.split(" ")
 
     if len(split_data) < 2:
-        await message.invalid_use(msg,
-            help_list.pickaxe,
-            "No operation given")
+        await message.invalid_use(msg, help_list.pickaxe, "No operation given")
         return
 
     split_data[1] = split_data[1].lower()
@@ -169,16 +167,14 @@ async def _pickaxe_buy(bot, msg, conn, split_data):
         return
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins - _pickaxes[pickaxe_id]["cost"], conn, False)
-    user.set_user_attr(msg.author.id, "pickaxe", abc.Pickaxe(
-        _pickaxes[pickaxe_id]["name"],
-        _pickaxes[pickaxe_id]["cost"],
-        _pickaxes[pickaxe_id]["speed"],
-        _pickaxes[pickaxe_id]["multiplier"]
-    ).cvt_dict(), conn)
+    subtable.new_pickaxe(msg.author.id, abc.Pickaxe(
+        _pickaxes[pickaxe_id]["name"], _pickaxes[pickaxe_id]["cost"],
+        _pickaxes[pickaxe_id]["speed"], _pickaxes[pickaxe_id]["multiplier"]
+    ), conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You bought a {_pickaxes[pickaxe_id]['name']} for {_pickaxes[pickaxe_id]['cost']} {emojis.coin}", title="Bought",
-        from_reaction=userinfo.settings.reaction_confirm
+        f"You bought a {_pickaxes[pickaxe_id]['name']} for {_pickaxes[pickaxe_id]['cost']} {emojis.coin}",
+        title="Bought", from_reaction=userinfo.settings.reaction_confirm
     )
 
 
@@ -217,9 +213,7 @@ async def _pickaxe_sell(bot, msg, conn):
     sell_amount = round(userinfo.pickaxe.worth / 4)
 
     user.set_user_attr(msg.author.id, "coins", userinfo.coins + sell_amount, conn, False)
-    user.set_user_attr(msg.author.id, "pickaxe", abc.Pickaxe(
-        None, 0, 1, 1.0
-    ).cvt_dict(), conn)
+    subtable.remove_pickaxe(msg.author.id, conn)
 
     await message.response_edit(sent_msg, interaction,
         f"You sold your {userinfo.pickaxe.name} for {sell_amount} {emojis.coin}", title="Sold",
