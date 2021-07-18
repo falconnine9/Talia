@@ -9,13 +9,26 @@ import asyncio
 import discord
 import discord_components
 import os
+import threading
 import traceback
-from Routine import init, handle, loop, post_checks
-from Utils import guild, user, message, abc, other
+from Routine import Console, init, handle, loop, post_checks
+from Utils import guild, message, abc, other
 from Service import poll
 
+# This sets each environment variable
+_environ = [
+    "ctl",
+    "mtl", "mtl_a",
+    "etl", "etl_a",
+    "itl", "itl_a",
+    "al"
+]
+for env in _environ:
+    os.environ[env] = "1"
+
+# This will open and print the header text
 with open("header.txt") as header_f:
-    print(header_f.read() + "\n")  # This will open and print the header text
+    print(header_f.read() + "\n")
 
 other.log("Preparing")
 other.log("Initializing configuration file")
@@ -40,6 +53,7 @@ async def on_ready():
 
     1. A success log will be made
     2. Puts each timer into the main loop
+    3. Starts the console thread
     """
     other.log("Ready", "success")
     discord_components.DiscordComponents(bot)
@@ -49,6 +63,9 @@ async def on_ready():
     bot.loop.create_task(loop.edu_timer(bot, conn))
     bot.loop.create_task(loop.invest_timer(bot, conn))
     bot.loop.create_task(loop.activity_loop(bot))
+
+    c_thread = threading.Thread(target=Console.console.run, args=(conn,))
+    c_thread.start()
 
 
 @bot.event
@@ -144,7 +161,7 @@ async def cache_loading_loop():
     3. Places each one into the cache
     """
     cur = conn.cursor()
-    while True:
+    while os.environ["ctl"] == "1":
         cur.execute("SELECT id, prefix FROM guilds")
         all_prefixes = cur.fetchall()
 

@@ -6,6 +6,7 @@ __init__.py (Routine)
 Initialization file for the Routine folder
 """
 from Routine import (
+    Console,
     init,
     handle,
     loop,

@@ -8,6 +8,7 @@ Infinite loops that will run the entire time that the
 """
 import asyncio
 import discord
+import os
 import time
 from Utils import user, message, abc, other
 from Storage import meta
@@ -15,7 +16,7 @@ from Storage import meta
 
 async def main_timer(bot, conn):
     cur = conn.cursor()
-    while True:
+    while os.environ["mtl"] == "1":
         start_time = time.time()
 
         cur.execute("UPDATE timers SET time = time - 1")
@@ -25,7 +26,7 @@ async def main_timer(bot, conn):
         for c_user in completed_users:
             userinfo = user.load_user(c_user[1], conn)
 
-            if userinfo.settings.timernotifs[c_user[0].split(".")[0]]:
+            if userinfo.settings.timernotifs[c_user[0].split(".")[0]] and os.environ["mtl_a"] == "1":
                 bot.loop.create_task(_main_timer_alert(bot, c_user))
 
         cur.execute("DELETE FROM timers WHERE time <= 0")
@@ -54,7 +55,7 @@ async def _main_timer_alert(bot, c_user):
 
 async def edu_timer(bot, conn):
     cur = conn.cursor()
-    while True:
+    while os.environ["etl"] == "1":
         start_time = time.time()
 
         cur.execute("UPDATE edu_timers SET time = time - 1")
@@ -63,7 +64,8 @@ async def edu_timer(bot, conn):
 
         for c_user in completed_users:
             user.set_user_attr(c_user[0], "edu_level", c_user[2], conn, False)
-            bot.loop.create_task(_edu_timer_alert(bot, c_user, conn))
+            if os.environ["etl_a"] == "1":
+                bot.loop.create_task(_edu_timer_alert(bot, c_user, conn))
 
         cur.execute("DELETE FROM edu_timers WHERE time <= 0")
         conn.commit()
@@ -99,7 +101,7 @@ async def _edu_timer_alert(bot, c_user, conn):
 async def invest_timer(bot, conn):
     cur = conn.cursor()
     emojis = other.load_emojis(bot)
-    while True:
+    while os.environ["itl"] == "1":
         start_time = time.time()
 
         cur.execute("UPDATE invest_timers SET time = time - 1")
@@ -119,7 +121,9 @@ async def invest_timer(bot, conn):
                     user.set_user_attr(timerinfo.id, "coins",
                         c_userinfo.coins + round(timerinfo.coins * timerinfo.multiplier), conn, False
                     )
-                bot.loop.create_task(_invest_timer_alert(bot, timerinfo, c_userinfo, emojis))
+
+                if os.environ["itl_a"] == "1":
+                    bot.loop.create_task(_invest_timer_alert(bot, timerinfo, c_userinfo, emojis))
 
         cur.execute("DELETE FROM invest_timers WHERE time <= 0")
         conn.commit()
@@ -159,7 +163,7 @@ async def _invest_timer_alert(bot, timerinfo, c_userinfo, emojis):
 async def activity_loop(bot):
     current_activity = 0
 
-    while True:
+    while os.environ["al"] == "1":
         await asyncio.sleep(600)
 
         if current_activity == 0:

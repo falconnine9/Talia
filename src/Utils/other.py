@@ -57,6 +57,17 @@ def log(info, level="info"):
         logf.write(f"{timestamp} | {prefix} {info}\n")
 
 
+def c_print(info):
+    """
+    Prints out some information with a style
+
+    1. Gets timestamp
+    2. Prints out the info
+    """
+    timestamp = datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+    print(f"{timestamp} | {info}")
+
+
 def load_config():
     """
     Loads information from the configuration file
