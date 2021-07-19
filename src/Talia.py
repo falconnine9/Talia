@@ -5,6 +5,9 @@ Talia.py
 
 Main file for the discord bot
 """
+import time
+load_start = time.time()
+
 import asyncio
 import discord
 import discord_components
@@ -55,7 +58,7 @@ async def on_ready():
     2. Puts each timer into the main loop
     3. Starts the console thread
     """
-    other.log("Ready", "success")
+    other.log(f"Ready ({round(time.time() - load_start, 2)} seconds)", "success")
     discord_components.DiscordComponents(bot)
 
     bot.loop.create_task(cache_loading_loop())

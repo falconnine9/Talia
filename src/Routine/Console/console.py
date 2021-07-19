@@ -7,10 +7,11 @@ Main console file
 """
 import traceback
 from Utils import other
-from Routine.Console import control
+from Routine.Console import control, config
 
 _commands = {
-    "control": control
+    "control": control,
+    "config": config
 }
 
 
