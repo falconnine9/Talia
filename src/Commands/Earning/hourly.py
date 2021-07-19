@@ -12,7 +12,7 @@ name = "hourly"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     hourly_timer = timer.load_timer(f"hourly.{msg.author.id}", conn)
 
     if hourly_timer is not None:

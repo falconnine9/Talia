@@ -10,7 +10,7 @@ import discord
 import os
 import time
 import Commands
-from Utils import guild, user, message, abc, other
+from Utils import guild, user, message, abc
 
 _commands = {
     # General
@@ -157,7 +157,7 @@ def verify_user(msg, conn):
     return False
 
 
-async def mentioned_users(bot, msg, conn):
+async def mentioned_users(args, bot, msg, conn):
     """
     Adds all mentioned users in a message to the
      database
@@ -167,15 +167,12 @@ async def mentioned_users(bot, msg, conn):
      user ID
     3. Checks all the mentions of users
     """
-    split_data = msg.content.split(" ")
     ret_val = False
 
-    for arg in [arg for arg in split_data if arg.isdigit()]:
+    for arg in [arg for arg in args if arg.isdigit()]:
         try:
             mentioned = await user.load_user_obj(bot, int(arg))
-        except discord.NotFound:
-            continue
-        except discord.HTTPException:
+        except (discord.NotFound, discord.HTTPException):
             continue
 
         mentioned_userinfo = user.load_user(mentioned.id, conn)
@@ -194,7 +191,7 @@ async def mentioned_users(bot, msg, conn):
     return ret_val
 
 
-async def command(bot, msg, conn, full_logging):
+async def command(args, bot, msg, conn):
     """
     Ran by the main Talia.py file when a command
      is given
@@ -205,20 +202,19 @@ async def command(bot, msg, conn, full_logging):
     3. If full logging is enabled, it will log the
      command that was run
     """
-    split_data = msg.content.split(" ")
-    split_data[0] = split_data[0].lower()
+    args[0] = args[0].lower()
 
     if msg.guild is None:
-        if split_data[0] in _commands:
-            command_ = _commands[split_data[0]]
+        if args[0] in _commands:
+            command_ = _commands[args[0]]
 
             if not command_.dm_capable:
                 await message.send_error(msg, "This command can only be run in servers")
                 return
 
         else:
-            if split_data[0] in _command_alias:
-                command_ = _command_alias[split_data[0]]
+            if args[0] in _command_alias:
+                command_ = _command_alias[args[0]]
 
                 if not command_.dm_capable:
                     await message.send_error(msg, "This command can only be run in servers")
@@ -227,18 +223,18 @@ async def command(bot, msg, conn, full_logging):
                 return
 
     else:
-        if split_data[0] in _commands:
-            command_ = _commands[split_data[0]]
+        if args[0] in _commands:
+            command_ = _commands[args[0]]
         else:
-            if split_data[0] in _command_alias:
-                command_ = _command_alias[split_data[0]]
+            if args[0] in _command_alias:
+                command_ = _command_alias[args[0]]
             else:
                 return
 
     start_time = time.time()
-    await command_.run(bot, msg, conn)
+    await command_.run(args, bot, msg, conn)
 
-    if full_logging:
+    if os.environ["full_logging"]:
         cur = conn.cursor()
         cur.execute("SELECT MAX(id) FROM log")
         max_id = cur.fetchone()
@@ -248,14 +244,14 @@ async def command(bot, msg, conn, full_logging):
 
         if msg.guild is None:
             cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s, %s)", (
-                max_id[0] + 1, split_data[0],
+                max_id[0] + 1, args[0],
                 msg.author.id, None,
                 datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                 round((time.time() - start_time) * 1000)
             ))
         else:
             cur.execute("INSERT INTO log VALUES (%s, %s, %s, %s, %s, %s)", (
-                max_id[0] + 1, split_data[0],
+                max_id[0] + 1, args[0],
                 msg.author.id, msg.guild.id,
                 datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                 round((time.time() - start_time) * 1000)

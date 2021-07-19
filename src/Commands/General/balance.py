@@ -18,7 +18,7 @@ _no_coins = [
 ]
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
     emojis = other.load_emojis(bot)
 

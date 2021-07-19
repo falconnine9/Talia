@@ -16,35 +16,33 @@ name = "company"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.company, "No operation given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "create":
-        await _company_create(msg, conn, split_data)
-    elif split_data[1] == "leave":
+    if args[1] == "create":
+        await _company_create(msg, conn, args)
+    elif args[1] == "leave":
         await _company_leave(msg, conn)
-    elif split_data[1] == "invite":
-        await _company_invite(bot, msg, conn, split_data)
-    elif split_data[1] == "kick":
-        await _company_kick(bot, msg, conn, split_data)
-    elif split_data[1] == "disband":
+    elif args[1] == "invite":
+        await _company_invite(bot, msg, conn, args)
+    elif args[1] == "kick":
+        await _company_kick(bot, msg, conn, args)
+    elif args[1] == "disband":
         await _company_disband(bot, msg, conn)
-    elif split_data[1] == "info":
-        await _company_info(bot, msg, conn, split_data)
-    elif split_data[1] == "upgrade":
+    elif args[1] == "info":
+        await _company_info(bot, msg, conn, args)
+    elif args[1] == "upgrade":
         await _company_upgrade(bot, msg, conn)
     else:
-        await message.send_error(msg, f"Unknown operation: {split_data[1]}")
+        await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _company_create(msg, conn, split_data):
-    if len(split_data) < 3:
+async def _company_create(msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.company, "No company name given")
         return
 
@@ -54,7 +52,7 @@ async def _company_create(msg, conn, split_data):
         await message.send_error(msg, "You're already in a company")
         return
 
-    company_name = " ".join(split_data[2:])
+    company_name = " ".join(args[2:])
 
     if len(company_name) > 64:
         await message.send_error(msg, "The company name can't be longer than 64 characters")
@@ -98,8 +96,8 @@ async def _company_leave(msg, conn):
     await message.send_message(msg, f"You left {companyinfo.name}")
 
 
-async def _company_invite(bot, msg, conn, split_data):
-    if len(split_data) < 3:
+async def _company_invite(bot, msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.company, "No user given")
         return
 
@@ -119,10 +117,10 @@ async def _company_invite(bot, msg, conn, split_data):
         await message.send_error(msg, "You've reached the limit of 50 company members")
         return
 
-    split_data[2] = split_data[2].replace("<@", "").replace("!", "").replace(">", "")
+    args[2] = args[2].replace("<@", "").replace("!", "").replace(">", "")
 
     try:
-        person_id = int(split_data[2])
+        person_id = int(args[2])
     except ValueError:
         await message.send_error(msg, "Invalid user")
         return
@@ -132,7 +130,7 @@ async def _company_invite(bot, msg, conn, split_data):
         return
     else:
         try:
-            person = await user.load_user_obj(bot, int(split_data[2]))
+            person = await user.load_user_obj(bot, int(args[2]))
         except discord.NotFound:
             await message.send_error(msg, "I can't find that person")
             return
@@ -280,8 +278,8 @@ async def _company_invite(bot, msg, conn, split_data):
             pass
 
 
-async def _company_kick(bot, msg, conn, split_data):
-    if len(split_data) < 3:
+async def _company_kick(bot, msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.company, "No user given")
         return
 
@@ -298,7 +296,7 @@ async def _company_kick(bot, msg, conn, split_data):
         return
 
     try:
-        person_id = int(split_data[2])
+        person_id = int(args[2])
     except ValueError:
         await message.send_error(msg, "Invalid user")
         return
@@ -308,7 +306,7 @@ async def _company_kick(bot, msg, conn, split_data):
         return
     else:
         try:
-            person = await user.load_user_obj(bot, int(split_data[1]))
+            person = await user.load_user_obj(bot, int(args[1]))
         except discord.NotFound:
             await message.send_error(msg, "I can't find that person")
             return
@@ -384,17 +382,17 @@ async def _company_disband(bot, msg, conn):
     )
 
 
-async def _company_info(bot, msg, conn, split_data):
-    if len(split_data) < 3:
+async def _company_info(bot, msg, conn, args):
+    if len(args) < 3:
         userinfo = user.load_user(msg.author.id, conn)
 
         if userinfo.company is None:
             await message.send_error(msg, "You're not in a company")
             return
 
-        split_data.append(userinfo.company)
+        args.append(userinfo.company)
 
-    companyinfo = company.load_company(split_data[2].lower(), conn)
+    companyinfo = company.load_company(args[2].lower(), conn)
 
     if companyinfo is None:
         await message.send_error(msg, "I can't find that company")

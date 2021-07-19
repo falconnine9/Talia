@@ -190,30 +190,28 @@ _boxes = {
 }
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.box, "No operation given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "buy":
-        await _box_buy(bot, msg, conn, split_data)
-    elif split_data[1] == "list":
+    if args[1] == "buy":
+        await _box_buy(bot, msg, conn, args)
+    elif args[1] == "list":
         await _box_list(bot, msg)
     else:
         await message.send_error(msg, "Unknown operation")
 
 
-async def _box_buy(bot, msg, conn, split_data):
-    if len(split_data) < 3:
+async def _box_buy(bot, msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.box, "No box given")
         return
 
     try:
-        box_id = int(split_data[2])
+        box_id = int(args[2])
     except ValueError:
         await message.send_error(msg, "Invalid box ID")
         return

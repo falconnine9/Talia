@@ -14,30 +14,28 @@ name = "shop"
 dm_capable = False
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.shop, "No operation given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "buy":
-        await _shop_buy(bot, msg, conn, split_data)
-    elif split_data[1] == "list":
+    if args[1] == "buy":
+        await _shop_buy(bot, msg, conn, args)
+    elif args[1] == "list":
         await _shop_list(bot, msg, conn)
     else:
-        await message.send_error(msg, f"Unknown operation: {split_data[1]}")
+        await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _shop_buy(bot, msg, conn, split_data):
-    if len(split_data) < 3:
+async def _shop_buy(bot, msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.shop, "No item given")
         return
 
     try:
-        item = int(split_data[2]) - 1
+        item = int(args[2]) - 1
     except ValueError:
         await message.send_error(msg, "Invalid item ID")
         return

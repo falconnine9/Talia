@@ -11,5 +11,5 @@ name = "heist"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     await message.send_error(msg, "This command is still in development")

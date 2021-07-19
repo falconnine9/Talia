@@ -12,7 +12,7 @@ name = "ping"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     start_time = time.time()
     conn.ping(reconnect=False, attempts=1, delay=0)
     end_time = time.time()

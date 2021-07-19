@@ -12,30 +12,28 @@ name = "resetinfo"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     if msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
 
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+    if len(args) < 2:
         await message.send_error(msg, "No scope given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
     cur = conn.cursor()
 
-    if split_data[1] == "guild":
+    if args[1] == "guild":
         cur.execute("DELETE FROM guilds WHERE id = %s", (msg.guild.id,))
         conn.commit()
         await message.send_message(msg, "All information for this guild has been cleared")
 
     else:
-        split_data[1] = split_data[1].replace("<@", "").replace("!", "").replace(">", "")
+        args[1] = args[1].replace("<@", "").replace("!", "").replace(">", "")
 
         try:
-            person = await user.load_user_obj(bot, int(split_data[1]))
+            person = await user.load_user_obj(bot, int(args[1]))
         except ValueError:
             await message.send_error(msg, "Invalid user")
             return

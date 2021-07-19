@@ -12,25 +12,23 @@ name = "color"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.color, "No red value given")
         return
 
-    if len(split_data) < 3:
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.color, "No green value given")
         return
 
-    if len(split_data) < 4:
+    if len(args) < 4:
         await message.invalid_use(msg, help_list.color, "No blue value given")
         return
 
     try:
-        r = int(split_data[1])
-        g = int(split_data[2])
-        b = int(split_data[3])
+        r = int(args[1])
+        g = int(args[2])
+        b = int(args[3])
     except ValueError:
         await message.send_error(msg, "Each color value must be a number between 0-255")
         return

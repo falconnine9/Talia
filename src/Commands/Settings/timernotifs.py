@@ -15,12 +15,13 @@ name = "timernotifs"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.settings.reaction_confirm:
-        await message.send_error(msg, f"""You need buttons enabled to run this command
-Buttons can be enabled with the `button` command""")
+        await message.send_error(msg,
+            f"You need buttons enabled to run this command\nButtons can be enabled with the `button` command"
+        )
         return
 
     components = []

@@ -12,14 +12,12 @@ name = "showcase"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.showcase, "No item given")
         return
 
-    if split_data[1].lower() == "remove":
+    if args[1].lower() == "remove":
         userinfo = user.load_user(msg.author.id, conn)
 
         if userinfo.showcase is None:
@@ -33,7 +31,7 @@ async def run(bot, msg, conn):
         return
 
     try:
-        item = int(split_data[1]) - 1
+        item = int(args[1]) - 1
     except ValueError:
         await message.send_error(msg, "Invalid item ID")
         return

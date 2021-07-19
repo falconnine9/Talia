@@ -32,17 +32,15 @@ _values = {
 }
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.blackjack, "No bet given")
         return
 
-    split_data[1] = split_data[1].replace(",", "")
+    args[1] = args[1].replace(",", "")
 
     try:
-        bet = int(split_data[1])
+        bet = int(args[1])
     except ValueError:
         await message.send_error(msg, "Invalid bet")
         return

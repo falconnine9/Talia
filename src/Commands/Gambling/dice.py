@@ -14,33 +14,31 @@ name = "dice"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.dice, "No side given")
         return
 
-    if len(split_data) < 2:
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.dice, "No bet given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
     try:
-        side = int(split_data[1])
+        side = int(args[1])
     except ValueError:
-        await message.send_error(msg, f"Unknown side: {split_data[1]}\n(Must be a number between 1-6)")
+        await message.send_error(msg, f"Unknown side: {args[1]}\n(Must be a number between 1-6)")
         return
 
     if side < 1 or side > 6:
-        await message.send_error(msg, f"Unknown side: {split_data[1]}\n(Must be a number between 1-6)")
+        await message.send_error(msg, f"Unknown side: {args[1]}\n(Must be a number between 1-6)")
         return
 
-    split_data[2] = split_data[2].replace(",", "")
+    args[2] = args[2].replace(",", "")
 
     try:
-        bet = int(split_data[2])
+        bet = int(args[2])
     except ValueError:
         await message.send_error(msg, "Invalid bet")
         return

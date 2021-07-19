@@ -89,53 +89,51 @@ _default_names = [
 ]
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.pet, "No operation given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "buy":
-        await _pet_buy(bot, msg, conn, split_data)
-    elif split_data[1] == "sell":
+    if args[1] == "buy":
+        await _pet_buy(bot, msg, conn, args)
+    elif args[1] == "sell":
         await _pet_sell(bot, msg, conn)
-    elif split_data[1] == "list":
+    elif args[1] == "list":
         await _pet_list(bot, msg)
-    elif split_data[1] == "name":
-        await _pet_name(msg, conn, split_data)
+    elif args[1] == "name":
+        await _pet_name(msg, conn, args)
     else:
-        await message.send_error(msg, f"Unknown operation: {split_data[1]}")
+        await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _pet_buy(bot, msg, conn, split_data):
-    if len(split_data) < 3:
+async def _pet_buy(bot, msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.pet, "No pet name given")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
-    split_data[2] = split_data[2].lower()
+    args[2] = args[2].lower()
 
     if userinfo.pet is not None:
         await message.send_error(msg, "You already have a pet\nSell it to buy a new one")
         return
 
-    if split_data[2] not in _pets:
+    if args[2] not in _pets:
         await message.send_error(msg, "No pet found")
         return
 
-    if _pets[split_data[2]]["cost"] > userinfo.coins:
+    if _pets[args[2]]["cost"] > userinfo.coins:
         await message.send_error(msg, "You don't have enough coins to buy this pet")
         return
 
     emojis = other.load_emojis(bot)
 
     if userinfo.settings.reaction_confirm:
-        sent_msg, interaction, result = await _pet_buy_reaction_confirm(bot, msg, split_data, emojis)
+        sent_msg, interaction, result = await _pet_buy_reaction_confirm(bot, msg, args, emojis)
     else:
-        sent_msg, interaction, result = await _pet_buy_button_confirm(bot, msg, split_data, emojis)
+        sent_msg, interaction, result = await _pet_buy_button_confirm(bot, msg, args, emojis)
 
     if result is None:
         return
@@ -154,24 +152,24 @@ async def _pet_buy(bot, msg, conn, split_data):
         )
         return
 
-    if _pets[split_data[2]]["cost"] > userinfo.coins:
+    if _pets[args[2]]["cost"] > userinfo.coins:
         await message.response_send(sent_msg, interaction, "You no longer have enough coins to buy this pet",
             from_reaction=userinfo.settings.reaction_confirm
         )
         return
 
     def_name = random.choice(_default_names)
-    breed = random.choice(_pets[split_data[2]]["breeds"])
+    breed = random.choice(_pets[args[2]]["breeds"])
 
-    user.set_user_attr(msg.author.id, "coins", userinfo.coins - _pets[split_data[2]]["cost"], conn, False)
+    user.set_user_attr(msg.author.id, "coins", userinfo.coins - _pets[args[2]]["cost"], conn, False)
     subtable.new_pet(msg.author.id, abc.Pet(
-        def_name, _pets[split_data[2]]["cost"],
-        f"{split_data[2][0].upper()}{split_data[2][1:].lower()}",
+        def_name, _pets[args[2]]["cost"],
+        f"{args[2][0].upper()}{args[2][1:].lower()}",
         breed
     ), conn)
 
     await message.response_edit(sent_msg, interaction, f"""You bought a pet!
-Your pet is a {breed} ({split_data[2][0].upper()}{split_data[2][1:].lower()})
+Your pet is a {breed} ({args[2][0].upper()}{args[2][1:].lower()})
 By default is has the name **{def_name}**. But that can be changed with `pet name`""", title="Bought",
         from_reaction=userinfo.settings.reaction_confirm
     )
@@ -226,8 +224,8 @@ async def _pet_list(bot, msg):
     await message.send_message(msg, title="Pets", fields=fields, footer="(Pets are still in beta phase)")
 
 
-async def _pet_name(msg, conn, split_data):
-    if len(split_data) < 3:
+async def _pet_name(msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.pet, "No pet name given")
         return
 
@@ -237,7 +235,7 @@ async def _pet_name(msg, conn, split_data):
         await message.send_error(msg, "You don't have a pet")
         return
 
-    pet_name = " ".join(split_data[2:])
+    pet_name = " ".join(args[2:])
 
     if len(pet_name) > 32:
         await message.send_error(msg, "The name must be less than 32 characters")
@@ -251,9 +249,9 @@ async def _pet_name(msg, conn, split_data):
     await message.send_message(msg, f"You changed your pet's name to **{pet_name}**", title="Renamed")
 
 
-async def _pet_buy_reaction_confirm(bot, msg, split_data, emojis):
+async def _pet_buy_reaction_confirm(bot, msg, args, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {_pets[split_data[2]]['cost']:,} {emojis.coin}",
+        f"Are you sure you want to buy a {args[2][0].upper()}{args[2][1:]} for {_pets[args[2]]['cost']:,} {emojis.coin}",
         title="Buying.."
     )
 
@@ -284,9 +282,9 @@ async def _pet_buy_reaction_confirm(bot, msg, split_data, emojis):
         return sent_msg, None, "cancel"
 
 
-async def _pet_buy_button_confirm(bot, msg, split_data, emojis):
+async def _pet_buy_button_confirm(bot, msg, args, emojis):
     sent_msg = await message.send_message(msg,
-        f"Are you sure you want to buy a {split_data[2][0].upper()}{split_data[2][1:]} for {_pets[split_data[2]]['cost']:,} {emojis.coin}",
+        f"Are you sure you want to buy a {args[2][0].upper()}{args[2][1:]} for {_pets[args[2]]['cost']:,} {emojis.coin}",
         title="Buying..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

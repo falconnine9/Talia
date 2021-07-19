@@ -12,7 +12,7 @@ name = "daily"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     daily_timer = timer.load_timer(f"daily.{msg.author.id}", conn)
 
     if daily_timer is not None:

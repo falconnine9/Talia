@@ -13,18 +13,16 @@ name = "prefix"
 dm_capable = False
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     if not msg.author.guild_permissions.manage_guild and msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
 
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.prefix, "No new prefix given")
         return
 
-    new_prefix = " ".join(split_data[1:])
+    new_prefix = " ".join(args[1:])
 
     if len(new_prefix) > 64:
         await message.send_error(msg, "The prefix can't be longer than 64 characters")

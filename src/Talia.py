@@ -132,15 +132,15 @@ async def on_message(msg):
         if msg.channel.id in guildinfo.disabled_channels:
             return
 
+    args = msg.content.split(" ")
     user_changed = handle.verify_user(msg, conn)
-    mentioned_changed = await handle.mentioned_users(bot, msg, conn)
+    mentioned_changed = await handle.mentioned_users(args, bot, msg, conn)
 
     if guild_changed or user_changed or mentioned_changed:
         conn.commit()
 
     try:
-        await handle.command(bot, msg, conn, full_logging)
-
+        await handle.command(args, bot, msg, conn)
     except Exception as errmsg:
         exc_info = traceback.format_exc()
         await message.send_error(msg,

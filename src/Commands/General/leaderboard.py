@@ -13,26 +13,24 @@ name = "leaderboard"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.leaderboard, "No lb given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "coins":
+    if args[1] == "coins":
         await _lb_coins(bot, msg, conn)
-    elif split_data[1] == "level":
+    elif args[1] == "level":
         await _lb_level(bot, msg, conn)
-    elif split_data[1] == "multiplier":
+    elif args[1] == "multiplier":
         await _lb_multiplier(bot, msg, conn)
-    elif split_data[1] == "hourly":
+    elif args[1] == "hourly":
         await _lb_hourly(bot, msg, conn)
-    elif split_data[1] == "daily":
+    elif args[1] == "daily":
         await _lb_daily(bot, msg, conn)
-    elif split_data[1] == "fortune":
+    elif args[1] == "fortune":
         await _lb_fortune(bot, msg, conn)
     else:
         await message.send_error(msg, f"Unknown lb\ncoins, level, multiplier, hourly, daily, fortune")

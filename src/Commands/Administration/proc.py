@@ -13,7 +13,7 @@ name = "proc"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     total_cpu = round(psutil.cpu_percent(), 1)
     vm_memory = psutil.virtual_memory()
     total_memory = round((vm_memory.total - vm_memory.available) / vm_memory.total, 1)

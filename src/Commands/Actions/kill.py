@@ -27,17 +27,15 @@ _suffix = [
 ]
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.kill, "No user given")
         return
 
-    split_data[1] = split_data[1].replace("<@", "").replace("!", "").replace(">", "")
+    args[1] = args[1].replace("<@", "").replace("!", "").replace(">", "")
 
     try:
-        person_id = int(split_data[1])
+        person_id = int(args[1])
     except ValueError:
         await message.send_error(msg, "Invalid user")
         return
@@ -47,7 +45,7 @@ async def run(bot, msg, conn):
         return
     else:
         try:
-            person = await user.load_user_obj(bot, int(split_data[1]))
+            person = await user.load_user_obj(bot, int(args[1]))
         except discord.NotFound:
             await message.send_error(msg, "I can't find that person")
             return

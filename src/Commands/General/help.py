@@ -83,14 +83,12 @@ _category_emojis = {
 }
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await _category_list(bot, msg)
 
     else:
-        choice = " ".join(split_data[1:]).lower()
+        choice = " ".join(args[1:]).lower()
 
         if choice in _help_info.keys():
             await _command_list(bot, msg, choice)
@@ -105,7 +103,9 @@ async def run(bot, msg, conn):
 
 
 async def _category_list(bot, msg):
-    cat_list = "\n".join([f"**{category[0].upper()}{category[1:]}** {_category_emojis[category]}" for category in _help_info.keys()])
+    cat_list = "\n".join(
+        [f"**{category[0].upper()}{category[1:]}** {_category_emojis[category]}" for category in _help_info.keys()]
+    )
     links = other.load_config().links
 
     if len(links) == 0:

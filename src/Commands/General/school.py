@@ -36,7 +36,7 @@ _edu_levels = {
 }
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     school_timer = timer.load_edu_timer(msg.author.id, conn)
 
     if school_timer is not None:

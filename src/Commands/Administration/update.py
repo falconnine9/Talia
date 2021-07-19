@@ -18,14 +18,12 @@ _required = [
 ]
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     if msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
 
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+    if len(args) < 2:
         await message.send_error(msg, "No announcement channel given")
         return
 
@@ -46,10 +44,10 @@ async def run(bot, msg, conn):
             await message.send_error(msg, f"Required element \"{element}\" not found in json file")
             return
 
-    split_data[1] = split_data[1].replace("<#", "").replace(">", "")
+    args[1] = args[1].replace("<#", "").replace(">", "")
 
     try:
-        channel = await other.load_channel_obj(bot, int(split_data[1]))
+        channel = await other.load_channel_obj(bot, int(args[1]))
     except ValueError:
         await message.send_error(msg, "Invalid channel")
         return

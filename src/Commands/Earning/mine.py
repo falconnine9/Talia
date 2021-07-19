@@ -70,7 +70,7 @@ _artifacts = [
 ]
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     mining_timer = timer.load_timer(f"mine.{msg.author.id}", conn)
 
     if mining_timer is not None:

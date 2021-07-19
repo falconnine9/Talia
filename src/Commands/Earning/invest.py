@@ -32,7 +32,7 @@ _loss_amounts = {
 }  # Random number in between the 2 in the list
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     invest_timer = timer.load_invest_timer(msg.author.id, conn)
 
     if invest_timer is not None:
@@ -41,20 +41,18 @@ async def run(bot, msg, conn):
         )
         return
 
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.invest, "No amount given")
         return
 
-    if len(split_data) < 3:
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.invest, "No time given")
         return
 
-    split_data[1] = split_data[1].replace(",", "")
+    args[1] = args[1].replace(",", "")
 
     try:
-        amount = int(split_data[1])
+        amount = int(args[1])
     except ValueError:
         await message.send_error(msg, "Invalid amount")
         return
@@ -71,18 +69,18 @@ async def run(bot, msg, conn):
         await message.send_error(msg, f"You don't have enough coins to invest {amount:,} {emojis.coin}")
         return
 
-    split_data[2] = split_data[2].lower()
+    args[2] = args[2].lower()
 
-    if split_data[2] not in _times:
+    if args[2] not in _times:
         await message.send_error(msg, f"""Invalid time
 `short` - Short term, high reward but high risk
 `long` - Long term, small reward and small risk""")
         return
 
     if userinfo.settings.reaction_confirm:
-        sent_msg, interaction, result = await _reaction_confirm(bot, msg, split_data, amount, emojis)
+        sent_msg, interaction, result = await _reaction_confirm(bot, msg, args, amount, emojis)
     else:
-        sent_msg, interaction, result = await _button_confirm(bot, msg, split_data, amount, emojis)
+        sent_msg, interaction, result = await _button_confirm(bot, msg, args, amount, emojis)
 
     if result is None:
         return
@@ -109,14 +107,15 @@ async def run(bot, msg, conn):
         )
         return
 
-    random_time = random.randint(_times[split_data[2]][0], _times[split_data[2]][1]) * 60 * 60
-    random_multi = round(random.uniform(_multipliers[split_data[2]][0], _multipliers[split_data[2]][1]), 1)
+    # Picks a random number from each of the lists above
+    random_time = random.randint(_times[args[2]][0], _times[args[2]][1]) * 60 * 60
+    random_multi = round(random.uniform(_multipliers[args[2]][0], _multipliers[args[2]][1]), 1)
     failed = random.random() < round(
-        random.uniform(_failed_chances[split_data[2]][0], _failed_chances[split_data[2]][1]), 1
+        random.uniform(_failed_chances[args[2]][0], _failed_chances[args[2]][1]), 1
     )
 
     if failed:
-        loss = round(random.uniform(_loss_amounts[split_data[2]][0], _loss_amounts[split_data[2]][1]), 2)
+        loss = round(random.uniform(_loss_amounts[args[2]][0], _loss_amounts[args[2]][1]), 2)
     else:
         loss = None
 
@@ -131,11 +130,11 @@ async def run(bot, msg, conn):
     )
 
 
-async def _reaction_confirm(bot, msg, split_data, amount, emojis):
+async def _reaction_confirm(bot, msg, args, amount, emojis):
     sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount:,} {emojis.coin}
 
-It will take in between {_times[split_data[2]][0]}h to {_times[split_data[2]][1]}h to complete
-And you will earn in between {round(_multipliers[split_data[2]][0] * amount):,} {emojis.coin} to {round(_multipliers[split_data[2]][1] * amount):,} {emojis.coin}""",
+It will take in between {_times[args[2]][0]}h to {_times[args[2]][1]}h to complete
+And you will earn in between {round(_multipliers[args[2]][0] * amount):,} {emojis.coin} to {round(_multipliers[args[2]][1] * amount):,} {emojis.coin}""",
         title="Investing.."
     )
 
@@ -166,11 +165,11 @@ And you will earn in between {round(_multipliers[split_data[2]][0] * amount):,} 
         return sent_msg, None, "cancel"
 
 
-async def _button_confirm(bot, msg, split_data, amount, emojis):
+async def _button_confirm(bot, msg, args, amount, emojis):
     sent_msg = await message.send_message(msg, f"""Are you sure you want to invest {amount:,} {emojis.coin}
 
-It will take in between {_times[split_data[2]][0]}h to {_times[split_data[2]][1]}h to complete
-And you will earn in between {(round(_multipliers[split_data[2]][0] * amount)):,} {emojis.coin} to {(round(_multipliers[split_data[2]][1] * amount)):,} {emojis.coin}""",
+It will take in between {_times[args[2]][0]}h to {_times[args[2]][1]}h to complete
+And you will earn in between {(round(_multipliers[args[2]][0] * amount)):,} {emojis.coin} to {(round(_multipliers[args[2]][1] * amount)):,} {emojis.coin}""",
         title="Investing..", components=[[
             discord_components.Button(label="Confirm", style=discord_components.ButtonStyle.green),
             discord_components.Button(label="Cancel", style=discord_components.ButtonStyle.red)

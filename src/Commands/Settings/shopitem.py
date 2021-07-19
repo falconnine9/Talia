@@ -13,33 +13,31 @@ name = "shopitem"
 dm_capable = False
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     if not msg.author.guild_permissions.manage_guild and msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
 
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.shopitem, "No operation given")
         return
 
-    if len(split_data) < 3:
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.shopitem, "No name/id given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "create":
-        await _shopitem_create(bot, msg, conn, split_data)
-    elif split_data[1] == "remove":
-        await _shopitem_remove(msg, conn, split_data)
+    if args[1] == "create":
+        await _shopitem_create(bot, msg, conn, args)
+    elif args[1] == "remove":
+        await _shopitem_remove(msg, conn, args)
     else:
-        await message.send_error(msg, f"Unknown operation: {split_data[1]}")
+        await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _shopitem_create(bot, msg, conn, split_data):
-    item_name = " ".join(split_data[2:])
+async def _shopitem_create(bot, msg, conn, args):
+    item_name = " ".join(args[2:])
 
     if len(item_name) > 32:
         await message.send_error(msg, "The item name needs to be less than 32 characters")
@@ -111,9 +109,9 @@ Cost: None
 Cost: {cost:,} {emojis.coin}""", title="Item created")
 
 
-async def _shopitem_remove(msg, conn, split_data):
+async def _shopitem_remove(msg, conn, args):
     try:
-        item = int(split_data[2]) - 1
+        item = int(args[2]) - 1
     except ValueError:
         await message.send_error(msg, "Invalid item ID")
         return

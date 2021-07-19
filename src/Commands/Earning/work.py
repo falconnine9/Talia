@@ -12,7 +12,7 @@ name = "work"
 dm_capable = True
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.job is None:

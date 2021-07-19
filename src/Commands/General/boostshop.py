@@ -21,51 +21,49 @@ _boosts = {
 }
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.boostshop, "No operation given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "buy":
-        await _boostshop_buy(bot, msg, conn, split_data)
-    elif split_data[1] == "list":
+    if args[1] == "buy":
+        await _boostshop_buy(bot, msg, conn, args)
+    elif args[1] == "list":
         await _boostshop_list(bot, msg, conn)
     else:
-        await message.send_error(msg, f"Unknown operation: {split_data[1]}")
+        await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _boostshop_buy(bot, msg, conn, split_data):
-    if len(split_data) < 3:
+async def _boostshop_buy(bot, msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.boostshop, "No boost given")
         return
 
-    split_data[2] = split_data[2].lower()
+    args[2] = args[2].lower()
 
-    if split_data[2] not in _boosts.keys():
-        await message.send_error(msg, f"There's no boost in the shop named \"{split_data[2]}\"")
+    if args[2] not in _boosts.keys():
+        await message.send_error(msg, f"There's no boost in the shop named \"{args[2]}\"")
         return
 
     userinfo = user.load_user(msg.author.id, conn)
 
-    if split_data[2] == "multiplier":
+    if args[2] == "multiplier":
         cost = userinfo.shop_info.multiplier_cost
     else:
         cost = 0
 
     if cost > userinfo.coins:
-        await message.send_error(msg, f"You don't have enough coins to buy a {_boosts[split_data[2]]['name']} boost")
+        await message.send_error(msg, f"You don't have enough coins to buy a {_boosts[args[2]]['name']} boost")
         return
 
     emojis = other.load_emojis(bot)
 
     if userinfo.settings.reaction_confirm:
-        sent_msg, interaction, result = await _reaction_confirm(bot, msg, split_data[2], cost, emojis)
+        sent_msg, interaction, result = await _reaction_confirm(bot, msg, args[2], cost, emojis)
     else:
-        sent_msg, interaction, result = await _button_confirm(bot, msg, split_data[2], cost, emojis)
+        sent_msg, interaction, result = await _button_confirm(bot, msg, args[2], cost, emojis)
 
     if result is None:
         return
@@ -78,7 +76,7 @@ async def _boostshop_buy(bot, msg, conn, split_data):
 
     userinfo = user.load_user(msg.author.id, conn)
 
-    if split_data[2] == "multiplier":
+    if args[2] == "multiplier":
         cost = userinfo.shop_info.multiplier_cost
     else:
         cost = 0
@@ -89,7 +87,7 @@ async def _boostshop_buy(bot, msg, conn, split_data):
         )
         return
 
-    if split_data[2] == "multiplier":
+    if args[2] == "multiplier":
         userinfo.shop_info.multiplier_cost *= 2
         user.set_user_attr(msg.author.id, "multiplier", round(userinfo.multiplier + 0.1, 1), conn, False)
 
@@ -97,7 +95,7 @@ async def _boostshop_buy(bot, msg, conn, split_data):
     user.set_user_attr(msg.author.id, "shop_info", userinfo.shop_info.cvt_dict(), conn)
 
     await message.response_edit(sent_msg, interaction,
-        f"You bought a {_boosts[split_data[2]]['name']} boost for {cost:,} {emojis.coin}", title="Bought",
+        f"You bought a {_boosts[args[2]]['name']} boost for {cost:,} {emojis.coin}", title="Bought",
         from_reaction=userinfo.settings.reaction_confirm
     )
 

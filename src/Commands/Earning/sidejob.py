@@ -25,7 +25,7 @@ _job_messages = [
 ]
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     sidejob_timer = timer.load_timer(f"sidejob.{msg.author.id}", conn)
 
     if sidejob_timer is not None:

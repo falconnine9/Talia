@@ -66,27 +66,25 @@ _edu_levels = {
 }
 
 
-async def run(bot, msg, conn):
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+async def run(args, bot, msg, conn):
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.job, "No operation given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "join":
-        await _job_join(msg, conn, split_data)
-    elif split_data[1] == "quit":
+    if args[1] == "join":
+        await _job_join(msg, conn, args)
+    elif args[1] == "quit":
         await _job_quit(bot, msg, conn)
-    elif split_data[1] == "list":
+    elif args[1] == "list":
         await _job_list(bot, msg)
     else:
-        await message.send_error(msg, f"Unknown operation: {split_data[1]}")
+        await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _job_join(msg, conn, split_data):
-    if len(split_data) < 3:
+async def _job_join(msg, conn, args):
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.job, "No job given")
         return
 
@@ -96,24 +94,24 @@ async def _job_join(msg, conn, split_data):
         await message.send_error(msg, "You already have a job")
         return
 
-    split_data[2] = split_data[2].lower()
+    args[2] = args[2].lower()
 
-    if split_data[2] not in _jobs:
+    if args[2] not in _jobs:
         await message.send_error(msg, "There's no job with that name")
         return
 
-    if _jobs[split_data[2]]["level"] > userinfo.edu_level:
+    if _jobs[args[2]]["level"] > userinfo.edu_level:
         await message.send_error(msg, """You don't have enough education level to get this job
 (Get a higher education level with the `school` command)""")
         return
 
     subtable.new_job(msg.author.id, abc.Job(
-        _jobs[split_data[2]]["showcase"], 0, 1,
-        _jobs[split_data[2]]["salary"],
-        _jobs[split_data[2]]["cooldown"]
+        _jobs[args[2]]["showcase"], 0, 1,
+        _jobs[args[2]]["salary"],
+        _jobs[args[2]]["cooldown"]
     ), conn)
 
-    await message.send_message(msg, f"You joined the {_jobs[split_data[2]]['showcase']} job", title="Joined Job")
+    await message.send_message(msg, f"You joined the {_jobs[args[2]]['showcase']} job", title="Joined Job")
 
 
 async def _job_quit(bot, msg, conn):

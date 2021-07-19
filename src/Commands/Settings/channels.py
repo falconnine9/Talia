@@ -12,36 +12,34 @@ name = "channels"
 dm_capable = False
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn):
     if not msg.author.guild_permissions.manage_channels and msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
 
-    split_data = msg.content.split(" ")
-
-    if len(split_data) < 2:
+    if len(args) < 2:
         await message.invalid_use(msg, help_list.channels, "No operation given")
         return
 
-    if len(split_data) < 3:
+    if len(args) < 3:
         await message.invalid_use(msg, help_list.channels, "No channel given")
         return
 
-    split_data[1] = split_data[1].lower()
+    args[1] = args[1].lower()
 
-    if split_data[1] == "enable":
-        await _channels_enable(msg, conn, split_data)
-    elif split_data[1] == "disable":
-        await _channels_disable(msg, conn, split_data)
+    if args[1] == "enable":
+        await _channels_enable(msg, conn, args)
+    elif args[1] == "disable":
+        await _channels_disable(msg, conn, args)
     else:
-        await message.send_error(msg, f"Unknown operation: {split_data[1]}")
+        await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _channels_enable(msg, conn, split_data):
-    split_data[2] = split_data[2].replace("<#", "").replace(">", "")
+async def _channels_enable(msg, conn, args):
+    args[2] = args[2].replace("<#", "").replace(">", "")
 
     try:
-        channel = msg.guild.get_channel(int(split_data[2]))
+        channel = msg.guild.get_channel(int(args[2]))
     except ValueError:
         await message.send_error(msg, "Invalid channel")
         return
@@ -62,11 +60,11 @@ async def _channels_enable(msg, conn, split_data):
     await message.send_message(msg, f"{channel.mention} has been enabled")
 
 
-async def _channels_disable(msg, conn, split_data):
-    split_data[2] = split_data[2].replace("<#", "").replace(">", "")
+async def _channels_disable(msg, conn, args):
+    args[2] = args[2].replace("<#", "").replace(">", "")
 
     try:
-        channel = msg.guild.get_channel(int(split_data[2]))
+        channel = msg.guild.get_channel(int(args[2]))
     except ValueError:
         await message.send_error(msg, "Invalid channel")
         return
