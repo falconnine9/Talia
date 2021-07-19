@@ -16,7 +16,10 @@ from Storage import meta
 
 async def main_timer(bot, conn):
     cur = conn.cursor()
-    while os.environ["mtl"] == "1":
+    while True:
+        while os.environ["mtl"] == "0":
+            await asyncio.sleep(10)
+
         start_time = time.time()
 
         cur.execute("UPDATE timers SET time = time - 1")
@@ -55,7 +58,10 @@ async def _main_timer_alert(bot, c_user):
 
 async def edu_timer(bot, conn):
     cur = conn.cursor()
-    while os.environ["etl"] == "1":
+    while True:
+        while os.environ["etl"] == "0":
+            await asyncio.sleep(10)
+
         start_time = time.time()
 
         cur.execute("UPDATE edu_timers SET time = time - 1")
@@ -101,7 +107,10 @@ async def _edu_timer_alert(bot, c_user, conn):
 async def invest_timer(bot, conn):
     cur = conn.cursor()
     emojis = other.load_emojis(bot)
-    while os.environ["itl"] == "1":
+    while True:
+        while os.environ["itl"] == "0":
+            await asyncio.sleep(10)
+
         start_time = time.time()
 
         cur.execute("UPDATE invest_timers SET time = time - 1")
@@ -163,7 +172,10 @@ async def _invest_timer_alert(bot, timerinfo, c_userinfo, emojis):
 async def activity_loop(bot):
     current_activity = 0
 
-    while os.environ["al"] == "1":
+    while True:
+        while os.environ["al"] == "0":
+            await asyncio.sleep(10)
+
         await asyncio.sleep(600)
 
         if current_activity == 0:
