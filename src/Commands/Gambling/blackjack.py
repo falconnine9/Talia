@@ -32,7 +32,7 @@ _values = {
 }
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.blackjack, "No bet given")
         return
@@ -50,8 +50,6 @@ async def run(args, bot, msg, conn):
     if bet < 1:
         await message.send_error(msg, f"You need to bet at least 1 {emojis.coin}")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if bet > userinfo.coins:
         await message.send_error(msg, f"You don't have enough coins to bet {bet:,} {emojis.coin}")

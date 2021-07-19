@@ -14,7 +14,7 @@ name = "shop"
 dm_capable = False
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.shop, "No operation given")
         return
@@ -22,14 +22,14 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "buy":
-        await _shop_buy(bot, msg, conn, args)
+        await _shop_buy(args, bot, msg, conn, guildinfo, userinfo)
     elif args[1] == "list":
-        await _shop_list(bot, msg, conn)
+        await _shop_list(bot, msg, guildinfo)
     else:
         await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _shop_buy(bot, msg, conn, args):
+async def _shop_buy(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.shop, "No item given")
         return
@@ -40,13 +40,9 @@ async def _shop_buy(bot, msg, conn, args):
         await message.send_error(msg, "Invalid item ID")
         return
 
-    guildinfo = guild.load_guild(msg.guild.id, conn)
-
     if item < 0 or item > len(guildinfo.shop) - 1:
         await message.send_error(msg, "There's no item with that ID in the server shop")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if len(userinfo.inventory) >= 40:
         await message.send_error(msg, "You don't have any space left in your inventory")
@@ -92,9 +88,7 @@ async def _shop_buy(bot, msg, conn, args):
     )
 
 
-async def _shop_list(bot, msg, conn):
-    guildinfo = guild.load_guild(msg.guild.id, conn)
-
+async def _shop_list(bot, msg, guildinfo):
     if len(guildinfo.shop) == 0:
         await message.send_message(msg, f"{msg.guild.name} has no items in their shop", title="Server shop",
             thumbnail=msg.guild.icon_url

@@ -13,7 +13,7 @@ name = "leaderboard"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.leaderboard, "No lb given")
         return

@@ -12,9 +12,7 @@ name = "runaway"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(userinfo.parents) == 0:
         await message.send_error(msg, f"You don't have any parents to run away from")
         return

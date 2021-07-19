@@ -12,14 +12,13 @@ name = "hourly"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     hourly_timer = timer.load_timer(f"hourly.{msg.author.id}", conn)
 
     if hourly_timer is not None:
         await message.send_error(msg, f"Wait {timer.load_time(hourly_timer.time)} before collecting your next hourly")
         return
 
-    userinfo = user.load_user(msg.author.id, conn)
     earned_coins = round(random.randint(10, 50) * other.load_multi(userinfo, conn))
     earned_xp = round(random.randint(1, 15) * other.load_multi(userinfo, conn))
 

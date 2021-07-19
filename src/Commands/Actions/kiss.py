@@ -26,7 +26,7 @@ _suffix = [
 ]
 
 
-async def run(bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     args = msg.content.split(" ")
 
     if len(args) < 2:

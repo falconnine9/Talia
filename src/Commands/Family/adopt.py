@@ -27,9 +27,7 @@ _parent_adopt = [
 ]
 
 
-async def run(args, bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(userinfo.children) >= 10:
         await message.send_error(msg, "You can only have 10 children at most")
         return

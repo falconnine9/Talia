@@ -12,13 +12,12 @@ name = "buttons"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.buttons, "No value given")
         return
 
     args[1] = args[1].lower()
-    userinfo = user.load_user(msg.author.id, conn)
 
     if args[1] == "enable":
         if not userinfo.settings.reaction_confirm:

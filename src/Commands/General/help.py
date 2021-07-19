@@ -83,7 +83,7 @@ _category_emojis = {
 }
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await _category_list(bot, msg)
 

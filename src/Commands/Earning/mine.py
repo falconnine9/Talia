@@ -70,14 +70,12 @@ _artifacts = [
 ]
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     mining_timer = timer.load_timer(f"mine.{msg.author.id}", conn)
 
     if mining_timer is not None:
         await message.send_error(msg, f"You need to rest for {timer.load_time(mining_timer.time)} before mining again")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pickaxe is None:
         await message.send_error(msg,

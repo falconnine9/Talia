@@ -14,7 +14,7 @@ name = "sell"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.sell, "No item given")
         return
@@ -24,8 +24,6 @@ async def run(args, bot, msg, conn):
     except ValueError:
         await message.send_error(msg, "Invalid item ID")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if item < 0 or item > len(userinfo.inventory) - 1:
         await message.send_error(msg, "There's no item in your inventory with that ID")

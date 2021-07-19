@@ -66,7 +66,7 @@ _edu_levels = {
 }
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.job, "No operation given")
         return
@@ -74,21 +74,19 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "join":
-        await _job_join(msg, conn, args)
+        await _job_join(args, msg, conn, userinfo)
     elif args[1] == "quit":
-        await _job_quit(bot, msg, conn)
+        await _job_quit(bot, msg, conn, userinfo)
     elif args[1] == "list":
         await _job_list(bot, msg)
     else:
         await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _job_join(msg, conn, args):
+async def _job_join(args, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.job, "No job given")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.job is not None:
         await message.send_error(msg, "You already have a job")
@@ -114,9 +112,7 @@ async def _job_join(msg, conn, args):
     await message.send_message(msg, f"You joined the {_jobs[args[2]]['showcase']} job", title="Joined Job")
 
 
-async def _job_quit(bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def _job_quit(bot, msg, conn, userinfo):
     if userinfo.job is None:
         await message.send_error(msg, "You don't have a job")
         return

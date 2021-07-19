@@ -12,9 +12,7 @@ name = "work"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if userinfo.job is None:
         await message.send_error(msg, "You need a job to work\n(You can join one with the `job` command)")
         return

@@ -32,7 +32,7 @@ _loss_amounts = {
 }  # Random number in between the 2 in the list
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     invest_timer = timer.load_invest_timer(msg.author.id, conn)
 
     if invest_timer is not None:
@@ -62,8 +62,6 @@ async def run(args, bot, msg, conn):
     if amount < 100:
         await message.send_error(msg, f"You need to invest at least 100 {emojis.coin}")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if amount > userinfo.coins:
         await message.send_error(msg, f"You don't have enough coins to invest {amount:,} {emojis.coin}")

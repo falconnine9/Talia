@@ -12,7 +12,7 @@ name = "channels"
 dm_capable = False
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if not msg.author.guild_permissions.manage_channels and msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
@@ -28,14 +28,14 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "enable":
-        await _channels_enable(msg, conn, args)
+        await _channels_enable(args, msg, conn, guildinfo)
     elif args[1] == "disable":
-        await _channels_disable(msg, conn, args)
+        await _channels_disable(args, msg, conn, guildinfo)
     else:
         await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _channels_enable(msg, conn, args):
+async def _channels_enable(args, msg, conn, guildinfo):
     args[2] = args[2].replace("<#", "").replace(">", "")
 
     try:
@@ -47,8 +47,6 @@ async def _channels_enable(msg, conn, args):
     if channel is None:
         await message.send_error(msg, "I can't find that channel")
         return
-
-    guildinfo = guild.load_guild(msg.guild.id, conn)
 
     if channel.id not in guildinfo.disabled_channels:
         await message.send_error(msg, f"{channel.mention} is already enabled")
@@ -60,7 +58,7 @@ async def _channels_enable(msg, conn, args):
     await message.send_message(msg, f"{channel.mention} has been enabled")
 
 
-async def _channels_disable(msg, conn, args):
+async def _channels_disable(args, msg, conn, guildinfo):
     args[2] = args[2].replace("<#", "").replace(">", "")
 
     try:
@@ -72,8 +70,6 @@ async def _channels_disable(msg, conn, args):
     if channel is None:
         await message.send_error(msg, "I can't find that channel")
         return
-
-    guildinfo = guild.load_guild(msg.guild.id, conn)
 
     if channel.id in guildinfo.disabled_channels:
         await message.send_error(msg, f"{channel.mention} is already disabled")

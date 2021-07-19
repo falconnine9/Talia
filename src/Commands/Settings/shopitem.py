@@ -13,7 +13,7 @@ name = "shopitem"
 dm_capable = False
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if not msg.author.guild_permissions.manage_guild and msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
@@ -29,14 +29,14 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "create":
-        await _shopitem_create(bot, msg, conn, args)
+        await _shopitem_create(args, bot, msg, conn, guildinfo)
     elif args[1] == "remove":
-        await _shopitem_remove(msg, conn, args)
+        await _shopitem_remove(args, msg, conn, guildinfo)
     else:
         await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _shopitem_create(bot, msg, conn, args):
+async def _shopitem_create(args, bot, msg, conn, guildinfo):
     item_name = " ".join(args[2:])
 
     if len(item_name) > 32:
@@ -47,8 +47,6 @@ async def _shopitem_create(bot, msg, conn, args):
         if ord(char) < 32 or ord(char) > 126:
             await message.send_error(msg, f"Invalid character: {char}")
             return
-
-    guildinfo = guild.load_guild(msg.guild.id, conn)
 
     if len(guildinfo.shop) >= 15:
         await message.send_error(msg, "The server has reached the maximum amount of shop items (15)")
@@ -109,14 +107,12 @@ Cost: None
 Cost: {cost:,} {emojis.coin}""", title="Item created")
 
 
-async def _shopitem_remove(msg, conn, args):
+async def _shopitem_remove(args, msg, conn, guildinfo):
     try:
         item = int(args[2]) - 1
     except ValueError:
         await message.send_error(msg, "Invalid item ID")
         return
-
-    guildinfo = guild.load_guild(msg.guild.id, conn)
 
     if item < 0 or item > len(guildinfo.shop) - 1:
         await message.send_error(msg, "There's no item in the server shop with that ID")

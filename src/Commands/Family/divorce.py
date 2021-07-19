@@ -13,9 +13,7 @@ name = "divorce"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if userinfo.partner is None:
         await message.send_error(msg, "You aren't married")
         return

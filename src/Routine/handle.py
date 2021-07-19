@@ -152,9 +152,9 @@ def verify_user(msg, conn):
     if userinfo is None:
         userinfo = abc.User(msg.author.id)
         user.write_user(userinfo, conn, False)
-        return True
+        return True, userinfo
 
-    return False
+    return False, userinfo
 
 
 async def mentioned_users(args, bot, msg, conn):
@@ -191,7 +191,7 @@ async def mentioned_users(args, bot, msg, conn):
     return ret_val
 
 
-async def command(args, bot, msg, conn):
+async def command(args, bot, msg, conn, guildinfo, userinfo, full_logging):
     """
     Ran by the main Talia.py file when a command
      is given
@@ -232,9 +232,9 @@ async def command(args, bot, msg, conn):
                 return
 
     start_time = time.time()
-    await command_.run(args, bot, msg, conn)
+    await command_.run(args, bot, msg, conn, guildinfo, userinfo)
 
-    if os.environ["full_logging"]:
+    if full_logging:
         cur = conn.cursor()
         cur.execute("SELECT MAX(id) FROM log")
         max_id = cur.fetchone()

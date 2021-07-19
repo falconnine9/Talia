@@ -11,7 +11,6 @@ name = "level"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     await message.send_message(msg, f"""Level {userinfo.level}
 {userinfo.xp:,}/{(userinfo.level * 25):,} XP""", title="Your level")

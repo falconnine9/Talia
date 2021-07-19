@@ -30,9 +30,7 @@ _children_marry = [
 ]
 
 
-async def run(args, bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if userinfo.partner is not None:
         await message.send_error(msg, random.choice(_already_married))
         return

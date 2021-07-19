@@ -18,8 +18,7 @@ _no_coins = [
 ]
 
 
-async def run(args, bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     emojis = other.load_emojis(bot)
 
     if userinfo.coins == 0:

@@ -89,7 +89,7 @@ _default_names = [
 ]
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.pet, "No operation given")
         return
@@ -97,23 +97,22 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "buy":
-        await _pet_buy(bot, msg, conn, args)
+        await _pet_buy(args, bot, msg, conn, userinfo)
     elif args[1] == "sell":
-        await _pet_sell(bot, msg, conn)
+        await _pet_sell(bot, msg, conn, userinfo)
     elif args[1] == "list":
         await _pet_list(bot, msg)
     elif args[1] == "name":
-        await _pet_name(msg, conn, args)
+        await _pet_name(args, msg, conn, userinfo)
     else:
         await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _pet_buy(bot, msg, conn, args):
+async def _pet_buy(args, bot, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.pet, "No pet name given")
         return
 
-    userinfo = user.load_user(msg.author.id, conn)
     args[2] = args[2].lower()
 
     if userinfo.pet is not None:
@@ -175,9 +174,7 @@ By default is has the name **{def_name}**. But that can be changed with `pet nam
     )
 
 
-async def _pet_sell(bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def _pet_sell(bot, msg, conn, userinfo):
     if userinfo.pet is None:
         await message.send_error(msg, "You don't have a pet to sell")
         return
@@ -224,12 +221,10 @@ async def _pet_list(bot, msg):
     await message.send_message(msg, title="Pets", fields=fields, footer="(Pets are still in beta phase)")
 
 
-async def _pet_name(msg, conn, args):
+async def _pet_name(args, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.pet, "No pet name given")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pet is None:
         await message.send_error(msg, "You don't have a pet")

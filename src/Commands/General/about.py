@@ -12,7 +12,7 @@ name = "about"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     guilds = len(bot.guilds)
     members = len(bot.users)
 

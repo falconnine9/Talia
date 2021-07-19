@@ -25,14 +25,12 @@ _job_messages = [
 ]
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     sidejob_timer = timer.load_timer(f"sidejob.{msg.author.id}", conn)
 
     if sidejob_timer is not None:
         await message.send_error(msg, f"Wait {timer.load_time(sidejob_timer.time)} before working at a side job again")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     earned_coins = round(random.randint(1, 300) * other.load_multi(userinfo, conn))
     earned_xp = round(random.randint(1, 20) * other.load_multi(userinfo, conn))

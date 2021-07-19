@@ -20,7 +20,7 @@ _self_pay = [
 ]
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.pay, "No user given")
         return
@@ -67,8 +67,6 @@ async def run(args, bot, msg, conn):
     if amount < 1:
         await message.send_error(msg, f"You have to pay at least 1 {emojis.coin}")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if amount > userinfo.coins:
         await message.send_error(msg, f"You don't have {amount:,} {emojis.coin}")

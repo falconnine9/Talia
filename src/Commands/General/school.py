@@ -36,14 +36,12 @@ _edu_levels = {
 }
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     school_timer = timer.load_edu_timer(msg.author.id, conn)
 
     if school_timer is not None:
         await message.send_error(msg, f"You're already in class for the next {timer.load_time(school_timer.time)}")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.edu_level == max(_edu_levels.keys()):
         await message.send_error(msg, "You've already reached the highest education level")

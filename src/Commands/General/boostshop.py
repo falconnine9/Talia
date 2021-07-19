@@ -21,7 +21,7 @@ _boosts = {
 }
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.boostshop, "No operation given")
         return
@@ -29,14 +29,14 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "buy":
-        await _boostshop_buy(bot, msg, conn, args)
+        await _boostshop_buy(args, bot, msg, conn, userinfo)
     elif args[1] == "list":
-        await _boostshop_list(bot, msg, conn)
+        await _boostshop_list(bot, msg, conn, userinfo)
     else:
         await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _boostshop_buy(bot, msg, conn, args):
+async def _boostshop_buy(args, bot, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.boostshop, "No boost given")
         return
@@ -46,8 +46,6 @@ async def _boostshop_buy(bot, msg, conn, args):
     if args[2] not in _boosts.keys():
         await message.send_error(msg, f"There's no boost in the shop named \"{args[2]}\"")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if args[2] == "multiplier":
         cost = userinfo.shop_info.multiplier_cost
@@ -100,8 +98,7 @@ async def _boostshop_buy(bot, msg, conn, args):
     )
 
 
-async def _boostshop_list(bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
+async def _boostshop_list(bot, msg, conn, userinfo):
     fields = []
     emojis = other.load_emojis(bot)
 

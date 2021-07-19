@@ -12,14 +12,13 @@ name = "daily"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     daily_timer = timer.load_timer(f"daily.{msg.author.id}", conn)
 
     if daily_timer is not None:
         await message.send_error(msg, f"Wait {timer.load_time(daily_timer.time)} before collecting your next daily")
         return
 
-    userinfo = user.load_user(msg.author.id, conn)
     earned_coins = round(random.randint(30, 500) * other.load_multi(userinfo, conn))
     earned_xp = round(random.randint(5, 30) * other.load_multi(userinfo, conn))
 

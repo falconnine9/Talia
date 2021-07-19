@@ -31,9 +31,7 @@ level_achievements = {
 }
 
 
-async def level(bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def level(bot, msg, conn, userinfo):
     if userinfo.xp >= userinfo.level * 25:
         user.set_user_attr(msg.author.id, "level", userinfo.level + 1, conn, False)
         user.set_user_attr(msg.author.id, "xp", 0, conn, False)
@@ -46,9 +44,7 @@ Base Multiplier: x{userinfo.multiplier} -> x{round(userinfo.multiplier + 0.1, 1)
         )
 
 
-async def achievements(bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def achievements(bot, msg, conn, userinfo):
     for milestone in money_achievements:
         if milestone > userinfo.coins:
             break

@@ -13,7 +13,7 @@ name = "prefix"
 dm_capable = False
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if not msg.author.guild_permissions.manage_guild and msg.author.id not in other.load_config().owners:
         await message.send_error(msg, "You have insufficient permissions to use this command")
         return
@@ -32,8 +32,6 @@ async def run(args, bot, msg, conn):
         if ord(char) < 32 or ord(char) > 126:
             await message.send_error(msg, f"Invalid character: {char}")
             return
-
-    guildinfo = guild.load_guild(msg.guild.id, conn)
 
     if guildinfo.prefix == new_prefix:
         await message.send_error(msg, f"The server prefix is already {new_prefix}")

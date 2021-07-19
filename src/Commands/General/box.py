@@ -190,7 +190,7 @@ _boxes = {
 }
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.box, "No operation given")
         return
@@ -198,14 +198,14 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "buy":
-        await _box_buy(bot, msg, conn, args)
+        await _box_buy(args, bot, msg, conn, userinfo)
     elif args[1] == "list":
         await _box_list(bot, msg)
     else:
         await message.send_error(msg, "Unknown operation")
 
 
-async def _box_buy(bot, msg, conn, args):
+async def _box_buy(args, bot, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.box, "No box given")
         return
@@ -219,8 +219,6 @@ async def _box_buy(bot, msg, conn, args):
     if box_id not in _boxes:
         await message.send_error(msg, "There's no box with that ID")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if _boxes[box_id]["cost"] > userinfo.coins:
         await message.send_error(msg, f"You don't have enough coins to buy a {_boxes[box_id]['name']}")

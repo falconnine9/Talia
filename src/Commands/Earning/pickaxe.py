@@ -89,7 +89,7 @@ _pickaxes = {
 }
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.pickaxe, "No operation given")
         return
@@ -97,7 +97,7 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "buy":
-        await _pickaxe_buy(bot, msg, conn, args)
+        await _pickaxe_buy(args, bot, msg, conn, userinfo)
     elif args[1] == "sell":
         await _pickaxe_sell(bot, msg, conn)
     elif args[1] == "list":
@@ -106,12 +106,10 @@ async def run(args, bot, msg, conn):
         await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _pickaxe_buy(bot, msg, conn, args):
+async def _pickaxe_buy(args, bot, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.pickaxe, "No pickaxe given")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.pickaxe is not None:
         await message.send_error(msg, "You already have a pickaxe")
@@ -173,9 +171,7 @@ async def _pickaxe_buy(bot, msg, conn, args):
     )
 
 
-async def _pickaxe_sell(bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def _pickaxe_sell(bot, msg, conn, userinfo):
     if userinfo.pickaxe is None:
         await message.send_error(msg, "You don't have a pickaxe equipped")
         return

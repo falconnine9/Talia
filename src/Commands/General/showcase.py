@@ -12,14 +12,12 @@ name = "showcase"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.showcase, "No item given")
         return
 
     if args[1].lower() == "remove":
-        userinfo = user.load_user(msg.author.id, conn)
-
         if userinfo.showcase is None:
             await message.send_error(msg, "You don't have an item in your showcase")
             return
@@ -35,8 +33,6 @@ async def run(args, bot, msg, conn):
     except ValueError:
         await message.send_error(msg, "Invalid item ID")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if item < 0 or item > len(userinfo.inventory) - 1:
         await message.send_error(msg, "There's no item in your inventory with that ID")

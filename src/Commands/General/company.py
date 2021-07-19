@@ -16,7 +16,7 @@ name = "company"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.company, "No operation given")
         return
@@ -24,29 +24,27 @@ async def run(args, bot, msg, conn):
     args[1] = args[1].lower()
 
     if args[1] == "create":
-        await _company_create(msg, conn, args)
+        await _company_create(args, msg, conn, userinfo)
     elif args[1] == "leave":
-        await _company_leave(msg, conn)
+        await _company_leave(msg, conn, userinfo)
     elif args[1] == "invite":
-        await _company_invite(bot, msg, conn, args)
+        await _company_invite(args, bot, msg, conn, userinfo)
     elif args[1] == "kick":
-        await _company_kick(bot, msg, conn, args)
+        await _company_kick(args, bot, msg, conn, userinfo)
     elif args[1] == "disband":
-        await _company_disband(bot, msg, conn)
+        await _company_disband(bot, msg, conn, userinfo)
     elif args[1] == "info":
-        await _company_info(bot, msg, conn, args)
+        await _company_info(args, bot, msg, conn, userinfo)
     elif args[1] == "upgrade":
-        await _company_upgrade(bot, msg, conn)
+        await _company_upgrade(bot, msg, conn, userinfo)
     else:
         await message.send_error(msg, f"Unknown operation: {args[1]}")
 
 
-async def _company_create(msg, conn, args):
+async def _company_create(args, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.company, "No company name given")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.company is not None:
         await message.send_error(msg, "You're already in a company")
@@ -75,9 +73,7 @@ async def _company_create(msg, conn, args):
     await message.send_message(msg, f"You created a new company: {new_company.name}", title="Company created")
 
 
-async def _company_leave(msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def _company_leave(msg, conn, userinfo):
     if userinfo.company is None:
         await message.send_error(msg, "You aren't in a company")
         return
@@ -96,12 +92,10 @@ async def _company_leave(msg, conn):
     await message.send_message(msg, f"You left {companyinfo.name}")
 
 
-async def _company_invite(bot, msg, conn, args):
+async def _company_invite(args, bot, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.company, "No user given")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.company is None:
         await message.send_error(msg, "You aren't in a company")
@@ -278,12 +272,10 @@ async def _company_invite(bot, msg, conn, args):
             pass
 
 
-async def _company_kick(bot, msg, conn, args):
+async def _company_kick(args, bot, msg, conn, userinfo):
     if len(args) < 3:
         await message.invalid_use(msg, help_list.company, "No user given")
         return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if userinfo.company is None:
         await message.send_error(msg, "You're not in a company")
@@ -337,9 +329,7 @@ async def _company_kick(bot, msg, conn, args):
             pass
 
 
-async def _company_disband(bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def _company_disband(bot, msg, conn, userinfo):
     if userinfo.company is None:
         await message.send_error(msg, "You're not in a company")
         return
@@ -382,10 +372,8 @@ async def _company_disband(bot, msg, conn):
     )
 
 
-async def _company_info(bot, msg, conn, args):
+async def _company_info(args, bot, msg, conn, userinfo):
     if len(args) < 3:
-        userinfo = user.load_user(msg.author.id, conn)
-
         if userinfo.company is None:
             await message.send_error(msg, "You're not in a company")
             return
@@ -421,9 +409,7 @@ Members: {len(companyinfo.members)}/50
 Company Multiplier: x{companyinfo.multiplier}""", title=companyinfo.name)
 
 
-async def _company_upgrade(bot, msg, conn):
-    userinfo = user.load_user(msg.author.id, conn)
-
+async def _company_upgrade(bot, msg, conn, userinfo):
     if userinfo.company is None:
         await message.send_error(msg, "You're not in a company")
         return

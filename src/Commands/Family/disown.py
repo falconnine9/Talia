@@ -13,7 +13,7 @@ name = "disown"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         await message.invalid_use(msg, help_list.disown, "No user given")
         return
@@ -38,8 +38,6 @@ async def run(args, bot, msg, conn):
         except discord.HTTPException:
             await message.send_error(msg, "An error occurred and the command couldn't be run")
             return
-
-    userinfo = user.load_user(msg.author.id, conn)
 
     if person.id not in userinfo.children:
         await message.send_error(msg, f"{str(person)} isn't your child")

@@ -12,7 +12,7 @@ name = "timers"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         args.append(str(msg.author.id))
     else:
@@ -55,7 +55,10 @@ async def run(args, bot, msg, conn):
     if invest_timer is not None:
         all_timers.append(f"Investment: {timer.load_time(invest_timer[0])}")
 
-    personinfo = user.load_user(person.id, conn)
+    if person.id == userinfo.id:
+        personinfo = userinfo
+    else:
+        personinfo = user.load_user(person.id, conn)
     
     if len(all_timers) == 0:
         list_of_timers = "No timers to show!"

@@ -19,7 +19,7 @@ _edu_levels = {
 }
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         args.append(str(msg.author.id))
     else:
@@ -47,7 +47,10 @@ async def run(args, bot, msg, conn):
         await message.send_error(msg, "I can't get the information of a bot")
         return
 
-    personinfo = user.load_user(person.id, conn)
+    if person_id == userinfo.id:
+        personinfo = userinfo
+    else:
+        personinfo = user.load_user(person.id, conn)
 
     partner, parents, children = await _load_family_info(bot, personinfo)
     jobinfo = _load_job_info(personinfo.job)

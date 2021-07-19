@@ -12,7 +12,7 @@ name = "inventory"
 dm_capable = True
 
 
-async def run(args, bot, msg, conn):
+async def run(args, bot, msg, conn, guildinfo, userinfo):
     if len(args) < 2:
         args.append(str(msg.author.id))
     else:
@@ -40,8 +40,13 @@ async def run(args, bot, msg, conn):
         await message.send_error(msg, "I can't get the inventory of a bot")
         return
 
-    personinfo = user.load_user(person.id, conn)
+    if person_id == userinfo.id:
+        personinfo = userinfo
+    else:
+        personinfo = user.load_user(person.id, conn)
+
     await message.send_message(msg,
         "\n".join([f"ID {i + 1}: {item.name}" for i, item in enumerate(personinfo.inventory)]),
         title=f"{str(person)}'s inventory", thumbnail=person.avatar_url,
-        footer=f"{len(personinfo.inventory)}/40 items", color=personinfo.color)
+        footer=f"{len(personinfo.inventory)}/40 items", color=personinfo.color
+    )

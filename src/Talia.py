@@ -15,7 +15,7 @@ import os
 import threading
 import traceback
 from Routine import Console, init, handle, loop, post_checks
-from Utils import guild, message, abc, other
+from Utils import guild, user, message, abc, other
 from Service import poll
 
 # This sets each environment variable
@@ -121,6 +121,7 @@ async def on_message(msg):
 
     if msg.guild is None:
         guild_changed = False
+        guildinfo = None
         msg.content = msg.content[2:].strip()
     else:
         guild_changed, guildinfo = handle.verify_guild(msg, conn)
@@ -133,14 +134,14 @@ async def on_message(msg):
             return
 
     args = msg.content.split(" ")
-    user_changed = handle.verify_user(msg, conn)
+    user_changed, userinfo = handle.verify_user(msg, conn)
     mentioned_changed = await handle.mentioned_users(args, bot, msg, conn)
 
     if guild_changed or user_changed or mentioned_changed:
         conn.commit()
 
     try:
-        await handle.command(args, bot, msg, conn)
+        await handle.command(args, bot, msg, conn, guildinfo, userinfo, full_logging)
     except Exception as errmsg:
         exc_info = traceback.format_exc()
         await message.send_error(msg,
@@ -149,8 +150,9 @@ async def on_message(msg):
         other.log(f"Error occurred, traceback below\n{exc_info}", "critical")
         return
 
-    await post_checks.level(bot, msg, conn)
-    await post_checks.achievements(bot, msg, conn)
+    userinfo = user.load_user(msg.author.id, conn)
+    await post_checks.level(bot, msg, conn, userinfo)
+    await post_checks.achievements(bot, msg, conn, userinfo)
 
 
 async def cache_loading_loop():
@@ -164,16 +166,18 @@ async def cache_loading_loop():
     3. Places each one into the cache
     """
     cur = conn.cursor()
-    while os.environ["ctl"] == "1":
+    while True:
+        while os.environ["ctl"] == "0":
+            await asyncio.sleep(10)
+
         cur.execute("SELECT id, prefix FROM guilds")
         all_prefixes = cur.fetchall()
 
         for prefix in all_prefixes:
             os.environ[f"TaliaPrefix.{prefix[0]}"] = prefix[1]
 
-        config = other.load_config()
-
         global full_logging
+        config = other.load_config()
         full_logging = config.full_logging
 
         await asyncio.sleep(3600)
