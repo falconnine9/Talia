@@ -75,7 +75,8 @@ async def run(args, bot, msg, conn, guildinfo, userinfo):
 XP: {personinfo.xp:,}/{personinfo.level * 25:,}
 Multiplier: x{other.load_multi(personinfo, conn)}
 Education level: {_edu_levels[personinfo.edu_level]}
-Company: {company_name}""", False],
+Company: {company_name}
+Commands ran: {personinfo.commands:,}""", False],
         ["**Family**", f"""Partner: {partner}
 Parents: {parents}
 Children: {children}""", False],

@@ -147,14 +147,16 @@ async def _lb_fortune(bot, msg, conn):
     cur.execute("""
         SELECT u.id, u.coins + i.worth + it.coins
         FROM users u, items i, invest_timers it
-        WHERE u.id = i.owner = it.id
+        WHERE u.id = i.owner AND u.id = it.id
         ORDER BY u.coins + i.worth + it.coins
         LIMIT 10
     """)
     top_users = cur.fetchall()
 
     if len(top_users) == 0:
-        await message.send_message(msg, "Nothing in here :(", title="Fortune Leaderboard")
+        await message.send_message(msg, "Nothing in here :(", title="Fortune Leaderboard",
+            footer="Yeah so this lb might be broken"
+        )
         return
 
     user_list = []
@@ -167,4 +169,6 @@ async def _lb_fortune(bot, msg, conn):
         except (discord.NotFound, discord.HTTPException):
             user_list.append(f"{i + 1}: Unknown#0000 | {user_[1]:,} {emojis.coin}")
 
-    await message.send_message(msg, "\n".join(user_list), title="Daily Leaderboard")
+    await message.send_message(msg, "\n".join(user_list), title="Fortune Leaderboard",
+        footer="Yeah so this lb might be broken"
+    )

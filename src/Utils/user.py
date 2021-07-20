@@ -46,8 +46,13 @@ def load_user(user_id, conn):
     )
 
     new_user.color = json.loads(userinfo[13])
+
     tmp_shop_info = json.loads(userinfo[14])
-    new_user.shop_info = abc.ShopInfo(tmp_shop_info["multiplier_cost"])
+    new_user.shop_info = abc.ShopInfo(
+        tmp_shop_info["multiplier_cost"]
+    )
+
+    new_user.commands = userinfo[15]
 
     cur.execute("SELECT * FROM job_info WHERE id = %s", (user_id,))
     job_info = cur.fetchone()
@@ -116,7 +121,7 @@ def write_user(obj, conn, write=True):
     3. Commits if the write parameter is true
     """
     cur = conn.cursor()
-    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
+    cur.execute(f"INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (
         obj.id,
         obj.coins,
         obj.xp,
@@ -131,7 +136,8 @@ def write_user(obj, conn, write=True):
         json.dumps(obj.children),
         json.dumps(obj.settings.cvt_dict()),
         json.dumps(obj.color),
-        json.dumps(obj.shop_info.cvt_dict())
+        json.dumps(obj.shop_info.cvt_dict()),
+        obj.commands
     ))
 
     if write:

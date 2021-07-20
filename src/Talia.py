@@ -141,12 +141,10 @@ async def on_message(msg):
         conn.commit()
 
     try:
-        await handle.command(args, bot, msg, conn, guildinfo, userinfo, full_logging)
+        cmd_ran = await handle.command(args, bot, msg, conn, guildinfo, userinfo, full_logging)
     except Exception as errmsg:
         exc_info = traceback.format_exc()
-        await message.send_error(msg,
-            f"\u26a0 An unexpected error occurred \u26a0\nError type: {type(errmsg).__name__}"
-        )
+        await message.send_error(msg, f"\u26a0 An unexpected error occurred \u26a0\nError type: {type(errmsg).__name__}")
         other.log(f"Error occurred, traceback below\n{exc_info}", "critical")
         return
 
@@ -154,7 +152,7 @@ async def on_message(msg):
     level_commit = await post_checks.level(bot, msg, conn, userinfo)
     ach_commit = await post_checks.achievements(bot, msg, conn, userinfo)
 
-    if full_logging or level_commit or ach_commit:
+    if cmd_ran or level_commit or ach_commit:
         conn.commit()
 
 

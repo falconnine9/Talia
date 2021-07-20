@@ -58,6 +58,7 @@ tables = {
         "settings": "MEDIUMTEXT",
         "color": "MEDIUMTEXT",
         "shop_info": "MEDIUMTEXT",
+        "commands": "BIGINT UNSIGNED",
         "CONSTRAINT users_pk": "PRIMARY KEY (id)"
     },
     "timers": {

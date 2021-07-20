@@ -68,6 +68,7 @@ class User:
         self.settings = Settings(None, None, None).default()
         self.color = [155, 89, 182]
         self.shop_info = ShopInfo(1000)
+        self.commands = 0
 
     def cvt_dict(self):
         return {
@@ -90,7 +91,8 @@ class User:
             "children": self.children,
             "settings": self.settings,
             "color": self.color,
-            "shop_info": self.shop_info
+            "shop_info": self.shop_info,
+            "commands": self.commands
         }
 
 
