@@ -30,29 +30,27 @@ def load_user(user_id, conn):
     new_user.xp = userinfo[2]
     new_user.level = userinfo[3]
     new_user.edu_level = userinfo[4]
-    new_user.achievements = json.loads(userinfo[5])
-    new_user.multiplier = userinfo[6]
-    new_user.company = userinfo[7]
-    new_user.hourly = userinfo[8]
-    new_user.daily = userinfo[9]
-    new_user.partner = userinfo[10]
-    new_user.parents = json.loads(userinfo[11])
-    new_user.children = json.loads(userinfo[12])
+    new_user.multiplier = userinfo[5]
+    new_user.company = userinfo[6]
+    new_user.hourly = userinfo[7]
+    new_user.daily = userinfo[8]
+    new_user.partner = userinfo[9]
+    new_user.parents = json.loads(userinfo[10])
+    new_user.children = json.loads(userinfo[11])
 
-    tmp_settings = json.loads(userinfo[13])
+    tmp_settings = json.loads(userinfo[12])
     new_user.settings = abc.Settings(
         tmp_settings["notifs"],
         tmp_settings["timernotifs"],
         tmp_settings["reaction_confirm"]
     )
 
-    new_user.color = json.loads(userinfo[14])
-    tmp_shop_info = json.loads(userinfo[15])
+    new_user.color = json.loads(userinfo[13])
+    tmp_shop_info = json.loads(userinfo[14])
     new_user.shop_info = abc.ShopInfo(tmp_shop_info["multiplier_cost"])
 
     cur.execute("SELECT * FROM job_info WHERE id = %s", (user_id,))
     job_info = cur.fetchone()
-
     if job_info is None:
         new_user.job = None
     else:
@@ -64,7 +62,6 @@ def load_user(user_id, conn):
 
     cur.execute("SELECT * FROM pickaxe_info WHERE id = %s", (user_id,))
     pickaxe_info = cur.fetchone()
-
     if pickaxe_info is None:
         new_user.pickaxe = None
     else:
@@ -75,7 +72,6 @@ def load_user(user_id, conn):
 
     cur.execute("SELECT * FROM pet_info WHERE id = %s", (user_id,))
     pet_info = cur.fetchone()
-
     if pet_info is None:
         new_user.pet = None
     else:
@@ -93,9 +89,12 @@ def load_user(user_id, conn):
         ) for item in all_items
     ]
 
+    cur.execute("SELECT name FROM achievements WHERE owner = %s", (user_id,))
+    all_achievements = cur.fetchall()
+    new_user.achievements = [achievement[0] for achievement in all_achievements]
+
     cur.execute("SELECT * FROM showcase_info WHERE id = %s", (user_id,))
     showcase_info = cur.fetchone()
-
     if showcase_info is None:
         new_user.showcase = None
     else:
@@ -123,7 +122,6 @@ def write_user(obj, conn, write=True):
         obj.xp,
         obj.level,
         obj.edu_level,
-        json.dumps(obj.achievements),
         obj.multiplier,
         obj.company,
         obj.hourly,

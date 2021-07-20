@@ -5,7 +5,7 @@ post_checks.py (Routine)
 
 Checks that will occur after every command is run
 """
-from Utils import user, message, other
+from Utils import user, subtable, message, other
 
 money_achievements = {
     1000: "Thousandaire",
@@ -45,6 +45,8 @@ Base Multiplier: x{userinfo.multiplier} -> x{round(userinfo.multiplier + 0.1, 1)
 
 
 async def achievements(bot, msg, conn, userinfo):
+    do_commit = False
+
     for milestone in money_achievements:
         if milestone > userinfo.coins:
             break
@@ -52,7 +54,8 @@ async def achievements(bot, msg, conn, userinfo):
         if money_achievements[milestone] in userinfo.achievements:
             continue
 
-        userinfo.achievements.append(money_achievements[milestone])
+        subtable.new_achievement(msg.author.id, money_achievements[milestone], conn, False)
+        do_commit = True
 
         emojis = other.load_emojis(bot)
         await message.send_message(msg,
@@ -68,7 +71,8 @@ async def achievements(bot, msg, conn, userinfo):
         if level_achievements[milestone] in userinfo.achievements:
             continue
 
-        userinfo.achievements.append(level_achievements[milestone])
+        subtable.new_achievement(msg.author.id, level_achievements[milestone], conn, False)
+        do_commit = True
 
         emojis = other.load_emojis(bot)
         await message.send_message(msg,
@@ -77,4 +81,5 @@ async def achievements(bot, msg, conn, userinfo):
         )
         break
 
-    user.set_user_attr(msg.author.id, "achievements", userinfo.achievements, conn)
+    if do_commit:
+        conn.commit()

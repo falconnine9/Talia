@@ -121,3 +121,23 @@ def remove_item(item_id, conn, write=True):
 
     if write:
         conn.commit()
+
+
+def new_achievement(user_id, name, conn, write=True):
+    cur = conn.cursor()
+    cur.execute("INSERT INTO achievements (owner, name) VALUES (%s, %s)", (
+        user_id, name
+    ))
+
+    if write:
+        conn.commit()
+
+
+def remove_achievement(user_id, name, conn, write=True):
+    cur = conn.cursor()
+    cur.execute("DELETE FROM achievements WHERE id = %s AND name = %s", (
+        user_id, name
+    ))
+
+    if write:
+        conn.commit()

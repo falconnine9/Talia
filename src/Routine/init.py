@@ -145,6 +145,12 @@ tables = {
         "type": "TINYTEXT",
         "stats": "MEDIUMTEXT",
         "CONSTRAINT items_pk": "PRIMARY KEY (id)"
+    },
+    "achievements": {
+        "id": "BIGINT UNSIGNED NOT NULL AUTO_INCREMENT",
+        "owner": "BIGINT UNSIGNED NOT NULL",
+        "name": "MEDIUMTEXT",
+        "CONSTRAINT achievements_pk": "PRIMARY KEY (id)"
     }
 }
 

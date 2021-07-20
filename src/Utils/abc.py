@@ -55,8 +55,8 @@ class User:
         self.job = None
         self.pickaxe = None
         self.pet = None
-        self.achievements = []
         self.inventory = []
+        self.achievements = []
         self.multiplier = 1.0
         self.company = None
         self.showcase = None
