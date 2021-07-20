@@ -151,8 +151,8 @@ def _load_pickaxe_info(pickaxe):
         return None
     else:
         return f"""Pickaxe: {pickaxe.name}
-Mining Speed: {pickaxe.speed}
-Mining Multiplier: x{pickaxe.multiplier}"""
+Speed: {pickaxe.speed}
+Multiplier: x{pickaxe.multiplier}"""
 
 
 def _load_pet_info(pet):
