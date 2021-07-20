@@ -256,4 +256,3 @@ async def command(args, bot, msg, conn, guildinfo, userinfo, full_logging):
                 datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S"),
                 round((time.time() - start_time) * 1000)
             ))
-        conn.commit()

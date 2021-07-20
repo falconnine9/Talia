@@ -42,6 +42,7 @@ async def level(bot, msg, conn, userinfo):
             f"""{emojis.confetti} {str(msg.author)} reached level {userinfo.level + 1} {emojis.confetti}
 Base Multiplier: x{userinfo.multiplier} -> x{round(userinfo.multiplier + 0.1, 1)}""", title="Level up"
         )
+        return True
 
 
 async def achievements(bot, msg, conn, userinfo):
@@ -81,5 +82,4 @@ async def achievements(bot, msg, conn, userinfo):
         )
         break
 
-    if do_commit:
-        conn.commit()
+    return do_commit

@@ -151,8 +151,11 @@ async def on_message(msg):
         return
 
     userinfo = user.load_user(msg.author.id, conn)
-    await post_checks.level(bot, msg, conn, userinfo)
-    await post_checks.achievements(bot, msg, conn, userinfo)
+    level_commit = await post_checks.level(bot, msg, conn, userinfo)
+    ach_commit = await post_checks.achievements(bot, msg, conn, userinfo)
+
+    if full_logging or level_commit or ach_commit:
+        conn.commit()
 
 
 async def cache_loading_loop():
