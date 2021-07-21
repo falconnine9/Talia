@@ -32,8 +32,10 @@ async def run(args, bot, msg, conn, guildinfo, userinfo):
         await _lb_daily(bot, msg, conn)
     elif args[1] == "fortune":
         await _lb_fortune(bot, msg, conn)
+    elif args[1] == "commands":
+        await _lb_commands(bot, msg, conn)
     else:
-        await message.send_error(msg, f"Unknown lb\ncoins, level, multiplier, hourly, daily, fortune")
+        await message.send_error(msg, f"Unknown lb\ncoins, level, multiplier, hourly, daily, fortune, commands")
 
 
 async def _lb_coins(bot, msg, conn):
@@ -148,7 +150,7 @@ async def _lb_fortune(bot, msg, conn):
         SELECT u.id, u.coins + i.worth + it.coins
         FROM users u, items i, invest_timers it
         WHERE u.id = i.owner AND u.id = it.id
-        ORDER BY u.coins + i.worth + it.coins
+        ORDER BY u.coins + i.worth + it.coins DESC
         LIMIT 10
     """)
     top_users = cur.fetchall()
@@ -172,3 +174,24 @@ async def _lb_fortune(bot, msg, conn):
     await message.send_message(msg, "\n".join(user_list), title="Fortune Leaderboard",
         footer="Yeah so this lb might be broken"
     )
+
+
+async def _lb_commands(bot, msg, conn):
+    cur = conn.cursor()
+    cur.execute("SELECT id, commands FROM users ORDER BY commands DESC LIMIT 10")
+    top_users = cur.fetchall()
+
+    if len(top_users) == 0:
+        await message.send_message(msg, "Nothing in here :(", title="Commands Leaderboard")
+        return
+
+    user_list = []
+
+    for i, user_ in enumerate(top_users):
+        try:
+            user_obj = await user.load_user_obj(bot, user_[0])
+            user_list.append(f"{i + 1}. {str(user_obj)} | {user_[1]} commands ran")
+        except (discord.NotFound, discord.HTTPException):
+            user_list.append(f"{i + 1}: Unknown#0000 | {user_[1]} commands ran")
+
+    await message.send_message(msg, "\n".join(user_list), title="Commands Leaderboard")

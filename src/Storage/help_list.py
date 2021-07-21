@@ -80,7 +80,7 @@ leaderboard = {
     "desc": "See the leaderboard of a certain subject",
     "usage": "leaderboard <lb>",
     "args": {
-        "lb": "The leaderboard that you want to see (coins, level, multiplier, hourly, daily, fortune)"
+        "lb": "The leaderboard that you want to see (coins, level, multiplier, hourly, daily, fortune, commands)"
     }
 }
 
