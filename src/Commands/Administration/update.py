@@ -60,6 +60,9 @@ async def run(args, bot, msg, conn, guildinfo, userinfo):
 
     elements = []
 
+    if "msg" in data.keys():
+        elements.append(data["msg"])
+
     if "added" in data.keys():
         changes = "\n".join([f" **[+]** {change}" for change in data["added"]])
         elements.append(f"**Added**\n{changes}")
