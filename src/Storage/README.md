@@ -1,1 +1,0 @@
-Files for global constant variables (And no methods)
