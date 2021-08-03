@@ -1,4 +1,6 @@
 # Talia
+**TALIA IS CURRENTLY UNDERGOING MAJOR REDOING, NO SOURCE CODE WILL BE AVAILABLE FOR A WHILE**
+
 Join the discord!
 
 [![Discord Link](https://raw.githubusercontent.com/Talia-Team/Talia-Assets/main/icons/discord%20link.png)](https://discord.gg/7FqgBCVfvY)
