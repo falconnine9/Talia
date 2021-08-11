@@ -2,7 +2,8 @@
 create table if not exists guilds (
     id bigint unsigned not null,
     prefix varchar(50) not null,
-    ud_mode tinyint,
+    ud_mode tinyint not null,
+    start_coins integer unsigned not null,
     constraint guilds_pk primary key (id)
 );
 create table if not exists dc (
@@ -16,11 +17,11 @@ create table if not exists dco (
     command varchar(50) not null,
     constraint dco_pk primary key (pk_id)
 );
-create table if not exists dcs (
+create table if not exists ds (
     pk_id bigint unsigned not null auto_increment,
     guild bigint unsigned not null,
     service varchar(50) not null,
-    constraint dcs_pk primary key (pk_id)
+    constraint ds_pk primary key (pk_id)
 );
 create table if not exists g_jobs (
     job_id bigint unsigned not null auto_increment,
@@ -36,8 +37,9 @@ create table if not exists g_picks (
     pickaxe_id bigint unsigned not null auto_increment,
     guild bigint unsigned not null,
     name varchar(75) not null,
+    cost integer unsigned not null,
     speed tinyint not null,
-    multiplier real not null,
+    multi real not null,
     constraint g_picks_pk primary key (pickaxe_id)
 );
 
@@ -46,7 +48,8 @@ create table if not exists users (
     id bigint unsigned not null auto_increment,
     guild bigint unsigned not null,
     user bigint unsigned not null,
-    coins bigint unsigned not null,
+    pocket bigint unsigned not null,
+    bank bigint unsigned not null,
     level integer unsigned not null,
     xp integer unsigned not null,
     multiplier real not null,
@@ -60,15 +63,16 @@ create table if not exists u_jobs (
     s_max integer unsigned not null,
     c_min integer not null,
     c_max integer not null,
-    xp integer unsigned not null,
     level integer unsigned not null,
+    xp integer unsigned not null,
     constraint u_jobs_pk primary key (user)
 );
 create table if not exists u_picks (
     user bigint unsigned not null,
     name varchar(75) not null,
+    worth integer unsigned not null,
     speed tinyint not null,
-    multiplier real not null,
+    multi real not null,
     constraint u_picks_pk primary key (user)
 );
 create table if not exists relations (
