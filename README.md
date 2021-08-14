@@ -4,11 +4,11 @@
 A customizable economy discord bot
 
 Some features of Talia include
-- Basic economy: You can apply for customized jobs and work for coins or buy customized pickaxes and do some mining in different locations with them.
-- Gambling: You can play games such as blackjack, roulette, flipping coins and rolling dice. Or bet against other players with pet races and pet duels.
-- Family: Create a family tree in your server.
-- Random fun stuff: A feature to convert images to ASCII art versions of them.
-- Highly customizable: Almost everything in Talia can be customized on the dashboard.
+- **Basic economy**: You can apply for customized jobs and work for coins or buy customized pickaxes and do some mining in different locations with them.
+- **Gambling**: You can play games such as blackjack, roulette, flipping coins and rolling dice. Or bet against other players with pet races and pet duels.
+- **Family**: Create a family tree in your server.
+- **Random fun stuff**: A feature to convert images to ASCII art versions of them.
+- **Highly customizable**: Almost everything in Talia can be customized on the dashboard.
 
 By default, Talia's prefix is **t!**, but that can be changed.
 
