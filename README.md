@@ -1,5 +1,5 @@
 # Talia
-**Talia is currently undergoing a major redo. All contributions will be denied. It is not suggested that you use the current code**
+**Due to changes to the discord API and discord.py being discontinued, Talia development has been halted permanently**
 
 A customizable economy discord bot
 
